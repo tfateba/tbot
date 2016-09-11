@@ -15,7 +15,7 @@
  e-mail   :  kristianl@tkjelectronics.com
  */
 
-#include "sam_kalman.h"
+#include "ip_kalman.h"
 
 /* Kalman filter variables */
 double Q_angle; // Process noise variance for the accelerometer

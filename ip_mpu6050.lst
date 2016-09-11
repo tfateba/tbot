@@ -1,0 +1,2413 @@
+   1               		.file	"ip_mpu6050.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__RAMPZ__ = 0x3b
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.text
+   9               	.Ltext0:
+  10               		.cfi_sections	.debug_frame
+  11               		.section	.text.mpu6050_getIdentity,"ax",@progbits
+  12               	.global	mpu6050_getIdentity
+  14               	mpu6050_getIdentity:
+  15               	.LFB136:
+  16               		.file 1 "ip_mpu6050.c"
+   1:ip_mpu6050.c  **** /**
+   2:ip_mpu6050.c  ****  *
+   3:ip_mpu6050.c  ****  * @file    sam_mpu6050.c
+   4:ip_mpu6050.c  ****  *
+   5:ip_mpu6050.c  ****  * @brief   Motion Interface driver.
+   6:ip_mpu6050.c  ****  *
+   7:ip_mpu6050.c  ****  * @author  Theodore Ateba
+   8:ip_mpu6050.c  ****  *
+   9:ip_mpu6050.c  ****  * @date    26 June 2016
+  10:ip_mpu6050.c  ****  *
+  11:ip_mpu6050.c  ****  * @update  24 August 2016
+  12:ip_mpu6050.c  ****  *
+  13:ip_mpu6050.c  ****  */
+  14:ip_mpu6050.c  **** 
+  15:ip_mpu6050.c  **** /*==========================================================================*/
+  16:ip_mpu6050.c  **** /* Include Libraries                                                        */
+  17:ip_mpu6050.c  **** /*==========================================================================*/
+  18:ip_mpu6050.c  **** #include "ip_mpu6050.h"
+  19:ip_mpu6050.c  **** 
+  20:ip_mpu6050.c  **** /*==========================================================================*/
+  21:ip_mpu6050.c  **** /* Driver Functions                                                         */ 
+  22:ip_mpu6050.c  **** /*==========================================================================*/
+  23:ip_mpu6050.c  **** 
+  24:ip_mpu6050.c  **** /**
+  25:ip_mpu6050.c  ****  * @fn    mpu6050_getIdentity
+  26:ip_mpu6050.c  ****  * @brief Get the identity of the MPU6050 device.
+  27:ip_mpu6050.c  ****  *
+  28:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer to the I2C driver interface.
+  29:ip_mpu6050.c  ****  * @param[in] idp		Pointer to the id variable of the MPU6050 sensor.
+  30:ip_mpu6050.c  ****  * @return    msg   The result of the reading identity operation.
+  31:ip_mpu6050.c  ****  */
+  32:ip_mpu6050.c  **** msg_t mpu6050_getIdentity(I2CDriver *i2cp, uint8_t *idp)
+  33:ip_mpu6050.c  **** {
+  17               		.loc 1 33 0
+  18               		.cfi_startproc
+  19               	.LVL0:
+  20 0000 EF92      		push r14
+  21               	.LCFI0:
+  22               		.cfi_def_cfa_offset 4
+  23               		.cfi_offset 14, -3
+  24 0002 FF92      		push r15
+  25               	.LCFI1:
+  26               		.cfi_def_cfa_offset 5
+  27               		.cfi_offset 15, -4
+  28 0004 0F93      		push r16
+  29               	.LCFI2:
+  30               		.cfi_def_cfa_offset 6
+  31               		.cfi_offset 16, -5
+  32 0006 CF93      		push r28
+  33               	.LCFI3:
+  34               		.cfi_def_cfa_offset 7
+  35               		.cfi_offset 28, -6
+  36 0008 DF93      		push r29
+  37               	.LCFI4:
+  38               		.cfi_def_cfa_offset 8
+  39               		.cfi_offset 29, -7
+  40 000a 1F92      		push __zero_reg__
+  41 000c 1F92      		push __zero_reg__
+  42               	.LCFI5:
+  43               		.cfi_def_cfa_offset 10
+  44 000e CDB7      		in r28,__SP_L__
+  45 0010 DEB7      		in r29,__SP_H__
+  46               	.LCFI6:
+  47               		.cfi_def_cfa_register 28
+  48               	/* prologue: function */
+  49               	/* frame size = 2 */
+  50               	/* stack size = 7 */
+  51               	.L__stack_usage = 7
+  52 0012 7B01      		movw r14,r22
+  34:ip_mpu6050.c  ****   uint8_t   txbuf;
+  35:ip_mpu6050.c  ****   uint8_t   rxbuf;
+  36:ip_mpu6050.c  ****   msg_t     msg;
+  37:ip_mpu6050.c  ****   
+  38:ip_mpu6050.c  ****   txbuf = MPU6050_WHO_AM_I;
+  53               		.loc 1 38 0
+  54 0014 25E7      		ldi r18,lo8(117)
+  55 0016 2A83      		std Y+2,r18
+  39:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, &rxbuf, 1);
+  56               		.loc 1 39 0
+  57 0018 01E0      		ldi r16,lo8(1)
+  58 001a 9E01      		movw r18,r28
+  59 001c 2F5F      		subi r18,-1
+  60 001e 3F4F      		sbci r19,-1
+  61 0020 AE01      		movw r20,r28
+  62 0022 4E5F      		subi r20,-2
+  63 0024 5F4F      		sbci r21,-1
+  64 0026 68E6      		ldi r22,lo8(104)
+  65               	.LVL1:
+  66 0028 0E94 0000 		call i2cReadRegisters
+  67               	.LVL2:
+  40:ip_mpu6050.c  **** 
+  41:ip_mpu6050.c  ****   if (msg == MSG_OK) {
+  68               		.loc 1 41 0
+  69 002c 0097      		sbiw r24,0
+  70 002e 01F4      		brne .L2
+  42:ip_mpu6050.c  ****     *idp = rxbuf;
+  71               		.loc 1 42 0
+  72 0030 2981      		ldd r18,Y+1
+  73 0032 F701      		movw r30,r14
+  74 0034 2083      		st Z,r18
+  75               	.L2:
+  76               	/* epilogue start */
+  43:ip_mpu6050.c  ****     return msg;
+  44:ip_mpu6050.c  ****   }
+  45:ip_mpu6050.c  **** 	
+  46:ip_mpu6050.c  **** 	return msg;
+  47:ip_mpu6050.c  **** }
+  77               		.loc 1 47 0
+  78 0036 0F90      		pop __tmp_reg__
+  79 0038 0F90      		pop __tmp_reg__
+  80 003a DF91      		pop r29
+  81 003c CF91      		pop r28
+  82 003e 0F91      		pop r16
+  83 0040 FF90      		pop r15
+  84 0042 EF90      		pop r14
+  85               	.LVL3:
+  86 0044 0895      		ret
+  87               		.cfi_endproc
+  88               	.LFE136:
+  90               		.section	.text.mpu6050_sleep,"ax",@progbits
+  91               	.global	mpu6050_sleep
+  93               	mpu6050_sleep:
+  94               	.LFB137:
+  48:ip_mpu6050.c  **** 
+  49:ip_mpu6050.c  **** /**
+  50:ip_mpu6050.c  ****  * @fn    mpu6050_sleep
+  51:ip_mpu6050.c  ****  * @brief Put the MPU6050 in the Power Sleep Mode.
+  52:ip_mpu6050.c  ****  *
+  53:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the I2C driver interface.
+  54:ip_mpu6050.c  ****  * @return    msg   The result of the power mode configuration.
+  55:ip_mpu6050.c  ****  */
+  56:ip_mpu6050.c  **** msg_t mpu6050_sleep(I2CDriver *i2cp)
+  57:ip_mpu6050.c  **** {
+  95               		.loc 1 57 0
+  96               		.cfi_startproc
+  97               	.LVL4:
+  98 0000 EF92      		push r14
+  99               	.LCFI7:
+ 100               		.cfi_def_cfa_offset 4
+ 101               		.cfi_offset 14, -3
+ 102 0002 FF92      		push r15
+ 103               	.LCFI8:
+ 104               		.cfi_def_cfa_offset 5
+ 105               		.cfi_offset 15, -4
+ 106 0004 0F93      		push r16
+ 107               	.LCFI9:
+ 108               		.cfi_def_cfa_offset 6
+ 109               		.cfi_offset 16, -5
+ 110 0006 CF93      		push r28
+ 111               	.LCFI10:
+ 112               		.cfi_def_cfa_offset 7
+ 113               		.cfi_offset 28, -6
+ 114 0008 DF93      		push r29
+ 115               	.LCFI11:
+ 116               		.cfi_def_cfa_offset 8
+ 117               		.cfi_offset 29, -7
+ 118 000a 00D0      		rcall .
+ 119               	.LCFI12:
+ 120               		.cfi_def_cfa_offset 11
+ 121 000c CDB7      		in r28,__SP_L__
+ 122 000e DEB7      		in r29,__SP_H__
+ 123               	.LCFI13:
+ 124               		.cfi_def_cfa_register 28
+ 125               	/* prologue: function */
+ 126               	/* frame size = 3 */
+ 127               	/* stack size = 8 */
+ 128               	.L__stack_usage = 8
+ 129 0010 7C01      		movw r14,r24
+  58:ip_mpu6050.c  ****   uint8_t config;
+  59:ip_mpu6050.c  ****   uint8_t txbuf[2];
+  60:ip_mpu6050.c  ****   msg_t   msg;
+  61:ip_mpu6050.c  ****   
+  62:ip_mpu6050.c  ****   txbuf[0] = MPU6050_PWR_MGMT_1;
+ 130               		.loc 1 62 0
+ 131 0012 8BE6      		ldi r24,lo8(107)
+ 132               	.LVL5:
+ 133 0014 8983      		std Y+1,r24
+  63:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
+ 134               		.loc 1 63 0
+ 135 0016 01E0      		ldi r16,lo8(1)
+ 136 0018 9E01      		movw r18,r28
+ 137 001a 2D5F      		subi r18,-3
+ 138 001c 3F4F      		sbci r19,-1
+ 139 001e AE01      		movw r20,r28
+ 140 0020 4F5F      		subi r20,-1
+ 141 0022 5F4F      		sbci r21,-1
+ 142 0024 68E6      		ldi r22,lo8(104)
+ 143 0026 C701      		movw r24,r14
+ 144 0028 0E94 0000 		call i2cReadRegisters
+ 145               	.LVL6:
+  64:ip_mpu6050.c  ****   
+  65:ip_mpu6050.c  ****   if (msg != MSG_OK)
+ 146               		.loc 1 65 0
+ 147 002c 0097      		sbiw r24,0
+ 148 002e 01F4      		brne .L5
+  66:ip_mpu6050.c  ****     return msg;
+  67:ip_mpu6050.c  **** 
+  68:ip_mpu6050.c  ****   txbuf[1] = config | (1 << 6);
+ 149               		.loc 1 68 0
+ 150 0030 8B81      		ldd r24,Y+3
+ 151               	.LVL7:
+ 152 0032 8064      		ori r24,lo8(64)
+ 153 0034 8A83      		std Y+2,r24
+  69:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+ 154               		.loc 1 69 0
+ 155 0036 22E0      		ldi r18,lo8(2)
+ 156 0038 AE01      		movw r20,r28
+ 157 003a 4F5F      		subi r20,-1
+ 158 003c 5F4F      		sbci r21,-1
+ 159 003e 68E6      		ldi r22,lo8(104)
+ 160 0040 C701      		movw r24,r14
+ 161 0042 0E94 0000 		call i2cWriteRegisters
+ 162               	.LVL8:
+ 163               	.L5:
+ 164               	/* epilogue start */
+  70:ip_mpu6050.c  **** 
+  71:ip_mpu6050.c  ****   return msg;
+  72:ip_mpu6050.c  **** }
+ 165               		.loc 1 72 0
+ 166 0046 0F90      		pop __tmp_reg__
+ 167 0048 0F90      		pop __tmp_reg__
+ 168 004a 0F90      		pop __tmp_reg__
+ 169 004c DF91      		pop r29
+ 170 004e CF91      		pop r28
+ 171 0050 0F91      		pop r16
+ 172 0052 FF90      		pop r15
+ 173 0054 EF90      		pop r14
+ 174               	.LVL9:
+ 175 0056 0895      		ret
+ 176               		.cfi_endproc
+ 177               	.LFE137:
+ 179               		.section	.text.mpu6050_wakeup,"ax",@progbits
+ 180               	.global	mpu6050_wakeup
+ 182               	mpu6050_wakeup:
+ 183               	.LFB138:
+  73:ip_mpu6050.c  **** 
+  74:ip_mpu6050.c  **** /**
+  75:ip_mpu6050.c  ****  * @fn    mpu6050_wakeup
+  76:ip_mpu6050.c  ****  * @brief Remove the MPU6050 from the sleep mode.
+  77:ip_mpu6050.c  ****  *
+  78:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+  79:ip_mpu6050.c  ****  * @return    msg   The result of the wakeup operation.
+  80:ip_mpu6050.c  ****  */
+  81:ip_mpu6050.c  **** msg_t mpu6050_wakeup(I2CDriver *i2cp)
+  82:ip_mpu6050.c  **** {
+ 184               		.loc 1 82 0
+ 185               		.cfi_startproc
+ 186               	.LVL10:
+ 187 0000 EF92      		push r14
+ 188               	.LCFI14:
+ 189               		.cfi_def_cfa_offset 4
+ 190               		.cfi_offset 14, -3
+ 191 0002 FF92      		push r15
+ 192               	.LCFI15:
+ 193               		.cfi_def_cfa_offset 5
+ 194               		.cfi_offset 15, -4
+ 195 0004 0F93      		push r16
+ 196               	.LCFI16:
+ 197               		.cfi_def_cfa_offset 6
+ 198               		.cfi_offset 16, -5
+ 199 0006 CF93      		push r28
+ 200               	.LCFI17:
+ 201               		.cfi_def_cfa_offset 7
+ 202               		.cfi_offset 28, -6
+ 203 0008 DF93      		push r29
+ 204               	.LCFI18:
+ 205               		.cfi_def_cfa_offset 8
+ 206               		.cfi_offset 29, -7
+ 207 000a 00D0      		rcall .
+ 208               	.LCFI19:
+ 209               		.cfi_def_cfa_offset 11
+ 210 000c CDB7      		in r28,__SP_L__
+ 211 000e DEB7      		in r29,__SP_H__
+ 212               	.LCFI20:
+ 213               		.cfi_def_cfa_register 28
+ 214               	/* prologue: function */
+ 215               	/* frame size = 3 */
+ 216               	/* stack size = 8 */
+ 217               	.L__stack_usage = 8
+ 218 0010 7C01      		movw r14,r24
+  83:ip_mpu6050.c  ****   uint8_t config;
+  84:ip_mpu6050.c  ****   uint8_t txbuf[2];
+  85:ip_mpu6050.c  ****   msg_t   msg;
+  86:ip_mpu6050.c  ****   
+  87:ip_mpu6050.c  ****   txbuf[0] = MPU6050_PWR_MGMT_1;
+ 219               		.loc 1 87 0
+ 220 0012 8BE6      		ldi r24,lo8(107)
+ 221               	.LVL11:
+ 222 0014 8983      		std Y+1,r24
+  88:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
+ 223               		.loc 1 88 0
+ 224 0016 01E0      		ldi r16,lo8(1)
+ 225 0018 9E01      		movw r18,r28
+ 226 001a 2D5F      		subi r18,-3
+ 227 001c 3F4F      		sbci r19,-1
+ 228 001e AE01      		movw r20,r28
+ 229 0020 4F5F      		subi r20,-1
+ 230 0022 5F4F      		sbci r21,-1
+ 231 0024 68E6      		ldi r22,lo8(104)
+ 232 0026 C701      		movw r24,r14
+ 233 0028 0E94 0000 		call i2cReadRegisters
+ 234               	.LVL12:
+  89:ip_mpu6050.c  ****   
+  90:ip_mpu6050.c  **** 	if (msg != MSG_OK)
+ 235               		.loc 1 90 0
+ 236 002c 0097      		sbiw r24,0
+ 237 002e 01F4      		brne .L8
+  91:ip_mpu6050.c  ****     return msg;
+  92:ip_mpu6050.c  **** 
+  93:ip_mpu6050.c  ****   txbuf[1] = config & ~(1 << 6);
+ 238               		.loc 1 93 0
+ 239 0030 8B81      		ldd r24,Y+3
+ 240               	.LVL13:
+ 241 0032 8F7B      		andi r24,lo8(-65)
+ 242 0034 8A83      		std Y+2,r24
+  94:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+ 243               		.loc 1 94 0
+ 244 0036 22E0      		ldi r18,lo8(2)
+ 245 0038 AE01      		movw r20,r28
+ 246 003a 4F5F      		subi r20,-1
+ 247 003c 5F4F      		sbci r21,-1
+ 248 003e 68E6      		ldi r22,lo8(104)
+ 249 0040 C701      		movw r24,r14
+ 250 0042 0E94 0000 		call i2cWriteRegisters
+ 251               	.LVL14:
+ 252               	.L8:
+ 253               	/* epilogue start */
+  95:ip_mpu6050.c  **** 
+  96:ip_mpu6050.c  ****   return msg;
+  97:ip_mpu6050.c  **** }
+ 254               		.loc 1 97 0
+ 255 0046 0F90      		pop __tmp_reg__
+ 256 0048 0F90      		pop __tmp_reg__
+ 257 004a 0F90      		pop __tmp_reg__
+ 258 004c DF91      		pop r29
+ 259 004e CF91      		pop r28
+ 260 0050 0F91      		pop r16
+ 261 0052 FF90      		pop r15
+ 262 0054 EF90      		pop r14
+ 263               	.LVL15:
+ 264 0056 0895      		ret
+ 265               		.cfi_endproc
+ 266               	.LFE138:
+ 268               		.section	.text.mpu6050_reset,"ax",@progbits
+ 269               	.global	mpu6050_reset
+ 271               	mpu6050_reset:
+ 272               	.LFB139:
+  98:ip_mpu6050.c  **** 
+  99:ip_mpu6050.c  **** /**
+ 100:ip_mpu6050.c  ****  * @fn    mpu6050_reset
+ 101:ip_mpu6050.c  ****  * @brief Reset the MPU6050.
+ 102:ip_mpu6050.c  ****  *
+ 103:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 104:ip_mpu6050.c  ****  * @return    msg   The result of the reset operation.
+ 105:ip_mpu6050.c  ****  */
+ 106:ip_mpu6050.c  **** msg_t mpu6050_reset(I2CDriver *i2cp)
+ 107:ip_mpu6050.c  **** {
+ 273               		.loc 1 107 0
+ 274               		.cfi_startproc
+ 275               	.LVL16:
+ 276 0000 EF92      		push r14
+ 277               	.LCFI21:
+ 278               		.cfi_def_cfa_offset 4
+ 279               		.cfi_offset 14, -3
+ 280 0002 FF92      		push r15
+ 281               	.LCFI22:
+ 282               		.cfi_def_cfa_offset 5
+ 283               		.cfi_offset 15, -4
+ 284 0004 0F93      		push r16
+ 285               	.LCFI23:
+ 286               		.cfi_def_cfa_offset 6
+ 287               		.cfi_offset 16, -5
+ 288 0006 CF93      		push r28
+ 289               	.LCFI24:
+ 290               		.cfi_def_cfa_offset 7
+ 291               		.cfi_offset 28, -6
+ 292 0008 DF93      		push r29
+ 293               	.LCFI25:
+ 294               		.cfi_def_cfa_offset 8
+ 295               		.cfi_offset 29, -7
+ 296 000a 00D0      		rcall .
+ 297               	.LCFI26:
+ 298               		.cfi_def_cfa_offset 11
+ 299 000c CDB7      		in r28,__SP_L__
+ 300 000e DEB7      		in r29,__SP_H__
+ 301               	.LCFI27:
+ 302               		.cfi_def_cfa_register 28
+ 303               	/* prologue: function */
+ 304               	/* frame size = 3 */
+ 305               	/* stack size = 8 */
+ 306               	.L__stack_usage = 8
+ 307 0010 7C01      		movw r14,r24
+ 108:ip_mpu6050.c  ****   uint8_t config;
+ 109:ip_mpu6050.c  ****   uint8_t txbuf[2];
+ 110:ip_mpu6050.c  ****   msg_t   msg;
+ 111:ip_mpu6050.c  ****   
+ 112:ip_mpu6050.c  ****   txbuf[0] = MPU6050_PWR_MGMT_1;
+ 308               		.loc 1 112 0
+ 309 0012 8BE6      		ldi r24,lo8(107)
+ 310               	.LVL17:
+ 311 0014 8983      		std Y+1,r24
+ 113:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
+ 312               		.loc 1 113 0
+ 313 0016 01E0      		ldi r16,lo8(1)
+ 314 0018 9E01      		movw r18,r28
+ 315 001a 2D5F      		subi r18,-3
+ 316 001c 3F4F      		sbci r19,-1
+ 317 001e AE01      		movw r20,r28
+ 318 0020 4F5F      		subi r20,-1
+ 319 0022 5F4F      		sbci r21,-1
+ 320 0024 68E6      		ldi r22,lo8(104)
+ 321 0026 C701      		movw r24,r14
+ 322 0028 0E94 0000 		call i2cReadRegisters
+ 323               	.LVL18:
+ 114:ip_mpu6050.c  ****   
+ 115:ip_mpu6050.c  ****   if (msg != MSG_OK)
+ 324               		.loc 1 115 0
+ 325 002c 0097      		sbiw r24,0
+ 326 002e 01F4      		brne .L11
+ 116:ip_mpu6050.c  ****     return msg;
+ 117:ip_mpu6050.c  **** 
+ 118:ip_mpu6050.c  ****   txbuf[1] = config & ~(1 << 7);
+ 327               		.loc 1 118 0
+ 328 0030 8B81      		ldd r24,Y+3
+ 329               	.LVL19:
+ 330 0032 8F77      		andi r24,lo8(127)
+ 331 0034 8A83      		std Y+2,r24
+ 119:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+ 332               		.loc 1 119 0
+ 333 0036 22E0      		ldi r18,lo8(2)
+ 334 0038 AE01      		movw r20,r28
+ 335 003a 4F5F      		subi r20,-1
+ 336 003c 5F4F      		sbci r21,-1
+ 337 003e 68E6      		ldi r22,lo8(104)
+ 338 0040 C701      		movw r24,r14
+ 339 0042 0E94 0000 		call i2cWriteRegisters
+ 340               	.LVL20:
+ 341               	.L11:
+ 342               	/* epilogue start */
+ 120:ip_mpu6050.c  **** 
+ 121:ip_mpu6050.c  ****   return msg;
+ 122:ip_mpu6050.c  **** }
+ 343               		.loc 1 122 0
+ 344 0046 0F90      		pop __tmp_reg__
+ 345 0048 0F90      		pop __tmp_reg__
+ 346 004a 0F90      		pop __tmp_reg__
+ 347 004c DF91      		pop r29
+ 348 004e CF91      		pop r28
+ 349 0050 0F91      		pop r16
+ 350 0052 FF90      		pop r15
+ 351 0054 EF90      		pop r14
+ 352               	.LVL21:
+ 353 0056 0895      		ret
+ 354               		.cfi_endproc
+ 355               	.LFE139:
+ 357               		.section	.text.mpu6050_gyroConfig,"ax",@progbits
+ 358               	.global	mpu6050_gyroConfig
+ 360               	mpu6050_gyroConfig:
+ 361               	.LFB140:
+ 123:ip_mpu6050.c  **** 
+ 124:ip_mpu6050.c  **** /**
+ 125:ip_mpu6050.c  ****  * @fn    mpu6050_gyroConfig
+ 126:ip_mpu6050.c  ****  * @brief Configure the gyroscope full scale.
+ 127:ip_mpu6050.c  ****  *
+ 128:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 129:ip_mpu6050.c  ****  * @param[in] scale The scale to set the MPU6050(250, 500, 1000 or 2000).
+ 130:ip_mpu6050.c  ****  * @return    msg   The result of the wakeup operation.
+ 131:ip_mpu6050.c  ****  */
+ 132:ip_mpu6050.c  **** msg_t mpu6050_gyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale)
+ 133:ip_mpu6050.c  **** {
+ 362               		.loc 1 133 0
+ 363               		.cfi_startproc
+ 364               	.LVL22:
+ 365 0000 CF93      		push r28
+ 366               	.LCFI28:
+ 367               		.cfi_def_cfa_offset 4
+ 368               		.cfi_offset 28, -3
+ 369 0002 DF93      		push r29
+ 370               	.LCFI29:
+ 371               		.cfi_def_cfa_offset 5
+ 372               		.cfi_offset 29, -4
+ 373 0004 1F92      		push __zero_reg__
+ 374 0006 1F92      		push __zero_reg__
+ 375               	.LCFI30:
+ 376               		.cfi_def_cfa_offset 7
+ 377 0008 CDB7      		in r28,__SP_L__
+ 378 000a DEB7      		in r29,__SP_H__
+ 379               	.LCFI31:
+ 380               		.cfi_def_cfa_register 28
+ 381               	/* prologue: function */
+ 382               	/* frame size = 2 */
+ 383               	/* stack size = 4 */
+ 384               	.L__stack_usage = 4
+ 134:ip_mpu6050.c  ****   uint8_t txbuf[2];
+ 135:ip_mpu6050.c  ****   msg_t   msg;
+ 136:ip_mpu6050.c  ****   
+ 137:ip_mpu6050.c  ****   txbuf[0] = MPU6050_GYRO_CONFIG;
+ 385               		.loc 1 137 0
+ 386 000c 2BE1      		ldi r18,lo8(27)
+ 387 000e 2983      		std Y+1,r18
+ 138:ip_mpu6050.c  **** 
+ 139:ip_mpu6050.c  ****   if (scale == MPU6050_GYRO_FS_250 ) {
+ 388               		.loc 1 139 0
+ 389 0010 6111      		cpse r22,__zero_reg__
+ 390 0012 00C0      		rjmp .L14
+ 140:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 3);
+ 141:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 4);
+ 391               		.loc 1 141 0
+ 392 0014 2A81      		ldd r18,Y+2
+ 393 0016 277E      		andi r18,lo8(-25)
+ 394 0018 2A83      		std Y+2,r18
+ 395               	.L15:
+ 142:ip_mpu6050.c  ****   } else if (scale == MPU6050_GYRO_FS_500) {
+ 143:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 3);
+ 144:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 4);
+ 145:ip_mpu6050.c  ****   } else if (scale == MPU6050_GYRO_FS_1000) {
+ 146:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 3);
+ 147:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 148:ip_mpu6050.c  ****   } else if (scale == MPU6050_GYRO_FS_2000) {
+ 149:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 3);
+ 150:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 151:ip_mpu6050.c  ****   } else
+ 152:ip_mpu6050.c  ****     return MSG_RESET;
+ 153:ip_mpu6050.c  **** 
+ 154:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+ 396               		.loc 1 154 0
+ 397 001a 22E0      		ldi r18,lo8(2)
+ 398 001c AE01      		movw r20,r28
+ 399 001e 4F5F      		subi r20,-1
+ 400 0020 5F4F      		sbci r21,-1
+ 401 0022 68E6      		ldi r22,lo8(104)
+ 402               	.LVL23:
+ 403 0024 0E94 0000 		call i2cWriteRegisters
+ 404               	.LVL24:
+ 405               	.L18:
+ 406               	/* epilogue start */
+ 155:ip_mpu6050.c  **** 
+ 156:ip_mpu6050.c  ****   return msg;
+ 157:ip_mpu6050.c  **** }
+ 407               		.loc 1 157 0
+ 408 0028 0F90      		pop __tmp_reg__
+ 409 002a 0F90      		pop __tmp_reg__
+ 410 002c DF91      		pop r29
+ 411 002e CF91      		pop r28
+ 412 0030 0895      		ret
+ 413               	.LVL25:
+ 414               	.L14:
+ 142:ip_mpu6050.c  ****   } else if (scale == MPU6050_GYRO_FS_500) {
+ 415               		.loc 1 142 0
+ 416 0032 6130      		cpi r22,lo8(1)
+ 417 0034 01F0      		breq .L20
+ 145:ip_mpu6050.c  ****   } else if (scale == MPU6050_GYRO_FS_1000) {
+ 418               		.loc 1 145 0
+ 419 0036 6230      		cpi r22,lo8(2)
+ 420 0038 01F0      		breq .L21
+ 148:ip_mpu6050.c  ****   } else if (scale == MPU6050_GYRO_FS_2000) {
+ 421               		.loc 1 148 0
+ 422 003a 6330      		cpi r22,lo8(3)
+ 423 003c 01F4      		brne .L19
+ 150:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 424               		.loc 1 150 0
+ 425 003e 2A81      		ldd r18,Y+2
+ 426 0040 2861      		ori r18,lo8(24)
+ 427 0042 2A83      		std Y+2,r18
+ 428 0044 00C0      		rjmp .L15
+ 429               	.L20:
+ 144:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 4);
+ 430               		.loc 1 144 0
+ 431 0046 2A81      		ldd r18,Y+2
+ 432 0048 2F7E      		andi r18,lo8(-17)
+ 433 004a 2860      		ori r18,lo8(8)
+ 434 004c 2A83      		std Y+2,r18
+ 435 004e 00C0      		rjmp .L15
+ 436               	.L21:
+ 146:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 3);
+ 437               		.loc 1 146 0
+ 438 0050 2A81      		ldd r18,Y+2
+ 439 0052 277F      		andi r18,lo8(-9)
+ 147:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 440               		.loc 1 147 0
+ 441 0054 2061      		ori r18,lo8(16)
+ 442 0056 2A83      		std Y+2,r18
+ 443 0058 00C0      		rjmp .L15
+ 444               	.L19:
+ 152:ip_mpu6050.c  ****     return MSG_RESET;
+ 445               		.loc 1 152 0
+ 446 005a 8EEF      		ldi r24,lo8(-2)
+ 447 005c 9FEF      		ldi r25,lo8(-1)
+ 448               	.LVL26:
+ 449 005e 00C0      		rjmp .L18
+ 450               		.cfi_endproc
+ 451               	.LFE140:
+ 453               		.section	.text.mpu6050_accelConfig,"ax",@progbits
+ 454               	.global	mpu6050_accelConfig
+ 456               	mpu6050_accelConfig:
+ 457               	.LFB141:
+ 158:ip_mpu6050.c  **** 
+ 159:ip_mpu6050.c  **** /**
+ 160:ip_mpu6050.c  ****  * @fn    mpu6050_accelConfig
+ 161:ip_mpu6050.c  ****  * @brief Configure the accelerometer full scale.
+ 162:ip_mpu6050.c  ****  *
+ 163:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 164:ip_mpu6050.c  ****  * @param[in] scale The scale to set the MPU6050(2, 4, 8 or 16).
+ 165:ip_mpu6050.c  ****  * @return    msg   The result of the wakeup operation.
+ 166:ip_mpu6050.c  ****  */
+ 167:ip_mpu6050.c  **** msg_t mpu6050_accelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale)
+ 168:ip_mpu6050.c  **** {
+ 458               		.loc 1 168 0
+ 459               		.cfi_startproc
+ 460               	.LVL27:
+ 461 0000 CF93      		push r28
+ 462               	.LCFI32:
+ 463               		.cfi_def_cfa_offset 4
+ 464               		.cfi_offset 28, -3
+ 465 0002 DF93      		push r29
+ 466               	.LCFI33:
+ 467               		.cfi_def_cfa_offset 5
+ 468               		.cfi_offset 29, -4
+ 469 0004 1F92      		push __zero_reg__
+ 470 0006 1F92      		push __zero_reg__
+ 471               	.LCFI34:
+ 472               		.cfi_def_cfa_offset 7
+ 473 0008 CDB7      		in r28,__SP_L__
+ 474 000a DEB7      		in r29,__SP_H__
+ 475               	.LCFI35:
+ 476               		.cfi_def_cfa_register 28
+ 477               	/* prologue: function */
+ 478               	/* frame size = 2 */
+ 479               	/* stack size = 4 */
+ 480               	.L__stack_usage = 4
+ 169:ip_mpu6050.c  ****   uint8_t txbuf[2];
+ 170:ip_mpu6050.c  ****   msg_t   msg;
+ 171:ip_mpu6050.c  ****   
+ 172:ip_mpu6050.c  ****   txbuf[0] = MPU6050_ACCEL_CONFIG;
+ 481               		.loc 1 172 0
+ 482 000c 2CE1      		ldi r18,lo8(28)
+ 483 000e 2983      		std Y+1,r18
+ 173:ip_mpu6050.c  **** 
+ 174:ip_mpu6050.c  ****   if (scale == MPU6050_ACCEL_FS_2 ){
+ 484               		.loc 1 174 0
+ 485 0010 6111      		cpse r22,__zero_reg__
+ 486 0012 00C0      		rjmp .L23
+ 175:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 3);
+ 176:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 4);
+ 487               		.loc 1 176 0
+ 488 0014 2A81      		ldd r18,Y+2
+ 489 0016 277E      		andi r18,lo8(-25)
+ 490 0018 2A83      		std Y+2,r18
+ 491               	.L24:
+ 177:ip_mpu6050.c  ****   } else if (scale == MPU6050_ACCEL_FS_4){
+ 178:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 3);
+ 179:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 4);
+ 180:ip_mpu6050.c  ****   } else if (scale == MPU6050_ACCEL_FS_8){
+ 181:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 3);
+ 182:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 183:ip_mpu6050.c  ****   } else if (scale == MPU6050_ACCEL_FS_16){
+ 184:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 3);
+ 185:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 186:ip_mpu6050.c  ****   } else
+ 187:ip_mpu6050.c  ****     return MSG_RESET;
+ 188:ip_mpu6050.c  **** 
+ 189:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+ 492               		.loc 1 189 0
+ 493 001a 22E0      		ldi r18,lo8(2)
+ 494 001c AE01      		movw r20,r28
+ 495 001e 4F5F      		subi r20,-1
+ 496 0020 5F4F      		sbci r21,-1
+ 497 0022 68E6      		ldi r22,lo8(104)
+ 498               	.LVL28:
+ 499 0024 0E94 0000 		call i2cWriteRegisters
+ 500               	.LVL29:
+ 501               	.L27:
+ 502               	/* epilogue start */
+ 190:ip_mpu6050.c  **** 
+ 191:ip_mpu6050.c  ****   return msg;
+ 192:ip_mpu6050.c  **** }
+ 503               		.loc 1 192 0
+ 504 0028 0F90      		pop __tmp_reg__
+ 505 002a 0F90      		pop __tmp_reg__
+ 506 002c DF91      		pop r29
+ 507 002e CF91      		pop r28
+ 508 0030 0895      		ret
+ 509               	.LVL30:
+ 510               	.L23:
+ 177:ip_mpu6050.c  ****   } else if (scale == MPU6050_ACCEL_FS_4){
+ 511               		.loc 1 177 0
+ 512 0032 6130      		cpi r22,lo8(1)
+ 513 0034 01F0      		breq .L29
+ 180:ip_mpu6050.c  ****   } else if (scale == MPU6050_ACCEL_FS_8){
+ 514               		.loc 1 180 0
+ 515 0036 6230      		cpi r22,lo8(2)
+ 516 0038 01F0      		breq .L30
+ 183:ip_mpu6050.c  ****   } else if (scale == MPU6050_ACCEL_FS_16){
+ 517               		.loc 1 183 0
+ 518 003a 6330      		cpi r22,lo8(3)
+ 519 003c 01F4      		brne .L28
+ 185:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 520               		.loc 1 185 0
+ 521 003e 2A81      		ldd r18,Y+2
+ 522 0040 2861      		ori r18,lo8(24)
+ 523 0042 2A83      		std Y+2,r18
+ 524 0044 00C0      		rjmp .L24
+ 525               	.L29:
+ 179:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 4);
+ 526               		.loc 1 179 0
+ 527 0046 2A81      		ldd r18,Y+2
+ 528 0048 2F7E      		andi r18,lo8(-17)
+ 529 004a 2860      		ori r18,lo8(8)
+ 530 004c 2A83      		std Y+2,r18
+ 531 004e 00C0      		rjmp .L24
+ 532               	.L30:
+ 181:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] & ~(1 << 3);
+ 533               		.loc 1 181 0
+ 534 0050 2A81      		ldd r18,Y+2
+ 535 0052 277F      		andi r18,lo8(-9)
+ 182:ip_mpu6050.c  ****     txbuf[1] = txbuf[1] | (1 << 4);
+ 536               		.loc 1 182 0
+ 537 0054 2061      		ori r18,lo8(16)
+ 538 0056 2A83      		std Y+2,r18
+ 539 0058 00C0      		rjmp .L24
+ 540               	.L28:
+ 187:ip_mpu6050.c  ****     return MSG_RESET;
+ 541               		.loc 1 187 0
+ 542 005a 8EEF      		ldi r24,lo8(-2)
+ 543 005c 9FEF      		ldi r25,lo8(-1)
+ 544               	.LVL31:
+ 545 005e 00C0      		rjmp .L27
+ 546               		.cfi_endproc
+ 547               	.LFE141:
+ 549               		.section	.text.mpu6050_getXGyroOffset,"ax",@progbits
+ 550               	.global	mpu6050_getXGyroOffset
+ 552               	mpu6050_getXGyroOffset:
+ 553               	.LFB142:
+ 193:ip_mpu6050.c  **** 
+ 194:ip_mpu6050.c  **** /**
+ 195:ip_mpu6050.c  ****  * @fn    mpu6050_getXGyroOffset
+ 196:ip_mpu6050.c  ****  * @brief Get the gyroscope x axis offset.
+ 197:ip_mpu6050.c  ****  *
+ 198:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 199:ip_mpu6050.c  ****  * @param[in] gxop  Pointer to Gyroscope x axis offset.
+ 200:ip_mpu6050.c  ****  * @return    msg   The result of the offset reading operation.
+ 201:ip_mpu6050.c  ****  */
+ 202:ip_mpu6050.c  **** msg_t mpu6050_getXGyroOffset(I2CDriver *i2cp, int16_t *gxop)
+ 203:ip_mpu6050.c  **** {
+ 554               		.loc 1 203 0
+ 555               		.cfi_startproc
+ 556               	.LVL32:
+ 557 0000 EF92      		push r14
+ 558               	.LCFI36:
+ 559               		.cfi_def_cfa_offset 4
+ 560               		.cfi_offset 14, -3
+ 561 0002 FF92      		push r15
+ 562               	.LCFI37:
+ 563               		.cfi_def_cfa_offset 5
+ 564               		.cfi_offset 15, -4
+ 565 0004 0F93      		push r16
+ 566               	.LCFI38:
+ 567               		.cfi_def_cfa_offset 6
+ 568               		.cfi_offset 16, -5
+ 569 0006 CF93      		push r28
+ 570               	.LCFI39:
+ 571               		.cfi_def_cfa_offset 7
+ 572               		.cfi_offset 28, -6
+ 573 0008 DF93      		push r29
+ 574               	.LCFI40:
+ 575               		.cfi_def_cfa_offset 8
+ 576               		.cfi_offset 29, -7
+ 577 000a 00D0      		rcall .
+ 578               	.LCFI41:
+ 579               		.cfi_def_cfa_offset 11
+ 580 000c CDB7      		in r28,__SP_L__
+ 581 000e DEB7      		in r29,__SP_H__
+ 582               	.LCFI42:
+ 583               		.cfi_def_cfa_register 28
+ 584               	/* prologue: function */
+ 585               	/* frame size = 3 */
+ 586               	/* stack size = 8 */
+ 587               	.L__stack_usage = 8
+ 588 0010 7B01      		movw r14,r22
+ 204:ip_mpu6050.c  ****   uint8_t txbuf;
+ 205:ip_mpu6050.c  ****   uint8_t rxbuf[2];
+ 206:ip_mpu6050.c  ****   msg_t   msg;
+ 207:ip_mpu6050.c  **** 
+ 208:ip_mpu6050.c  ****   txbuf = 0; // TODO: Set the correct register.
+ 589               		.loc 1 208 0
+ 590 0012 1B82      		std Y+3,__zero_reg__
+ 209:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
+ 591               		.loc 1 209 0
+ 592 0014 02E0      		ldi r16,lo8(2)
+ 593 0016 9E01      		movw r18,r28
+ 594 0018 2F5F      		subi r18,-1
+ 595 001a 3F4F      		sbci r19,-1
+ 596 001c AE01      		movw r20,r28
+ 597 001e 4D5F      		subi r20,-3
+ 598 0020 5F4F      		sbci r21,-1
+ 599 0022 68E6      		ldi r22,lo8(104)
+ 600               	.LVL33:
+ 601 0024 0E94 0000 		call i2cReadRegisters
+ 602               	.LVL34:
+ 210:ip_mpu6050.c  ****   *gxop =(int16_t) ((rxbuf[0] << 8) | rxbuf[1]);
+ 603               		.loc 1 210 0
+ 604 0028 2981      		ldd r18,Y+1
+ 605 002a 30E0      		ldi r19,0
+ 606 002c 322F      		mov r19,r18
+ 607 002e 2227      		clr r18
+ 608 0030 4A81      		ldd r20,Y+2
+ 609 0032 242B      		or r18,r20
+ 610 0034 F701      		movw r30,r14
+ 611 0036 3183      		std Z+1,r19
+ 612 0038 2083      		st Z,r18
+ 613               	/* epilogue start */
+ 211:ip_mpu6050.c  **** 
+ 212:ip_mpu6050.c  ****   return msg;
+ 213:ip_mpu6050.c  **** }
+ 614               		.loc 1 213 0
+ 615 003a 0F90      		pop __tmp_reg__
+ 616 003c 0F90      		pop __tmp_reg__
+ 617 003e 0F90      		pop __tmp_reg__
+ 618 0040 DF91      		pop r29
+ 619 0042 CF91      		pop r28
+ 620 0044 0F91      		pop r16
+ 621 0046 FF90      		pop r15
+ 622 0048 EF90      		pop r14
+ 623               	.LVL35:
+ 624 004a 0895      		ret
+ 625               		.cfi_endproc
+ 626               	.LFE142:
+ 628               		.section	.text.mpu6050_setXGyroOffset,"ax",@progbits
+ 629               	.global	mpu6050_setXGyroOffset
+ 631               	mpu6050_setXGyroOffset:
+ 632               	.LFB143:
+ 214:ip_mpu6050.c  **** 
+ 215:ip_mpu6050.c  **** /**
+ 216:ip_mpu6050.c  ****  * @fn    mpu6050_setXGyroOffset
+ 217:ip_mpu6050.c  ****  * @brief Set the gyroscope x axis offset.
+ 218:ip_mpu6050.c  ****  *
+ 219:ip_mpu6050.c  ****  * @param[in] i2cp    The Pointer of the i2C interface.
+ 220:ip_mpu6050.c  ****  * @param[in] offset  Gyroscope x axis offset.
+ 221:ip_mpu6050.c  ****  * @return    msg     The result of the offset writing operation.
+ 222:ip_mpu6050.c  ****  */
+ 223:ip_mpu6050.c  **** msg_t mpu6050_setXGyroOffset(I2CDriver *i2cp, int16_t offset)
+ 224:ip_mpu6050.c  **** {
+ 633               		.loc 1 224 0
+ 634               		.cfi_startproc
+ 635               	.LVL36:
+ 636 0000 CF93      		push r28
+ 637               	.LCFI43:
+ 638               		.cfi_def_cfa_offset 4
+ 639               		.cfi_offset 28, -3
+ 640 0002 DF93      		push r29
+ 641               	.LCFI44:
+ 642               		.cfi_def_cfa_offset 5
+ 643               		.cfi_offset 29, -4
+ 644 0004 00D0      		rcall .
+ 645               	.LCFI45:
+ 646               		.cfi_def_cfa_offset 8
+ 647 0006 CDB7      		in r28,__SP_L__
+ 648 0008 DEB7      		in r29,__SP_H__
+ 649               	.LCFI46:
+ 650               		.cfi_def_cfa_register 28
+ 651               	/* prologue: function */
+ 652               	/* frame size = 3 */
+ 653               	/* stack size = 5 */
+ 654               	.L__stack_usage = 5
+ 225:ip_mpu6050.c  ****   uint8_t txbuf[3];
+ 226:ip_mpu6050.c  ****   msg_t   msg;
+ 227:ip_mpu6050.c  **** 
+ 228:ip_mpu6050.c  ****   txbuf[0] = MPU6050_X_GYRO_OFFSET_USRH;
+ 655               		.loc 1 228 0
+ 656 000a 23E1      		ldi r18,lo8(19)
+ 657 000c 2983      		std Y+1,r18
+ 229:ip_mpu6050.c  ****   txbuf[2] = offset;
+ 658               		.loc 1 229 0
+ 659 000e 6B83      		std Y+3,r22
+ 230:ip_mpu6050.c  ****   txbuf[1] = offset >> 8;
+ 660               		.loc 1 230 0
+ 661 0010 7A83      		std Y+2,r23
+ 231:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+ 662               		.loc 1 231 0
+ 663 0012 23E0      		ldi r18,lo8(3)
+ 664 0014 AE01      		movw r20,r28
+ 665 0016 4F5F      		subi r20,-1
+ 666 0018 5F4F      		sbci r21,-1
+ 667 001a 68E6      		ldi r22,lo8(104)
+ 668               	.LVL37:
+ 669 001c 0E94 0000 		call i2cWriteRegisters
+ 670               	.LVL38:
+ 671               	/* epilogue start */
+ 232:ip_mpu6050.c  **** 
+ 233:ip_mpu6050.c  ****   return msg;
+ 234:ip_mpu6050.c  **** }
+ 672               		.loc 1 234 0
+ 673 0020 0F90      		pop __tmp_reg__
+ 674 0022 0F90      		pop __tmp_reg__
+ 675 0024 0F90      		pop __tmp_reg__
+ 676 0026 DF91      		pop r29
+ 677 0028 CF91      		pop r28
+ 678 002a 0895      		ret
+ 679               		.cfi_endproc
+ 680               	.LFE143:
+ 682               		.section	.text.mpu6050_getYGyroOffset,"ax",@progbits
+ 683               	.global	mpu6050_getYGyroOffset
+ 685               	mpu6050_getYGyroOffset:
+ 686               	.LFB144:
+ 235:ip_mpu6050.c  **** 
+ 236:ip_mpu6050.c  **** /**
+ 237:ip_mpu6050.c  ****  * @fn    mpu6050_getYGyroOffset
+ 238:ip_mpu6050.c  ****  * @brief Get the gyroscope Y axis offset.
+ 239:ip_mpu6050.c  ****  *
+ 240:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 241:ip_mpu6050.c  ****  * @param[in] gyop  Gyroscope Y axis offset pointer.
+ 242:ip_mpu6050.c  ****  * @return    msg   The result of the offset reading operation.
+ 243:ip_mpu6050.c  ****  */
+ 244:ip_mpu6050.c  **** msg_t mpu6050_getYGyroOffset(I2CDriver *i2cp, int16_t *gyop)
+ 245:ip_mpu6050.c  **** {
+ 687               		.loc 1 245 0
+ 688               		.cfi_startproc
+ 689               	.LVL39:
+ 690 0000 EF92      		push r14
+ 691               	.LCFI47:
+ 692               		.cfi_def_cfa_offset 4
+ 693               		.cfi_offset 14, -3
+ 694 0002 FF92      		push r15
+ 695               	.LCFI48:
+ 696               		.cfi_def_cfa_offset 5
+ 697               		.cfi_offset 15, -4
+ 698 0004 0F93      		push r16
+ 699               	.LCFI49:
+ 700               		.cfi_def_cfa_offset 6
+ 701               		.cfi_offset 16, -5
+ 702 0006 CF93      		push r28
+ 703               	.LCFI50:
+ 704               		.cfi_def_cfa_offset 7
+ 705               		.cfi_offset 28, -6
+ 706 0008 DF93      		push r29
+ 707               	.LCFI51:
+ 708               		.cfi_def_cfa_offset 8
+ 709               		.cfi_offset 29, -7
+ 710 000a 00D0      		rcall .
+ 711               	.LCFI52:
+ 712               		.cfi_def_cfa_offset 11
+ 713 000c CDB7      		in r28,__SP_L__
+ 714 000e DEB7      		in r29,__SP_H__
+ 715               	.LCFI53:
+ 716               		.cfi_def_cfa_register 28
+ 717               	/* prologue: function */
+ 718               	/* frame size = 3 */
+ 719               	/* stack size = 8 */
+ 720               	.L__stack_usage = 8
+ 721 0010 7B01      		movw r14,r22
+ 246:ip_mpu6050.c  ****   msg_t   msg;
+ 247:ip_mpu6050.c  ****   uint8_t txbuf;
+ 248:ip_mpu6050.c  ****   uint8_t rxbuf[2];
+ 249:ip_mpu6050.c  **** 
+ 250:ip_mpu6050.c  ****   txbuf = 0; // TODO: Set the correct register.
+ 722               		.loc 1 250 0
+ 723 0012 1B82      		std Y+3,__zero_reg__
+ 251:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
+ 724               		.loc 1 251 0
+ 725 0014 02E0      		ldi r16,lo8(2)
+ 726 0016 9E01      		movw r18,r28
+ 727 0018 2F5F      		subi r18,-1
+ 728 001a 3F4F      		sbci r19,-1
+ 729 001c AE01      		movw r20,r28
+ 730 001e 4D5F      		subi r20,-3
+ 731 0020 5F4F      		sbci r21,-1
+ 732 0022 68E6      		ldi r22,lo8(104)
+ 733               	.LVL40:
+ 734 0024 0E94 0000 		call i2cReadRegisters
+ 735               	.LVL41:
+ 252:ip_mpu6050.c  ****   *gyop =(int16_t) ((rxbuf[0] << 8) | rxbuf[1]);
+ 736               		.loc 1 252 0
+ 737 0028 2981      		ldd r18,Y+1
+ 738 002a 30E0      		ldi r19,0
+ 739 002c 322F      		mov r19,r18
+ 740 002e 2227      		clr r18
+ 741 0030 4A81      		ldd r20,Y+2
+ 742 0032 242B      		or r18,r20
+ 743 0034 F701      		movw r30,r14
+ 744 0036 3183      		std Z+1,r19
+ 745 0038 2083      		st Z,r18
+ 746               	/* epilogue start */
+ 253:ip_mpu6050.c  **** 
+ 254:ip_mpu6050.c  ****   return msg;
+ 255:ip_mpu6050.c  **** }
+ 747               		.loc 1 255 0
+ 748 003a 0F90      		pop __tmp_reg__
+ 749 003c 0F90      		pop __tmp_reg__
+ 750 003e 0F90      		pop __tmp_reg__
+ 751 0040 DF91      		pop r29
+ 752 0042 CF91      		pop r28
+ 753 0044 0F91      		pop r16
+ 754 0046 FF90      		pop r15
+ 755 0048 EF90      		pop r14
+ 756               	.LVL42:
+ 757 004a 0895      		ret
+ 758               		.cfi_endproc
+ 759               	.LFE144:
+ 761               		.section	.text.mpu6050_setYGyroOffset,"ax",@progbits
+ 762               	.global	mpu6050_setYGyroOffset
+ 764               	mpu6050_setYGyroOffset:
+ 765               	.LFB145:
+ 256:ip_mpu6050.c  **** 
+ 257:ip_mpu6050.c  **** /**
+ 258:ip_mpu6050.c  ****  * @fn    mpu6050_setYGyroOffset
+ 259:ip_mpu6050.c  ****  * @brief Set the gyroscope Y axis offset.
+ 260:ip_mpu6050.c  ****  *
+ 261:ip_mpu6050.c  ****  * @param[in] i2cp    The pointer of the i2C interface.
+ 262:ip_mpu6050.c  ****  * @param[in] offset  Gyroscope Y axis offset.
+ 263:ip_mpu6050.c  ****  * @return    msg     The result of the writing operation.
+ 264:ip_mpu6050.c  ****  */
+ 265:ip_mpu6050.c  **** msg_t mpu6050_setYGyroOffset(I2CDriver *i2cp, int16_t offset)
+ 266:ip_mpu6050.c  **** {
+ 766               		.loc 1 266 0
+ 767               		.cfi_startproc
+ 768               	.LVL43:
+ 769 0000 CF93      		push r28
+ 770               	.LCFI54:
+ 771               		.cfi_def_cfa_offset 4
+ 772               		.cfi_offset 28, -3
+ 773 0002 DF93      		push r29
+ 774               	.LCFI55:
+ 775               		.cfi_def_cfa_offset 5
+ 776               		.cfi_offset 29, -4
+ 777 0004 00D0      		rcall .
+ 778               	.LCFI56:
+ 779               		.cfi_def_cfa_offset 8
+ 780 0006 CDB7      		in r28,__SP_L__
+ 781 0008 DEB7      		in r29,__SP_H__
+ 782               	.LCFI57:
+ 783               		.cfi_def_cfa_register 28
+ 784               	/* prologue: function */
+ 785               	/* frame size = 3 */
+ 786               	/* stack size = 5 */
+ 787               	.L__stack_usage = 5
+ 267:ip_mpu6050.c  ****   uint8_t txbuf[3];
+ 268:ip_mpu6050.c  ****   msg_t   msg;
+ 269:ip_mpu6050.c  **** 
+ 270:ip_mpu6050.c  ****   txbuf[0] = MPU6050_Y_GYRO_OFFSET_USRH;
+ 788               		.loc 1 270 0
+ 789 000a 25E1      		ldi r18,lo8(21)
+ 790 000c 2983      		std Y+1,r18
+ 271:ip_mpu6050.c  ****   txbuf[2] = offset;
+ 791               		.loc 1 271 0
+ 792 000e 6B83      		std Y+3,r22
+ 272:ip_mpu6050.c  ****   txbuf[1] = offset >> 8;
+ 793               		.loc 1 272 0
+ 794 0010 7A83      		std Y+2,r23
+ 273:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+ 795               		.loc 1 273 0
+ 796 0012 23E0      		ldi r18,lo8(3)
+ 797 0014 AE01      		movw r20,r28
+ 798 0016 4F5F      		subi r20,-1
+ 799 0018 5F4F      		sbci r21,-1
+ 800 001a 68E6      		ldi r22,lo8(104)
+ 801               	.LVL44:
+ 802 001c 0E94 0000 		call i2cWriteRegisters
+ 803               	.LVL45:
+ 804               	/* epilogue start */
+ 274:ip_mpu6050.c  **** 
+ 275:ip_mpu6050.c  ****   return msg;
+ 276:ip_mpu6050.c  **** }
+ 805               		.loc 1 276 0
+ 806 0020 0F90      		pop __tmp_reg__
+ 807 0022 0F90      		pop __tmp_reg__
+ 808 0024 0F90      		pop __tmp_reg__
+ 809 0026 DF91      		pop r29
+ 810 0028 CF91      		pop r28
+ 811 002a 0895      		ret
+ 812               		.cfi_endproc
+ 813               	.LFE145:
+ 815               		.section	.text.mpu6050_getZGyroOffset,"ax",@progbits
+ 816               	.global	mpu6050_getZGyroOffset
+ 818               	mpu6050_getZGyroOffset:
+ 819               	.LFB146:
+ 277:ip_mpu6050.c  **** 
+ 278:ip_mpu6050.c  **** /**
+ 279:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_getZGyroOffset(I2CDriver *i2cp, int16_t *gzop)
+ 280:ip_mpu6050.c  ****  * @brief Get the gyroscope Z axis offset.
+ 281:ip_mpu6050.c  ****  *
+ 282:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 283:ip_mpu6050.c  ****  * @param[in] gzop  Gyroscope Z axis offset pointer.
+ 284:ip_mpu6050.c  ****  * @return    msg   The result of the reading operation.
+ 285:ip_mpu6050.c  ****  */
+ 286:ip_mpu6050.c  **** msg_t mpu6050_getZGyroOffset(I2CDriver *i2cp, int16_t *gzop){
+ 820               		.loc 1 286 0
+ 821               		.cfi_startproc
+ 822               	.LVL46:
+ 823 0000 EF92      		push r14
+ 824               	.LCFI58:
+ 825               		.cfi_def_cfa_offset 4
+ 826               		.cfi_offset 14, -3
+ 827 0002 FF92      		push r15
+ 828               	.LCFI59:
+ 829               		.cfi_def_cfa_offset 5
+ 830               		.cfi_offset 15, -4
+ 831 0004 0F93      		push r16
+ 832               	.LCFI60:
+ 833               		.cfi_def_cfa_offset 6
+ 834               		.cfi_offset 16, -5
+ 835 0006 CF93      		push r28
+ 836               	.LCFI61:
+ 837               		.cfi_def_cfa_offset 7
+ 838               		.cfi_offset 28, -6
+ 839 0008 DF93      		push r29
+ 840               	.LCFI62:
+ 841               		.cfi_def_cfa_offset 8
+ 842               		.cfi_offset 29, -7
+ 843 000a 00D0      		rcall .
+ 844               	.LCFI63:
+ 845               		.cfi_def_cfa_offset 11
+ 846 000c CDB7      		in r28,__SP_L__
+ 847 000e DEB7      		in r29,__SP_H__
+ 848               	.LCFI64:
+ 849               		.cfi_def_cfa_register 28
+ 850               	/* prologue: function */
+ 851               	/* frame size = 3 */
+ 852               	/* stack size = 8 */
+ 853               	.L__stack_usage = 8
+ 854 0010 7B01      		movw r14,r22
+ 287:ip_mpu6050.c  **** 
+ 288:ip_mpu6050.c  ****   msg_t   msg;
+ 289:ip_mpu6050.c  ****   uint8_t txbuf;
+ 290:ip_mpu6050.c  ****   uint8_t rxbuf[2];
+ 291:ip_mpu6050.c  **** 
+ 292:ip_mpu6050.c  ****   txbuf = 0; // TODO: Set the correct register.
+ 855               		.loc 1 292 0
+ 856 0012 1B82      		std Y+3,__zero_reg__
+ 293:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
+ 857               		.loc 1 293 0
+ 858 0014 02E0      		ldi r16,lo8(2)
+ 859 0016 9E01      		movw r18,r28
+ 860 0018 2F5F      		subi r18,-1
+ 861 001a 3F4F      		sbci r19,-1
+ 862 001c AE01      		movw r20,r28
+ 863 001e 4D5F      		subi r20,-3
+ 864 0020 5F4F      		sbci r21,-1
+ 865 0022 68E6      		ldi r22,lo8(104)
+ 866               	.LVL47:
+ 867 0024 0E94 0000 		call i2cReadRegisters
+ 868               	.LVL48:
+ 294:ip_mpu6050.c  **** 
+ 295:ip_mpu6050.c  ****   *gzop =(int16_t) ((rxbuf[0] << 8) | rxbuf[1]);
+ 869               		.loc 1 295 0
+ 870 0028 2981      		ldd r18,Y+1
+ 871 002a 30E0      		ldi r19,0
+ 872 002c 322F      		mov r19,r18
+ 873 002e 2227      		clr r18
+ 874 0030 4A81      		ldd r20,Y+2
+ 875 0032 242B      		or r18,r20
+ 876 0034 F701      		movw r30,r14
+ 877 0036 3183      		std Z+1,r19
+ 878 0038 2083      		st Z,r18
+ 879               	/* epilogue start */
+ 296:ip_mpu6050.c  **** 
+ 297:ip_mpu6050.c  ****   return msg;
+ 298:ip_mpu6050.c  **** }
+ 880               		.loc 1 298 0
+ 881 003a 0F90      		pop __tmp_reg__
+ 882 003c 0F90      		pop __tmp_reg__
+ 883 003e 0F90      		pop __tmp_reg__
+ 884 0040 DF91      		pop r29
+ 885 0042 CF91      		pop r28
+ 886 0044 0F91      		pop r16
+ 887 0046 FF90      		pop r15
+ 888 0048 EF90      		pop r14
+ 889               	.LVL49:
+ 890 004a 0895      		ret
+ 891               		.cfi_endproc
+ 892               	.LFE146:
+ 894               		.section	.text.mpu6050_setZGyroOffset,"ax",@progbits
+ 895               	.global	mpu6050_setZGyroOffset
+ 897               	mpu6050_setZGyroOffset:
+ 898               	.LFB147:
+ 299:ip_mpu6050.c  **** 
+ 300:ip_mpu6050.c  **** /**
+ 301:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_setZGyroOffset(I2CDriver *i2cp, int16_t offset)
+ 302:ip_mpu6050.c  ****  * @brief Set the gyroscope Z axis offset.
+ 303:ip_mpu6050.c  ****  *
+ 304:ip_mpu6050.c  ****  * @param[in] i2cp    The Pointer of the i2C interface.
+ 305:ip_mpu6050.c  ****  * @param[in] offset  Gyroscope Z axis offset.
+ 306:ip_mpu6050.c  ****  * @return    msg     The result of the writing operation.
+ 307:ip_mpu6050.c  ****  */
+ 308:ip_mpu6050.c  **** msg_t mpu6050_setZGyroOffset(I2CDriver *i2cp, int16_t offset){
+ 899               		.loc 1 308 0
+ 900               		.cfi_startproc
+ 901               	.LVL50:
+ 902 0000 CF93      		push r28
+ 903               	.LCFI65:
+ 904               		.cfi_def_cfa_offset 4
+ 905               		.cfi_offset 28, -3
+ 906 0002 DF93      		push r29
+ 907               	.LCFI66:
+ 908               		.cfi_def_cfa_offset 5
+ 909               		.cfi_offset 29, -4
+ 910 0004 00D0      		rcall .
+ 911               	.LCFI67:
+ 912               		.cfi_def_cfa_offset 8
+ 913 0006 CDB7      		in r28,__SP_L__
+ 914 0008 DEB7      		in r29,__SP_H__
+ 915               	.LCFI68:
+ 916               		.cfi_def_cfa_register 28
+ 917               	/* prologue: function */
+ 918               	/* frame size = 3 */
+ 919               	/* stack size = 5 */
+ 920               	.L__stack_usage = 5
+ 309:ip_mpu6050.c  ****   uint8_t txbuf[3];
+ 310:ip_mpu6050.c  ****   msg_t   msg;
+ 311:ip_mpu6050.c  **** 
+ 312:ip_mpu6050.c  ****   txbuf[0] = MPU6050_Z_GYRO_OFFSET_USRH;
+ 921               		.loc 1 312 0
+ 922 000a 27E1      		ldi r18,lo8(23)
+ 923 000c 2983      		std Y+1,r18
+ 313:ip_mpu6050.c  ****   txbuf[2] = offset;
+ 924               		.loc 1 313 0
+ 925 000e 6B83      		std Y+3,r22
+ 314:ip_mpu6050.c  ****   txbuf[1] = offset >> 8;
+ 926               		.loc 1 314 0
+ 927 0010 7A83      		std Y+2,r23
+ 315:ip_mpu6050.c  **** 
+ 316:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+ 928               		.loc 1 316 0
+ 929 0012 23E0      		ldi r18,lo8(3)
+ 930 0014 AE01      		movw r20,r28
+ 931 0016 4F5F      		subi r20,-1
+ 932 0018 5F4F      		sbci r21,-1
+ 933 001a 68E6      		ldi r22,lo8(104)
+ 934               	.LVL51:
+ 935 001c 0E94 0000 		call i2cWriteRegisters
+ 936               	.LVL52:
+ 937               	/* epilogue start */
+ 317:ip_mpu6050.c  **** 
+ 318:ip_mpu6050.c  ****   return msg;
+ 319:ip_mpu6050.c  **** }
+ 938               		.loc 1 319 0
+ 939 0020 0F90      		pop __tmp_reg__
+ 940 0022 0F90      		pop __tmp_reg__
+ 941 0024 0F90      		pop __tmp_reg__
+ 942 0026 DF91      		pop r29
+ 943 0028 CF91      		pop r28
+ 944 002a 0895      		ret
+ 945               		.cfi_endproc
+ 946               	.LFE147:
+ 948               		.section	.text.mpu6050_setZAccelOffset,"ax",@progbits
+ 949               	.global	mpu6050_setZAccelOffset
+ 951               	mpu6050_setZAccelOffset:
+ 952               	.LFB148:
+ 320:ip_mpu6050.c  **** 
+ 321:ip_mpu6050.c  **** /**
+ 322:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_setZAccelOffset(I2CDriver *i2cp, uint16_t offset)
+ 323:ip_mpu6050.c  ****  * @brief Set accelerometer Z axis offset.
+ 324:ip_mpu6050.c  ****  *
+ 325:ip_mpu6050.c  ****  * @param[in] i2cp    The pointer of the i2C interface.
+ 326:ip_mpu6050.c  ****  * @param[in] offset  Accelerometer Z axis offset.
+ 327:ip_mpu6050.c  ****  * @return    msg     The result of the writing operation.
+ 328:ip_mpu6050.c  ****  */
+ 329:ip_mpu6050.c  **** msg_t mpu6050_setZAccelOffset(I2CDriver *i2cp, int16_t offset){
+ 953               		.loc 1 329 0
+ 954               		.cfi_startproc
+ 955               	.LVL53:
+ 956 0000 CF93      		push r28
+ 957               	.LCFI69:
+ 958               		.cfi_def_cfa_offset 4
+ 959               		.cfi_offset 28, -3
+ 960 0002 DF93      		push r29
+ 961               	.LCFI70:
+ 962               		.cfi_def_cfa_offset 5
+ 963               		.cfi_offset 29, -4
+ 964 0004 00D0      		rcall .
+ 965               	.LCFI71:
+ 966               		.cfi_def_cfa_offset 8
+ 967 0006 CDB7      		in r28,__SP_L__
+ 968 0008 DEB7      		in r29,__SP_H__
+ 969               	.LCFI72:
+ 970               		.cfi_def_cfa_register 28
+ 971               	/* prologue: function */
+ 972               	/* frame size = 3 */
+ 973               	/* stack size = 5 */
+ 974               	.L__stack_usage = 5
+ 330:ip_mpu6050.c  ****   uint8_t txbuf[3];
+ 331:ip_mpu6050.c  ****   msg_t   msg;
+ 332:ip_mpu6050.c  **** 
+ 333:ip_mpu6050.c  ****   txbuf[0] = MPU6050_Z_ACCEL_OFFSET_H;
+ 975               		.loc 1 333 0
+ 976 000a 2AE0      		ldi r18,lo8(10)
+ 977 000c 2983      		std Y+1,r18
+ 334:ip_mpu6050.c  ****   txbuf[2] = offset;
+ 978               		.loc 1 334 0
+ 979 000e 6B83      		std Y+3,r22
+ 335:ip_mpu6050.c  ****   txbuf[1] = offset >> 8;
+ 980               		.loc 1 335 0
+ 981 0010 7A83      		std Y+2,r23
+ 336:ip_mpu6050.c  **** 
+ 337:ip_mpu6050.c  ****   msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+ 982               		.loc 1 337 0
+ 983 0012 23E0      		ldi r18,lo8(3)
+ 984 0014 AE01      		movw r20,r28
+ 985 0016 4F5F      		subi r20,-1
+ 986 0018 5F4F      		sbci r21,-1
+ 987 001a 68E6      		ldi r22,lo8(104)
+ 988               	.LVL54:
+ 989 001c 0E94 0000 		call i2cWriteRegisters
+ 990               	.LVL55:
+ 991               	/* epilogue start */
+ 338:ip_mpu6050.c  **** 
+ 339:ip_mpu6050.c  ****   return msg;
+ 340:ip_mpu6050.c  **** }
+ 992               		.loc 1 340 0
+ 993 0020 0F90      		pop __tmp_reg__
+ 994 0022 0F90      		pop __tmp_reg__
+ 995 0024 0F90      		pop __tmp_reg__
+ 996 0026 DF91      		pop r29
+ 997 0028 CF91      		pop r28
+ 998 002a 0895      		ret
+ 999               		.cfi_endproc
+ 1000               	.LFE148:
+ 1002               		.section	.text.mpu6050_read,"ax",@progbits
+ 1003               	.global	mpu6050_read
+ 1005               	mpu6050_read:
+ 1006               	.LFB149:
+ 341:ip_mpu6050.c  **** 
+ 342:ip_mpu6050.c  **** /**
+ 343:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp)
+ 344:ip_mpu6050.c  ****  * @brief Configure the accelerometer full scale.
+ 345:ip_mpu6050.c  ****  *
+ 346:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 347:ip_mpu6050.c  ****  * @param[in] pmp   The pointer to the power management configuration.
+ 348:ip_mpu6050.c  ****  * @return    msg   The result of the reading  operation.
+ 349:ip_mpu6050.c  ****  */
+ 350:ip_mpu6050.c  **** msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp){
+ 1007               		.loc 1 350 0
+ 1008               		.cfi_startproc
+ 1009               	.LVL56:
+ 1010 0000 EF92      		push r14
+ 1011               	.LCFI73:
+ 1012               		.cfi_def_cfa_offset 4
+ 1013               		.cfi_offset 14, -3
+ 1014 0002 FF92      		push r15
+ 1015               	.LCFI74:
+ 1016               		.cfi_def_cfa_offset 5
+ 1017               		.cfi_offset 15, -4
+ 1018 0004 0F93      		push r16
+ 1019               	.LCFI75:
+ 1020               		.cfi_def_cfa_offset 6
+ 1021               		.cfi_offset 16, -5
+ 1022 0006 CF93      		push r28
+ 1023               	.LCFI76:
+ 1024               		.cfi_def_cfa_offset 7
+ 1025               		.cfi_offset 28, -6
+ 1026 0008 DF93      		push r29
+ 1027               	.LCFI77:
+ 1028               		.cfi_def_cfa_offset 8
+ 1029               		.cfi_offset 29, -7
+ 1030 000a 1F92      		push __zero_reg__
+ 1031 000c 1F92      		push __zero_reg__
+ 1032               	.LCFI78:
+ 1033               		.cfi_def_cfa_offset 10
+ 1034 000e CDB7      		in r28,__SP_L__
+ 1035 0010 DEB7      		in r29,__SP_H__
+ 1036               	.LCFI79:
+ 1037               		.cfi_def_cfa_register 28
+ 1038               	/* prologue: function */
+ 1039               	/* frame size = 2 */
+ 1040               	/* stack size = 7 */
+ 1041               	.L__stack_usage = 7
+ 1042 0012 7B01      		movw r14,r22
+ 351:ip_mpu6050.c  ****   uint8_t config;
+ 352:ip_mpu6050.c  ****   uint8_t txbuf;
+ 353:ip_mpu6050.c  ****   msg_t   msg;
+ 354:ip_mpu6050.c  ****   
+ 355:ip_mpu6050.c  ****   txbuf = MPU6050_PWR_MGMT_1;
+ 1043               		.loc 1 355 0
+ 1044 0014 2BE6      		ldi r18,lo8(107)
+ 1045 0016 2983      		std Y+1,r18
+ 356:ip_mpu6050.c  **** 
+ 357:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, &config, 1);
+ 1046               		.loc 1 357 0
+ 1047 0018 01E0      		ldi r16,lo8(1)
+ 1048 001a 9E01      		movw r18,r28
+ 1049 001c 2E5F      		subi r18,-2
+ 1050 001e 3F4F      		sbci r19,-1
+ 1051 0020 AE01      		movw r20,r28
+ 1052 0022 4F5F      		subi r20,-1
+ 1053 0024 5F4F      		sbci r21,-1
+ 1054 0026 68E6      		ldi r22,lo8(104)
+ 1055               	.LVL57:
+ 1056 0028 0E94 0000 		call i2cReadRegisters
+ 1057               	.LVL58:
+ 358:ip_mpu6050.c  ****   
+ 359:ip_mpu6050.c  ****   if(msg != MSG_OK)
+ 1058               		.loc 1 359 0
+ 1059 002c 0097      		sbiw r24,0
+ 1060 002e 01F4      		brne .L39
+ 360:ip_mpu6050.c  ****     return msg;
+ 361:ip_mpu6050.c  ****   *pmp = config;
+ 1061               		.loc 1 361 0
+ 1062 0030 2A81      		ldd r18,Y+2
+ 1063 0032 F701      		movw r30,r14
+ 1064 0034 2083      		st Z,r18
+ 1065               	.L39:
+ 1066               	/* epilogue start */
+ 362:ip_mpu6050.c  ****   return msg;
+ 363:ip_mpu6050.c  **** }
+ 1067               		.loc 1 363 0
+ 1068 0036 0F90      		pop __tmp_reg__
+ 1069 0038 0F90      		pop __tmp_reg__
+ 1070 003a DF91      		pop r29
+ 1071 003c CF91      		pop r28
+ 1072 003e 0F91      		pop r16
+ 1073 0040 FF90      		pop r15
+ 1074 0042 EF90      		pop r14
+ 1075               	.LVL59:
+ 1076 0044 0895      		ret
+ 1077               		.cfi_endproc
+ 1078               	.LFE149:
+ 1080               		.section	.text.mpu6050_readAllSensors,"ax",@progbits
+ 1081               	.global	mpu6050_readAllSensors
+ 1083               	mpu6050_readAllSensors:
+ 1084               	.LFB150:
+ 364:ip_mpu6050.c  **** 
+ 365:ip_mpu6050.c  **** /**
+ 366:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf)
+ 367:ip_mpu6050.c  ****  * @brief Read all axis of data and also the temperature.
+ 368:ip_mpu6050.c  ****  *
+ 369:ip_mpu6050.c  ****  * @param[in] i2cp  The Pointer of the i2C interface.
+ 370:ip_mpu6050.c  ****  * @param[in] rxbuf The reception buffer for the i2c data readed.
+ 371:ip_mpu6050.c  ****  * @return    msg   The result of the reading operation.
+ 372:ip_mpu6050.c  ****  */
+ 373:ip_mpu6050.c  **** msg_t mpu6050_readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf){
+ 1085               		.loc 1 373 0
+ 1086               		.cfi_startproc
+ 1087               	.LVL60:
+ 1088 0000 0F93      		push r16
+ 1089               	.LCFI80:
+ 1090               		.cfi_def_cfa_offset 4
+ 1091               		.cfi_offset 16, -3
+ 1092 0002 CF93      		push r28
+ 1093               	.LCFI81:
+ 1094               		.cfi_def_cfa_offset 5
+ 1095               		.cfi_offset 28, -4
+ 1096 0004 DF93      		push r29
+ 1097               	.LCFI82:
+ 1098               		.cfi_def_cfa_offset 6
+ 1099               		.cfi_offset 29, -5
+ 1100 0006 1F92      		push __zero_reg__
+ 1101               	.LCFI83:
+ 1102               		.cfi_def_cfa_offset 7
+ 1103 0008 CDB7      		in r28,__SP_L__
+ 1104 000a DEB7      		in r29,__SP_H__
+ 1105               	.LCFI84:
+ 1106               		.cfi_def_cfa_register 28
+ 1107               	/* prologue: function */
+ 1108               	/* frame size = 1 */
+ 1109               	/* stack size = 4 */
+ 1110               	.L__stack_usage = 4
+ 1111 000c 9B01      		movw r18,r22
+ 374:ip_mpu6050.c  ****   uint8_t txbuf;
+ 375:ip_mpu6050.c  ****   msg_t   msg;
+ 376:ip_mpu6050.c  ****   
+ 377:ip_mpu6050.c  ****   txbuf = MPU6050_ACCEL_XOUT_H;
+ 1112               		.loc 1 377 0
+ 1113 000e 4BE3      		ldi r20,lo8(59)
+ 1114 0010 4983      		std Y+1,r20
+ 378:ip_mpu6050.c  **** 
+ 379:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 14);
+ 1115               		.loc 1 379 0
+ 1116 0012 0EE0      		ldi r16,lo8(14)
+ 1117 0014 AE01      		movw r20,r28
+ 1118 0016 4F5F      		subi r20,-1
+ 1119 0018 5F4F      		sbci r21,-1
+ 1120 001a 68E6      		ldi r22,lo8(104)
+ 1121               	.LVL61:
+ 1122 001c 0E94 0000 		call i2cReadRegisters
+ 1123               	.LVL62:
+ 1124               	/* epilogue start */
+ 380:ip_mpu6050.c  ****   
+ 381:ip_mpu6050.c  ****   return msg;
+ 382:ip_mpu6050.c  **** }
+ 1125               		.loc 1 382 0
+ 1126 0020 0F90      		pop __tmp_reg__
+ 1127 0022 DF91      		pop r29
+ 1128 0024 CF91      		pop r28
+ 1129 0026 0F91      		pop r16
+ 1130 0028 0895      		ret
+ 1131               		.cfi_endproc
+ 1132               	.LFE150:
+ 1134               	.global	__floatsisf
+ 1135               	.global	__addsf3
+ 1136               		.section	.text.mpu6050_getData,"ax",@progbits
+ 1137               	.global	mpu6050_getData
+ 1139               	mpu6050_getData:
+ 1140               	.LFB151:
+ 383:ip_mpu6050.c  **** 
+ 384:ip_mpu6050.c  **** /**
+ 385:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_getData(I2CDriver *i2cp, mpu6050_t *mpup)
+ 386:ip_mpu6050.c  ****  * @brief Read data from the IMU sensors.
+ 387:ip_mpu6050.c  ****  *
+ 388:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 389:ip_mpu6050.c  ****  * @param[in] mpup  The pointer of the mpu6050 data structure.
+ 390:ip_mpu6050.c  ****  * @return    msg   The result of the reading operation.
+ 391:ip_mpu6050.c  ****  */
+ 392:ip_mpu6050.c  **** msg_t mpu6050_getData(I2CDriver *i2cp, mpu6050_t *mpup){
+ 1141               		.loc 1 392 0
+ 1142               		.cfi_startproc
+ 1143               	.LVL63:
+ 1144 0000 2F92      		push r2
+ 1145               	.LCFI85:
+ 1146               		.cfi_def_cfa_offset 4
+ 1147               		.cfi_offset 2, -3
+ 1148 0002 3F92      		push r3
+ 1149               	.LCFI86:
+ 1150               		.cfi_def_cfa_offset 5
+ 1151               		.cfi_offset 3, -4
+ 1152 0004 4F92      		push r4
+ 1153               	.LCFI87:
+ 1154               		.cfi_def_cfa_offset 6
+ 1155               		.cfi_offset 4, -5
+ 1156 0006 5F92      		push r5
+ 1157               	.LCFI88:
+ 1158               		.cfi_def_cfa_offset 7
+ 1159               		.cfi_offset 5, -6
+ 1160 0008 6F92      		push r6
+ 1161               	.LCFI89:
+ 1162               		.cfi_def_cfa_offset 8
+ 1163               		.cfi_offset 6, -7
+ 1164 000a 7F92      		push r7
+ 1165               	.LCFI90:
+ 1166               		.cfi_def_cfa_offset 9
+ 1167               		.cfi_offset 7, -8
+ 1168 000c 8F92      		push r8
+ 1169               	.LCFI91:
+ 1170               		.cfi_def_cfa_offset 10
+ 1171               		.cfi_offset 8, -9
+ 1172 000e 9F92      		push r9
+ 1173               	.LCFI92:
+ 1174               		.cfi_def_cfa_offset 11
+ 1175               		.cfi_offset 9, -10
+ 1176 0010 AF92      		push r10
+ 1177               	.LCFI93:
+ 1178               		.cfi_def_cfa_offset 12
+ 1179               		.cfi_offset 10, -11
+ 1180 0012 BF92      		push r11
+ 1181               	.LCFI94:
+ 1182               		.cfi_def_cfa_offset 13
+ 1183               		.cfi_offset 11, -12
+ 1184 0014 CF92      		push r12
+ 1185               	.LCFI95:
+ 1186               		.cfi_def_cfa_offset 14
+ 1187               		.cfi_offset 12, -13
+ 1188 0016 DF92      		push r13
+ 1189               	.LCFI96:
+ 1190               		.cfi_def_cfa_offset 15
+ 1191               		.cfi_offset 13, -14
+ 1192 0018 EF92      		push r14
+ 1193               	.LCFI97:
+ 1194               		.cfi_def_cfa_offset 16
+ 1195               		.cfi_offset 14, -15
+ 1196 001a FF92      		push r15
+ 1197               	.LCFI98:
+ 1198               		.cfi_def_cfa_offset 17
+ 1199               		.cfi_offset 15, -16
+ 1200 001c 0F93      		push r16
+ 1201               	.LCFI99:
+ 1202               		.cfi_def_cfa_offset 18
+ 1203               		.cfi_offset 16, -17
+ 1204 001e 1F93      		push r17
+ 1205               	.LCFI100:
+ 1206               		.cfi_def_cfa_offset 19
+ 1207               		.cfi_offset 17, -18
+ 1208 0020 CF93      		push r28
+ 1209               	.LCFI101:
+ 1210               		.cfi_def_cfa_offset 20
+ 1211               		.cfi_offset 28, -19
+ 1212 0022 DF93      		push r29
+ 1213               	.LCFI102:
+ 1214               		.cfi_def_cfa_offset 21
+ 1215               		.cfi_offset 29, -20
+ 1216 0024 CDB7      		in r28,__SP_L__
+ 1217 0026 DEB7      		in r29,__SP_H__
+ 1218               	.LCFI103:
+ 1219               		.cfi_def_cfa_register 28
+ 1220 0028 2F97      		sbiw r28,15
+ 1221               	.LCFI104:
+ 1222               		.cfi_def_cfa_offset 36
+ 1223 002a 0FB6      		in __tmp_reg__,__SREG__
+ 1224 002c F894      		cli
+ 1225 002e DEBF      		out __SP_H__,r29
+ 1226 0030 0FBE      		out __SREG__,__tmp_reg__
+ 1227 0032 CDBF      		out __SP_L__,r28
+ 1228               	/* prologue: function */
+ 1229               	/* frame size = 15 */
+ 1230               	/* stack size = 33 */
+ 1231               	.L__stack_usage = 33
+ 1232 0034 7B01      		movw r14,r22
+ 1233               	.LVL64:
+ 1234               	.LBB4:
+ 1235               	.LBB5:
+ 377:ip_mpu6050.c  ****   txbuf = MPU6050_ACCEL_XOUT_H;
+ 1236               		.loc 1 377 0
+ 1237 0036 2BE3      		ldi r18,lo8(59)
+ 1238 0038 2F87      		std Y+15,r18
+ 379:ip_mpu6050.c  ****   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 14);
+ 1239               		.loc 1 379 0
+ 1240 003a 0EE0      		ldi r16,lo8(14)
+ 1241 003c 9E01      		movw r18,r28
+ 1242 003e 2F5F      		subi r18,-1
+ 1243 0040 3F4F      		sbci r19,-1
+ 1244 0042 AE01      		movw r20,r28
+ 1245 0044 415F      		subi r20,-15
+ 1246 0046 5F4F      		sbci r21,-1
+ 1247 0048 68E6      		ldi r22,lo8(104)
+ 1248               	.LVL65:
+ 1249 004a 0E94 0000 		call i2cReadRegisters
+ 1250               	.LVL66:
+ 1251               	.LBE5:
+ 1252               	.LBE4:
+ 393:ip_mpu6050.c  ****   uint8_t mpuData[14];
+ 394:ip_mpu6050.c  ****   int16_t temp;
+ 395:ip_mpu6050.c  ****   int16_t x_accel = 0;
+ 396:ip_mpu6050.c  ****   int16_t y_accel = 0;
+ 397:ip_mpu6050.c  ****   int16_t z_accel = 0;
+ 398:ip_mpu6050.c  ****   int16_t x_gyro = 0;
+ 399:ip_mpu6050.c  ****   int16_t y_gyro = 0;
+ 400:ip_mpu6050.c  ****   int16_t z_gyro = 0;
+ 401:ip_mpu6050.c  ****   msg_t msg;
+ 402:ip_mpu6050.c  **** 
+ 403:ip_mpu6050.c  ****   msg = mpu6050_readAllSensors(i2cp, mpuData);
+ 404:ip_mpu6050.c  **** 
+ 405:ip_mpu6050.c  ****   if(msg != MSG_OK)
+ 1253               		.loc 1 405 0
+ 1254 004e 892B      		or r24,r25
+ 1255 0050 01F0      		breq .+2
+ 1256 0052 00C0      		rjmp .L43
+ 406:ip_mpu6050.c  ****     return MSG_RESET;
+ 407:ip_mpu6050.c  ****   else{
+ 408:ip_mpu6050.c  ****     x_accel |= (((int16_t)mpuData[0]) << 8) | mpuData[1];
+ 1257               		.loc 1 408 0
+ 1258 0054 8980      		ldd r8,Y+1
+ 1259 0056 912C      		mov r9,__zero_reg__
+ 1260 0058 982C      		mov r9,r8
+ 1261 005a 8824      		clr r8
+ 1262 005c 8A81      		ldd r24,Y+2
+ 1263               	.LVL67:
+ 1264 005e 882A      		or r8,r24
+ 1265               	.LVL68:
+ 409:ip_mpu6050.c  ****     y_accel |= (((int16_t)mpuData[2]) << 8) | mpuData[3];
+ 1266               		.loc 1 409 0
+ 1267 0060 AB80      		ldd r10,Y+3
+ 1268 0062 B12C      		mov r11,__zero_reg__
+ 1269 0064 BA2C      		mov r11,r10
+ 1270 0066 AA24      		clr r10
+ 1271 0068 8C81      		ldd r24,Y+4
+ 1272 006a A82A      		or r10,r24
+ 1273               	.LVL69:
+ 410:ip_mpu6050.c  ****     z_accel |= (((int16_t)mpuData[4]) << 8) | mpuData[5];
+ 1274               		.loc 1 410 0
+ 1275 006c CD80      		ldd r12,Y+5
+ 1276 006e D12C      		mov r13,__zero_reg__
+ 1277 0070 DC2C      		mov r13,r12
+ 1278 0072 CC24      		clr r12
+ 1279 0074 8E81      		ldd r24,Y+6
+ 1280 0076 C82A      		or r12,r24
+ 1281               	.LVL70:
+ 411:ip_mpu6050.c  ****     
+ 412:ip_mpu6050.c  ****     temp |= (((int16_t)mpuData[6]) << 8)   | mpuData[7];
+ 413:ip_mpu6050.c  **** 
+ 414:ip_mpu6050.c  ****     x_gyro |= (((int16_t)mpuData[8]) << 8)  | mpuData[9];
+ 1282               		.loc 1 414 0
+ 1283 0078 0985      		ldd r16,Y+9
+ 1284 007a 10E0      		ldi r17,0
+ 1285 007c 102F      		mov r17,r16
+ 1286 007e 0027      		clr r16
+ 1287 0080 8A85      		ldd r24,Y+10
+ 1288 0082 082B      		or r16,r24
+ 1289               	.LVL71:
+ 415:ip_mpu6050.c  ****     y_gyro |= (((int16_t)mpuData[10]) << 8) | mpuData[11];
+ 1290               		.loc 1 415 0
+ 1291 0084 6B84      		ldd r6,Y+11
+ 1292 0086 712C      		mov r7,__zero_reg__
+ 1293 0088 762C      		mov r7,r6
+ 1294 008a 6624      		clr r6
+ 1295 008c 8C85      		ldd r24,Y+12
+ 1296 008e 682A      		or r6,r24
+ 1297               	.LVL72:
+ 416:ip_mpu6050.c  ****     z_gyro |= (((int16_t)mpuData[12]) << 8) | mpuData[13];
+ 1298               		.loc 1 416 0
+ 1299 0090 4D84      		ldd r4,Y+13
+ 1300 0092 512C      		mov r5,__zero_reg__
+ 1301 0094 542C      		mov r5,r4
+ 1302 0096 4424      		clr r4
+ 1303 0098 8E85      		ldd r24,Y+14
+ 1304 009a 482A      		or r4,r24
+ 1305               	.LVL73:
+ 417:ip_mpu6050.c  **** 
+ 418:ip_mpu6050.c  ****     mpup->temp = (float)(temp/340)+36.53;
+ 1306               		.loc 1 418 0
+ 1307 009c 1701      		movw r2,r14
+ 1308 009e 85E5      		ldi r24,85
+ 1309 00a0 280E      		add r2,r24
+ 1310 00a2 311C      		adc r3,__zero_reg__
+ 412:ip_mpu6050.c  ****     temp |= (((int16_t)mpuData[6]) << 8)   | mpuData[7];
+ 1311               		.loc 1 412 0
+ 1312 00a4 8F81      		ldd r24,Y+7
+ 1313 00a6 90E0      		ldi r25,0
+ 1314 00a8 982F      		mov r25,r24
+ 1315 00aa 8827      		clr r24
+ 1316 00ac 2885      		ldd r18,Y+8
+ 1317 00ae 822B      		or r24,r18
+ 1318               		.loc 1 418 0
+ 1319 00b0 64E5      		ldi r22,lo8(84)
+ 1320 00b2 71E0      		ldi r23,lo8(1)
+ 1321 00b4 0E94 0000 		call __divmodhi4
+ 1322 00b8 8827      		clr r24
+ 1323 00ba 77FD      		sbrc r23,7
+ 1324 00bc 8095      		com r24
+ 1325 00be 982F      		mov r25,r24
+ 1326 00c0 0E94 0000 		call __floatsisf
+ 1327               	.LVL74:
+ 1328 00c4 28EB      		ldi r18,lo8(-72)
+ 1329 00c6 3EE1      		ldi r19,lo8(30)
+ 1330 00c8 42E1      		ldi r20,lo8(18)
+ 1331 00ca 52E4      		ldi r21,lo8(66)
+ 1332 00cc 0E94 0000 		call __addsf3
+ 1333               	.LVL75:
+ 1334 00d0 F101      		movw r30,r2
+ 1335 00d2 6083      		st Z,r22
+ 1336 00d4 7183      		std Z+1,r23
+ 1337 00d6 8283      		std Z+2,r24
+ 1338 00d8 9383      		std Z+3,r25
+ 419:ip_mpu6050.c  ****     
+ 420:ip_mpu6050.c  ****     mpup->x_accel = (float)x_accel;
+ 1339               		.loc 1 420 0
+ 1340 00da B401      		movw r22,r8
+ 1341 00dc 8827      		clr r24
+ 1342 00de 77FD      		sbrc r23,7
+ 1343 00e0 8095      		com r24
+ 1344 00e2 982F      		mov r25,r24
+ 1345 00e4 0E94 0000 		call __floatsisf
+ 1346               	.LVL76:
+ 1347 00e8 F701      		movw r30,r14
+ 1348 00ea 6183      		std Z+1,r22
+ 1349 00ec 7283      		std Z+2,r23
+ 1350 00ee 8383      		std Z+3,r24
+ 1351 00f0 9483      		std Z+4,r25
+ 421:ip_mpu6050.c  ****     mpup->y_accel = (float)y_accel;
+ 1352               		.loc 1 421 0
+ 1353 00f2 B501      		movw r22,r10
+ 1354 00f4 8827      		clr r24
+ 1355 00f6 77FD      		sbrc r23,7
+ 1356 00f8 8095      		com r24
+ 1357 00fa 982F      		mov r25,r24
+ 1358 00fc 0E94 0000 		call __floatsisf
+ 1359               	.LVL77:
+ 1360 0100 F701      		movw r30,r14
+ 1361 0102 6583      		std Z+5,r22
+ 1362 0104 7683      		std Z+6,r23
+ 1363 0106 8783      		std Z+7,r24
+ 1364 0108 9087      		std Z+8,r25
+ 422:ip_mpu6050.c  ****     mpup->z_accel = (float)z_accel;
+ 1365               		.loc 1 422 0
+ 1366 010a B601      		movw r22,r12
+ 1367 010c 8827      		clr r24
+ 1368 010e 77FD      		sbrc r23,7
+ 1369 0110 8095      		com r24
+ 1370 0112 982F      		mov r25,r24
+ 1371 0114 0E94 0000 		call __floatsisf
+ 1372               	.LVL78:
+ 1373 0118 F701      		movw r30,r14
+ 1374 011a 6187      		std Z+9,r22
+ 1375 011c 7287      		std Z+10,r23
+ 1376 011e 8387      		std Z+11,r24
+ 1377 0120 9487      		std Z+12,r25
+ 423:ip_mpu6050.c  **** 
+ 424:ip_mpu6050.c  ****     mpup->x_gyro = (float)x_gyro;
+ 1378               		.loc 1 424 0
+ 1379 0122 B801      		movw r22,r16
+ 1380 0124 8827      		clr r24
+ 1381 0126 77FD      		sbrc r23,7
+ 1382 0128 8095      		com r24
+ 1383 012a 982F      		mov r25,r24
+ 1384 012c 0E94 0000 		call __floatsisf
+ 1385               	.LVL79:
+ 1386 0130 F701      		movw r30,r14
+ 1387 0132 618F      		std Z+25,r22
+ 1388 0134 728F      		std Z+26,r23
+ 1389 0136 838F      		std Z+27,r24
+ 1390 0138 948F      		std Z+28,r25
+ 425:ip_mpu6050.c  ****     mpup->y_gyro = (float)y_gyro;
+ 1391               		.loc 1 425 0
+ 1392 013a B301      		movw r22,r6
+ 1393 013c 8827      		clr r24
+ 1394 013e 77FD      		sbrc r23,7
+ 1395 0140 8095      		com r24
+ 1396 0142 982F      		mov r25,r24
+ 1397 0144 0E94 0000 		call __floatsisf
+ 1398               	.LVL80:
+ 1399 0148 F701      		movw r30,r14
+ 1400 014a 658F      		std Z+29,r22
+ 1401 014c 768F      		std Z+30,r23
+ 1402 014e 878F      		std Z+31,r24
+ 1403 0150 90A3      		std Z+32,r25
+ 426:ip_mpu6050.c  ****     mpup->z_gyro = (float)z_gyro;
+ 1404               		.loc 1 426 0
+ 1405 0152 B201      		movw r22,r4
+ 1406 0154 8827      		clr r24
+ 1407 0156 77FD      		sbrc r23,7
+ 1408 0158 8095      		com r24
+ 1409 015a 982F      		mov r25,r24
+ 1410 015c 0E94 0000 		call __floatsisf
+ 1411               	.LVL81:
+ 1412 0160 F701      		movw r30,r14
+ 1413 0162 61A3      		std Z+33,r22
+ 1414 0164 72A3      		std Z+34,r23
+ 1415 0166 83A3      		std Z+35,r24
+ 1416 0168 94A3      		std Z+36,r25
+ 427:ip_mpu6050.c  **** 
+ 428:ip_mpu6050.c  ****     return msg;
+ 1417               		.loc 1 428 0
+ 1418 016a 80E0      		ldi r24,0
+ 1419 016c 90E0      		ldi r25,0
+ 1420               	.LVL82:
+ 1421               	.L42:
+ 1422               	/* epilogue start */
+ 429:ip_mpu6050.c  ****   }
+ 430:ip_mpu6050.c  **** }
+ 1423               		.loc 1 430 0
+ 1424 016e 2F96      		adiw r28,15
+ 1425 0170 0FB6      		in __tmp_reg__,__SREG__
+ 1426 0172 F894      		cli
+ 1427 0174 DEBF      		out __SP_H__,r29
+ 1428 0176 0FBE      		out __SREG__,__tmp_reg__
+ 1429 0178 CDBF      		out __SP_L__,r28
+ 1430 017a DF91      		pop r29
+ 1431 017c CF91      		pop r28
+ 1432 017e 1F91      		pop r17
+ 1433 0180 0F91      		pop r16
+ 1434 0182 FF90      		pop r15
+ 1435 0184 EF90      		pop r14
+ 1436               	.LVL83:
+ 1437 0186 DF90      		pop r13
+ 1438 0188 CF90      		pop r12
+ 1439 018a BF90      		pop r11
+ 1440 018c AF90      		pop r10
+ 1441 018e 9F90      		pop r9
+ 1442 0190 8F90      		pop r8
+ 1443 0192 7F90      		pop r7
+ 1444 0194 6F90      		pop r6
+ 1445 0196 5F90      		pop r5
+ 1446 0198 4F90      		pop r4
+ 1447 019a 3F90      		pop r3
+ 1448 019c 2F90      		pop r2
+ 1449 019e 0895      		ret
+ 1450               	.LVL84:
+ 1451               	.L43:
+ 406:ip_mpu6050.c  ****     return MSG_RESET;
+ 1452               		.loc 1 406 0
+ 1453 01a0 8EEF      		ldi r24,lo8(-2)
+ 1454 01a2 9FEF      		ldi r25,lo8(-1)
+ 1455               	.LVL85:
+ 1456 01a4 00C0      		rjmp .L42
+ 1457               		.cfi_endproc
+ 1458               	.LFE151:
+ 1460               	.global	__divsf3
+ 1461               	.global	__mulsf3
+ 1462               	.global	__fixsfsi
+ 1463               		.section	.text.mpu6050_calibration,"ax",@progbits
+ 1464               	.global	mpu6050_calibration
+ 1466               	mpu6050_calibration:
+ 1467               	.LFB152:
+ 431:ip_mpu6050.c  **** 
+ 432:ip_mpu6050.c  **** /**
+ 433:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_calibration(I2CDriver *i2cp, mpu6050_t *mpup)
+ 434:ip_mpu6050.c  ****  * @brief Calibrate the MPU6050 accelerometer and gyroscope sensors.
+ 435:ip_mpu6050.c  ****  *
+ 436:ip_mpu6050.c  ****  * @param[in] i2cp  The pointer of the i2C interface.
+ 437:ip_mpu6050.c  ****  * @param[in] mpup  The pointer of the mpu data structure.
+ 438:ip_mpu6050.c  ****  * @return    msg   The result of the calibration operation.
+ 439:ip_mpu6050.c  ****  */
+ 440:ip_mpu6050.c  **** msg_t mpu6050_calibration(I2CDriver *i2cp, mpu6050_t *mpup){
+ 1468               		.loc 1 440 0
+ 1469               		.cfi_startproc
+ 1470               	.LVL86:
+ 1471 0000 CF92      		push r12
+ 1472               	.LCFI105:
+ 1473               		.cfi_def_cfa_offset 4
+ 1474               		.cfi_offset 12, -3
+ 1475 0002 DF92      		push r13
+ 1476               	.LCFI106:
+ 1477               		.cfi_def_cfa_offset 5
+ 1478               		.cfi_offset 13, -4
+ 1479 0004 EF92      		push r14
+ 1480               	.LCFI107:
+ 1481               		.cfi_def_cfa_offset 6
+ 1482               		.cfi_offset 14, -5
+ 1483 0006 FF92      		push r15
+ 1484               	.LCFI108:
+ 1485               		.cfi_def_cfa_offset 7
+ 1486               		.cfi_offset 15, -6
+ 1487 0008 0F93      		push r16
+ 1488               	.LCFI109:
+ 1489               		.cfi_def_cfa_offset 8
+ 1490               		.cfi_offset 16, -7
+ 1491 000a 1F93      		push r17
+ 1492               	.LCFI110:
+ 1493               		.cfi_def_cfa_offset 9
+ 1494               		.cfi_offset 17, -8
+ 1495 000c CF93      		push r28
+ 1496               	.LCFI111:
+ 1497               		.cfi_def_cfa_offset 10
+ 1498               		.cfi_offset 28, -9
+ 1499 000e DF93      		push r29
+ 1500               	.LCFI112:
+ 1501               		.cfi_def_cfa_offset 11
+ 1502               		.cfi_offset 29, -10
+ 1503               	/* prologue: function */
+ 1504               	/* frame size = 0 */
+ 1505               	/* stack size = 8 */
+ 1506               	.L__stack_usage = 8
+ 1507 0010 7C01      		movw r14,r24
+ 1508 0012 EB01      		movw r28,r22
+ 1509               	.LVL87:
+ 441:ip_mpu6050.c  ****   
+ 442:ip_mpu6050.c  ****   msg_t msg;
+ 443:ip_mpu6050.c  ****   uint16_t i;
+ 444:ip_mpu6050.c  ****   uint16_t sampleNumber = 1000;
+ 445:ip_mpu6050.c  **** 
+ 446:ip_mpu6050.c  **** //  msg = mpu6050_setXAccelOffset(&I2CD1, 0);
+ 447:ip_mpu6050.c  **** //  msg = mpu6050_setYAccelOffset(&I2CD1, 0);
+ 448:ip_mpu6050.c  ****   msg = mpu6050_setXGyroOffset(&I2CD1, 0);
+ 1510               		.loc 1 448 0
+ 1511 0014 60E0      		ldi r22,0
+ 1512 0016 70E0      		ldi r23,0
+ 1513               	.LVL88:
+ 1514 0018 80E0      		ldi r24,lo8(I2CD1)
+ 1515 001a 90E0      		ldi r25,hi8(I2CD1)
+ 1516               	.LVL89:
+ 1517 001c 0E94 0000 		call mpu6050_setXGyroOffset
+ 1518               	.LVL90:
+ 449:ip_mpu6050.c  ****   msg = mpu6050_setYGyroOffset(&I2CD1, 0);
+ 1519               		.loc 1 449 0
+ 1520 0020 60E0      		ldi r22,0
+ 1521 0022 70E0      		ldi r23,0
+ 1522 0024 80E0      		ldi r24,lo8(I2CD1)
+ 1523 0026 90E0      		ldi r25,hi8(I2CD1)
+ 1524 0028 0E94 0000 		call mpu6050_setYGyroOffset
+ 1525               	.LVL91:
+ 450:ip_mpu6050.c  ****   msg = mpu6050_setZGyroOffset(&I2CD1, 0);
+ 1526               		.loc 1 450 0
+ 1527 002c 60E0      		ldi r22,0
+ 1528 002e 70E0      		ldi r23,0
+ 1529 0030 80E0      		ldi r24,lo8(I2CD1)
+ 1530 0032 90E0      		ldi r25,hi8(I2CD1)
+ 1531 0034 0E94 0000 		call mpu6050_setZGyroOffset
+ 1532               	.LVL92:
+ 451:ip_mpu6050.c  **** 
+ 452:ip_mpu6050.c  ****   for(i = 0; i < sampleNumber + 100; i++){
+ 453:ip_mpu6050.c  ****     msg = mpu6050_getData(i2cp, mpup);
+ 1533               		.loc 1 453 0
+ 1534 0038 BE01      		movw r22,r28
+ 1535 003a C701      		movw r24,r14
+ 1536 003c 0E94 0000 		call mpu6050_getData
+ 1537               	.LVL93:
+ 452:ip_mpu6050.c  ****   for(i = 0; i < sampleNumber + 100; i++){
+ 1538               		.loc 1 452 0
+ 1539 0040 00E0      		ldi r16,0
+ 1540 0042 10E0      		ldi r17,0
+ 1541 0044 00C0      		rjmp .L45
+ 1542               	.LVL94:
+ 1543               	.L47:
+ 1544               		.loc 1 453 0
+ 1545 0046 BE01      		movw r22,r28
+ 1546 0048 C701      		movw r24,r14
+ 1547 004a 0E94 0000 		call mpu6050_getData
+ 1548               	.LVL95:
+ 454:ip_mpu6050.c  ****         
+ 455:ip_mpu6050.c  ****     if(i > 100){
+ 1549               		.loc 1 455 0
+ 1550 004e 0536      		cpi r16,101
+ 1551 0050 1105      		cpc r17,__zero_reg__
+ 1552 0052 00F4      		brsh .+2
+ 1553 0054 00C0      		rjmp .L45
+ 456:ip_mpu6050.c  ****       mpup->x_accel_offset  += mpup->x_accel;
+ 1554               		.loc 1 456 0
+ 1555 0056 2981      		ldd r18,Y+1
+ 1556 0058 3A81      		ldd r19,Y+2
+ 1557 005a 4B81      		ldd r20,Y+3
+ 1558 005c 5C81      		ldd r21,Y+4
+ 1559 005e 6D85      		ldd r22,Y+13
+ 1560 0060 7E85      		ldd r23,Y+14
+ 1561 0062 8F85      		ldd r24,Y+15
+ 1562 0064 9889      		ldd r25,Y+16
+ 1563 0066 0E94 0000 		call __addsf3
+ 1564               	.LVL96:
+ 1565 006a 6D87      		std Y+13,r22
+ 1566 006c 7E87      		std Y+14,r23
+ 1567 006e 8F87      		std Y+15,r24
+ 1568 0070 988B      		std Y+16,r25
+ 457:ip_mpu6050.c  ****       mpup->y_accel_offset  += mpup->y_accel;
+ 1569               		.loc 1 457 0
+ 1570 0072 2D81      		ldd r18,Y+5
+ 1571 0074 3E81      		ldd r19,Y+6
+ 1572 0076 4F81      		ldd r20,Y+7
+ 1573 0078 5885      		ldd r21,Y+8
+ 1574 007a 6989      		ldd r22,Y+17
+ 1575 007c 7A89      		ldd r23,Y+18
+ 1576 007e 8B89      		ldd r24,Y+19
+ 1577 0080 9C89      		ldd r25,Y+20
+ 1578 0082 0E94 0000 		call __addsf3
+ 1579               	.LVL97:
+ 1580 0086 698B      		std Y+17,r22
+ 1581 0088 7A8B      		std Y+18,r23
+ 1582 008a 8B8B      		std Y+19,r24
+ 1583 008c 9C8B      		std Y+20,r25
+ 458:ip_mpu6050.c  ****       mpup->z_accel_offset  += mpup->z_accel;
+ 1584               		.loc 1 458 0
+ 1585 008e 2985      		ldd r18,Y+9
+ 1586 0090 3A85      		ldd r19,Y+10
+ 1587 0092 4B85      		ldd r20,Y+11
+ 1588 0094 5C85      		ldd r21,Y+12
+ 1589 0096 6D89      		ldd r22,Y+21
+ 1590 0098 7E89      		ldd r23,Y+22
+ 1591 009a 8F89      		ldd r24,Y+23
+ 1592 009c 988D      		ldd r25,Y+24
+ 1593 009e 0E94 0000 		call __addsf3
+ 1594               	.LVL98:
+ 1595 00a2 6D8B      		std Y+21,r22
+ 1596 00a4 7E8B      		std Y+22,r23
+ 1597 00a6 8F8B      		std Y+23,r24
+ 1598 00a8 988F      		std Y+24,r25
+ 459:ip_mpu6050.c  ****       mpup->x_gyro_offset   += mpup->x_gyro;
+ 1599               		.loc 1 459 0
+ 1600 00aa 298D      		ldd r18,Y+25
+ 1601 00ac 3A8D      		ldd r19,Y+26
+ 1602 00ae 4B8D      		ldd r20,Y+27
+ 1603 00b0 5C8D      		ldd r21,Y+28
+ 1604 00b2 6DA1      		ldd r22,Y+37
+ 1605 00b4 7EA1      		ldd r23,Y+38
+ 1606 00b6 8FA1      		ldd r24,Y+39
+ 1607 00b8 98A5      		ldd r25,Y+40
+ 1608 00ba 0E94 0000 		call __addsf3
+ 1609               	.LVL99:
+ 1610 00be 6DA3      		std Y+37,r22
+ 1611 00c0 7EA3      		std Y+38,r23
+ 1612 00c2 8FA3      		std Y+39,r24
+ 1613 00c4 98A7      		std Y+40,r25
+ 460:ip_mpu6050.c  ****       mpup->y_gyro_offset   += mpup->y_gyro;
+ 1614               		.loc 1 460 0
+ 1615 00c6 2D8D      		ldd r18,Y+29
+ 1616 00c8 3E8D      		ldd r19,Y+30
+ 1617 00ca 4F8D      		ldd r20,Y+31
+ 1618 00cc 58A1      		ldd r21,Y+32
+ 1619 00ce 69A5      		ldd r22,Y+41
+ 1620 00d0 7AA5      		ldd r23,Y+42
+ 1621 00d2 8BA5      		ldd r24,Y+43
+ 1622 00d4 9CA5      		ldd r25,Y+44
+ 1623 00d6 0E94 0000 		call __addsf3
+ 1624               	.LVL100:
+ 1625 00da 69A7      		std Y+41,r22
+ 1626 00dc 7AA7      		std Y+42,r23
+ 1627 00de 8BA7      		std Y+43,r24
+ 1628 00e0 9CA7      		std Y+44,r25
+ 461:ip_mpu6050.c  ****       mpup->z_gyro_offset   += mpup->z_gyro;
+ 1629               		.loc 1 461 0
+ 1630 00e2 29A1      		ldd r18,Y+33
+ 1631 00e4 3AA1      		ldd r19,Y+34
+ 1632 00e6 4BA1      		ldd r20,Y+35
+ 1633 00e8 5CA1      		ldd r21,Y+36
+ 1634 00ea 6DA5      		ldd r22,Y+45
+ 1635 00ec 7EA5      		ldd r23,Y+46
+ 1636 00ee 8FA5      		ldd r24,Y+47
+ 1637 00f0 98A9      		ldd r25,Y+48
+ 1638 00f2 0E94 0000 		call __addsf3
+ 1639               	.LVL101:
+ 1640 00f6 6DA7      		std Y+45,r22
+ 1641 00f8 7EA7      		std Y+46,r23
+ 1642 00fa 8FA7      		std Y+47,r24
+ 1643 00fc 98AB      		std Y+48,r25
+ 1644               	.LVL102:
+ 1645               	.L45:
+ 462:ip_mpu6050.c  ****     }
+ 463:ip_mpu6050.c  ****     chThdSleepMilliseconds(5);
+ 1646               		.loc 1 463 0
+ 1647 00fe 8FE4      		ldi r24,lo8(79)
+ 1648 0100 90E0      		ldi r25,0
+ 1649 0102 0E94 0000 		call chThdSleep
+ 1650               	.LVL103:
+ 452:ip_mpu6050.c  ****   for(i = 0; i < sampleNumber + 100; i++){
+ 1651               		.loc 1 452 0
+ 1652 0106 0F5F      		subi r16,-1
+ 1653 0108 1F4F      		sbci r17,-1
+ 1654               	.LVL104:
+ 1655 010a 0C34      		cpi r16,76
+ 1656 010c 84E0      		ldi r24,4
+ 1657 010e 1807      		cpc r17,r24
+ 1658 0110 01F0      		breq .+2
+ 1659 0112 00C0      		rjmp .L47
+ 464:ip_mpu6050.c  ****   }
+ 465:ip_mpu6050.c  **** 
+ 466:ip_mpu6050.c  ****   mpup->x_accel_offset  = mpup->x_accel_offset/sampleNumber;
+ 1660               		.loc 1 466 0
+ 1661 0114 20E0      		ldi r18,0
+ 1662 0116 30E0      		ldi r19,0
+ 1663 0118 4AE7      		ldi r20,lo8(122)
+ 1664 011a 54E4      		ldi r21,lo8(68)
+ 1665 011c 6D85      		ldd r22,Y+13
+ 1666 011e 7E85      		ldd r23,Y+14
+ 1667 0120 8F85      		ldd r24,Y+15
+ 1668 0122 9889      		ldd r25,Y+16
+ 1669 0124 0E94 0000 		call __divsf3
+ 1670               	.LVL105:
+ 1671 0128 6D87      		std Y+13,r22
+ 1672 012a 7E87      		std Y+14,r23
+ 1673 012c 8F87      		std Y+15,r24
+ 1674 012e 988B      		std Y+16,r25
+ 467:ip_mpu6050.c  ****   mpup->y_accel_offset  = mpup->y_accel_offset/sampleNumber;
+ 1675               		.loc 1 467 0
+ 1676 0130 20E0      		ldi r18,0
+ 1677 0132 30E0      		ldi r19,0
+ 1678 0134 4AE7      		ldi r20,lo8(122)
+ 1679 0136 54E4      		ldi r21,lo8(68)
+ 1680 0138 6989      		ldd r22,Y+17
+ 1681 013a 7A89      		ldd r23,Y+18
+ 1682 013c 8B89      		ldd r24,Y+19
+ 1683 013e 9C89      		ldd r25,Y+20
+ 1684 0140 0E94 0000 		call __divsf3
+ 1685               	.LVL106:
+ 1686 0144 698B      		std Y+17,r22
+ 1687 0146 7A8B      		std Y+18,r23
+ 1688 0148 8B8B      		std Y+19,r24
+ 1689 014a 9C8B      		std Y+20,r25
+ 468:ip_mpu6050.c  ****   mpup->z_accel_offset  = mpup->z_accel_offset/sampleNumber;
+ 1690               		.loc 1 468 0
+ 1691 014c 20E0      		ldi r18,0
+ 1692 014e 30E0      		ldi r19,0
+ 1693 0150 4AE7      		ldi r20,lo8(122)
+ 1694 0152 54E4      		ldi r21,lo8(68)
+ 1695 0154 6D89      		ldd r22,Y+21
+ 1696 0156 7E89      		ldd r23,Y+22
+ 1697 0158 8F89      		ldd r24,Y+23
+ 1698 015a 988D      		ldd r25,Y+24
+ 1699 015c 0E94 0000 		call __divsf3
+ 1700               	.LVL107:
+ 1701 0160 6D8B      		std Y+21,r22
+ 1702 0162 7E8B      		std Y+22,r23
+ 1703 0164 8F8B      		std Y+23,r24
+ 1704 0166 988F      		std Y+24,r25
+ 469:ip_mpu6050.c  ****   mpup->x_gyro_offset   = mpup->x_gyro_offset/sampleNumber;
+ 1705               		.loc 1 469 0
+ 1706 0168 20E0      		ldi r18,0
+ 1707 016a 30E0      		ldi r19,0
+ 1708 016c 4AE7      		ldi r20,lo8(122)
+ 1709 016e 54E4      		ldi r21,lo8(68)
+ 1710 0170 6DA1      		ldd r22,Y+37
+ 1711 0172 7EA1      		ldd r23,Y+38
+ 1712 0174 8FA1      		ldd r24,Y+39
+ 1713 0176 98A5      		ldd r25,Y+40
+ 1714 0178 0E94 0000 		call __divsf3
+ 1715               	.LVL108:
+ 1716 017c 6B01      		movw r12,r22
+ 1717 017e 7C01      		movw r14,r24
+ 1718 0180 6DA3      		std Y+37,r22
+ 1719 0182 7EA3      		std Y+38,r23
+ 1720 0184 8FA3      		std Y+39,r24
+ 1721 0186 98A7      		std Y+40,r25
+ 470:ip_mpu6050.c  ****   mpup->y_gyro_offset   = mpup->y_gyro_offset/sampleNumber;
+ 1722               		.loc 1 470 0
+ 1723 0188 20E0      		ldi r18,0
+ 1724 018a 30E0      		ldi r19,0
+ 1725 018c 4AE7      		ldi r20,lo8(122)
+ 1726 018e 54E4      		ldi r21,lo8(68)
+ 1727 0190 69A5      		ldd r22,Y+41
+ 1728 0192 7AA5      		ldd r23,Y+42
+ 1729 0194 8BA5      		ldd r24,Y+43
+ 1730 0196 9CA5      		ldd r25,Y+44
+ 1731 0198 0E94 0000 		call __divsf3
+ 1732               	.LVL109:
+ 1733 019c 69A7      		std Y+41,r22
+ 1734 019e 7AA7      		std Y+42,r23
+ 1735 01a0 8BA7      		std Y+43,r24
+ 1736 01a2 9CA7      		std Y+44,r25
+ 471:ip_mpu6050.c  ****   mpup->z_gyro_offset   = mpup->z_gyro_offset/sampleNumber;
+ 1737               		.loc 1 471 0
+ 1738 01a4 20E0      		ldi r18,0
+ 1739 01a6 30E0      		ldi r19,0
+ 1740 01a8 4AE7      		ldi r20,lo8(122)
+ 1741 01aa 54E4      		ldi r21,lo8(68)
+ 1742 01ac 6DA5      		ldd r22,Y+45
+ 1743 01ae 7EA5      		ldd r23,Y+46
+ 1744 01b0 8FA5      		ldd r24,Y+47
+ 1745 01b2 98A9      		ldd r25,Y+48
+ 1746 01b4 0E94 0000 		call __divsf3
+ 1747               	.LVL110:
+ 1748 01b8 6DA7      		std Y+45,r22
+ 1749 01ba 7EA7      		std Y+46,r23
+ 1750 01bc 8FA7      		std Y+47,r24
+ 1751 01be 98AB      		std Y+48,r25
+ 472:ip_mpu6050.c  **** 
+ 473:ip_mpu6050.c  **** //  msg = mpu6050SetXAccelOffset(&I2CD1, -(mpup->x_accel_offset/8));
+ 474:ip_mpu6050.c  **** //  msg = mpu6050SetYAccelOffset(&I2CD1, -(mpup->y_accel_offset/8));
+ 475:ip_mpu6050.c  ****   msg = mpu6050_setXGyroOffset(&I2CD1, -(mpup->x_gyro_offset/4));
+ 1752               		.loc 1 475 0
+ 1753 01c0 20E0      		ldi r18,0
+ 1754 01c2 30E0      		ldi r19,0
+ 1755 01c4 40E8      		ldi r20,lo8(-128)
+ 1756 01c6 5EE3      		ldi r21,lo8(62)
+ 1757 01c8 C701      		movw r24,r14
+ 1758 01ca B601      		movw r22,r12
+ 1759 01cc 0E94 0000 		call __mulsf3
+ 1760               	.LVL111:
+ 1761 01d0 9058      		subi r25,0x80
+ 1762 01d2 0E94 0000 		call __fixsfsi
+ 1763               	.LVL112:
+ 1764 01d6 80E0      		ldi r24,lo8(I2CD1)
+ 1765 01d8 90E0      		ldi r25,hi8(I2CD1)
+ 1766 01da 0E94 0000 		call mpu6050_setXGyroOffset
+ 1767               	.LVL113:
+ 476:ip_mpu6050.c  ****   msg = mpu6050_setYGyroOffset(&I2CD1, -(mpup->y_gyro_offset/4));
+ 1768               		.loc 1 476 0
+ 1769 01de 20E0      		ldi r18,0
+ 1770 01e0 30E0      		ldi r19,0
+ 1771 01e2 40E8      		ldi r20,lo8(-128)
+ 1772 01e4 5EE3      		ldi r21,lo8(62)
+ 1773 01e6 69A5      		ldd r22,Y+41
+ 1774 01e8 7AA5      		ldd r23,Y+42
+ 1775 01ea 8BA5      		ldd r24,Y+43
+ 1776 01ec 9CA5      		ldd r25,Y+44
+ 1777 01ee 0E94 0000 		call __mulsf3
+ 1778               	.LVL114:
+ 1779 01f2 9058      		subi r25,0x80
+ 1780 01f4 0E94 0000 		call __fixsfsi
+ 1781               	.LVL115:
+ 1782 01f8 80E0      		ldi r24,lo8(I2CD1)
+ 1783 01fa 90E0      		ldi r25,hi8(I2CD1)
+ 1784 01fc 0E94 0000 		call mpu6050_setYGyroOffset
+ 1785               	.LVL116:
+ 477:ip_mpu6050.c  ****   msg = mpu6050_setZGyroOffset(&I2CD1, -(mpup->z_gyro_offset/4));
+ 1786               		.loc 1 477 0
+ 1787 0200 20E0      		ldi r18,0
+ 1788 0202 30E0      		ldi r19,0
+ 1789 0204 40E8      		ldi r20,lo8(-128)
+ 1790 0206 5EE3      		ldi r21,lo8(62)
+ 1791 0208 6DA5      		ldd r22,Y+45
+ 1792 020a 7EA5      		ldd r23,Y+46
+ 1793 020c 8FA5      		ldd r24,Y+47
+ 1794 020e 98A9      		ldd r25,Y+48
+ 1795 0210 0E94 0000 		call __mulsf3
+ 1796               	.LVL117:
+ 1797 0214 9058      		subi r25,0x80
+ 1798 0216 0E94 0000 		call __fixsfsi
+ 1799               	.LVL118:
+ 1800 021a 80E0      		ldi r24,lo8(I2CD1)
+ 1801 021c 90E0      		ldi r25,hi8(I2CD1)
+ 1802               	/* epilogue start */
+ 478:ip_mpu6050.c  **** 
+ 479:ip_mpu6050.c  ****   return msg;
+ 480:ip_mpu6050.c  **** }
+ 1803               		.loc 1 480 0
+ 1804 021e DF91      		pop r29
+ 1805 0220 CF91      		pop r28
+ 1806               	.LVL119:
+ 1807 0222 1F91      		pop r17
+ 1808 0224 0F91      		pop r16
+ 1809               	.LVL120:
+ 1810 0226 FF90      		pop r15
+ 1811 0228 EF90      		pop r14
+ 1812               	.LVL121:
+ 1813 022a DF90      		pop r13
+ 1814 022c CF90      		pop r12
+ 477:ip_mpu6050.c  ****   msg = mpu6050_setZGyroOffset(&I2CD1, -(mpup->z_gyro_offset/4));
+ 1815               		.loc 1 477 0
+ 1816 022e 0C94 0000 		jmp mpu6050_setZGyroOffset
+ 1817               	.LVL122:
+ 1818               		.cfi_endproc
+ 1819               	.LFE152:
+ 1821               		.section	.text.mpu6050_init,"ax",@progbits
+ 1822               	.global	mpu6050_init
+ 1824               	mpu6050_init:
+ 1825               	.LFB153:
+ 481:ip_mpu6050.c  **** 
+ 482:ip_mpu6050.c  **** /**
+ 483:ip_mpu6050.c  ****  * @fn    msg_t mpu6050_init(I2CDriver *i2cp, mpu6050_t *mpu,
+ 484:ip_mpu6050.c  ****  *                  mpu6050_sad_e sad){
+ 485:ip_mpu6050.c  ****  * @brief Initialize the MPU6050 sensor.
+ 486:ip_mpu6050.c  ****  *
+ 487:ip_mpu6050.c  ****  * @param[in] i2cp  The Pointer of the i2C interface.
+ 488:ip_mpu6050.c  ****  * @param[in] sad   The MPU i2c serial address.
+ 489:ip_mpu6050.c  ****  * @return    msg   The result of the initialization operation.
+ 490:ip_mpu6050.c  ****  */
+ 491:ip_mpu6050.c  **** msg_t mpu6050_init(I2CDriver *i2cp, mpu6050_t *mpu, mpu6050_sad_e sad){
+ 1826               		.loc 1 491 0
+ 1827               		.cfi_startproc
+ 1828               	.LVL123:
+ 1829 0000 CF93      		push r28
+ 1830               	.LCFI113:
+ 1831               		.cfi_def_cfa_offset 4
+ 1832               		.cfi_offset 28, -3
+ 1833 0002 DF93      		push r29
+ 1834               	.LCFI114:
+ 1835               		.cfi_def_cfa_offset 5
+ 1836               		.cfi_offset 29, -4
+ 1837               	/* prologue: function */
+ 1838               	/* frame size = 0 */
+ 1839               	/* stack size = 2 */
+ 1840               	.L__stack_usage = 2
+ 1841 0004 EC01      		movw r28,r24
+ 492:ip_mpu6050.c  **** 
+ 493:ip_mpu6050.c  ****   msg_t msg;
+ 494:ip_mpu6050.c  ****   
+ 495:ip_mpu6050.c  ****   mpu->sad = sad;
+ 1842               		.loc 1 495 0
+ 1843 0006 FB01      		movw r30,r22
+ 1844 0008 4083      		st Z,r20
+ 496:ip_mpu6050.c  ****   msg = mpu6050_reset(i2cp);
+ 1845               		.loc 1 496 0
+ 1846 000a 0E94 0000 		call mpu6050_reset
+ 1847               	.LVL124:
+ 497:ip_mpu6050.c  ****   msg = mpu6050_wakeup(i2cp);
+ 1848               		.loc 1 497 0
+ 1849 000e CE01      		movw r24,r28
+ 1850 0010 0E94 0000 		call mpu6050_wakeup
+ 1851               	.LVL125:
+ 498:ip_mpu6050.c  ****   msg = mpu6050_accelConfig(i2cp, MPU6050_ACCEL_FS_2);
+ 1852               		.loc 1 498 0
+ 1853 0014 60E0      		ldi r22,0
+ 1854 0016 CE01      		movw r24,r28
+ 1855 0018 0E94 0000 		call mpu6050_accelConfig
+ 1856               	.LVL126:
+ 499:ip_mpu6050.c  ****   msg = mpu6050_gyroConfig(i2cp, MPU6050_GYRO_FS_250);
+ 1857               		.loc 1 499 0
+ 1858 001c 60E0      		ldi r22,0
+ 1859 001e CE01      		movw r24,r28
+ 1860               	/* epilogue start */
+ 500:ip_mpu6050.c  **** 
+ 501:ip_mpu6050.c  ****   return msg;
+ 502:ip_mpu6050.c  **** }
+ 1861               		.loc 1 502 0
+ 1862 0020 DF91      		pop r29
+ 1863 0022 CF91      		pop r28
+ 1864               	.LVL127:
+ 499:ip_mpu6050.c  ****   msg = mpu6050_gyroConfig(i2cp, MPU6050_GYRO_FS_250);
+ 1865               		.loc 1 499 0
+ 1866 0024 0C94 0000 		jmp mpu6050_gyroConfig
+ 1867               	.LVL128:
+ 1868               		.cfi_endproc
+ 1869               	.LFE153:
+ 1871               		.text
+ 1872               	.Letext0:
+ 1873               		.file 2 "/usr/lib/gcc/avr/4.8.2/include/stddef.h"
+ 1874               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 1875               		.file 4 "../../ChibiOS_16.1.5/os/rt/ports/AVR/compilers/GCC/chtypes.h"
+ 1876               		.file 5 "../../ChibiOS_16.1.5/os/rt/include/chsystypes.h"
+ 1877               		.file 6 "../../ChibiOS_16.1.5/os/rt/include/chschd.h"
+ 1878               		.file 7 "../../ChibiOS_16.1.5/os/rt/ports/AVR/chcore.h"
+ 1879               		.file 8 "../../ChibiOS_16.1.5/os/rt/include/chsem.h"
+ 1880               		.file 9 "../../ChibiOS_16.1.5/os/rt/include/chmtx.h"
+ 1881               		.file 10 "../../ChibiOS_16.1.5/os/hal/include/i2c.h"
+ 1882               		.file 11 "../../ChibiOS_16.1.5/os/hal/ports/AVR/i2c_lld.h"
+ 1883               		.file 12 "ip_mpu6050.h"
+ 1884               		.file 13 "ip_i2c.h"
+ 1885               		.file 14 "../../ChibiOS_16.1.5/os/rt/include/chthreads.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ip_mpu6050.c
+     /tmp/ccQcRDgw.s:2      *ABS*:0000003e __SP_H__
+     /tmp/ccQcRDgw.s:3      *ABS*:0000003d __SP_L__
+     /tmp/ccQcRDgw.s:4      *ABS*:0000003f __SREG__
+     /tmp/ccQcRDgw.s:5      *ABS*:0000003b __RAMPZ__
+     /tmp/ccQcRDgw.s:6      *ABS*:00000000 __tmp_reg__
+     /tmp/ccQcRDgw.s:7      *ABS*:00000001 __zero_reg__
+     /tmp/ccQcRDgw.s:14     .text.mpu6050_getIdentity:00000000 mpu6050_getIdentity
+     /tmp/ccQcRDgw.s:93     .text.mpu6050_sleep:00000000 mpu6050_sleep
+     /tmp/ccQcRDgw.s:182    .text.mpu6050_wakeup:00000000 mpu6050_wakeup
+     /tmp/ccQcRDgw.s:271    .text.mpu6050_reset:00000000 mpu6050_reset
+     /tmp/ccQcRDgw.s:360    .text.mpu6050_gyroConfig:00000000 mpu6050_gyroConfig
+     /tmp/ccQcRDgw.s:456    .text.mpu6050_accelConfig:00000000 mpu6050_accelConfig
+     /tmp/ccQcRDgw.s:552    .text.mpu6050_getXGyroOffset:00000000 mpu6050_getXGyroOffset
+     /tmp/ccQcRDgw.s:631    .text.mpu6050_setXGyroOffset:00000000 mpu6050_setXGyroOffset
+     /tmp/ccQcRDgw.s:685    .text.mpu6050_getYGyroOffset:00000000 mpu6050_getYGyroOffset
+     /tmp/ccQcRDgw.s:764    .text.mpu6050_setYGyroOffset:00000000 mpu6050_setYGyroOffset
+     /tmp/ccQcRDgw.s:818    .text.mpu6050_getZGyroOffset:00000000 mpu6050_getZGyroOffset
+     /tmp/ccQcRDgw.s:897    .text.mpu6050_setZGyroOffset:00000000 mpu6050_setZGyroOffset
+     /tmp/ccQcRDgw.s:951    .text.mpu6050_setZAccelOffset:00000000 mpu6050_setZAccelOffset
+     /tmp/ccQcRDgw.s:1005   .text.mpu6050_read:00000000 mpu6050_read
+     /tmp/ccQcRDgw.s:1083   .text.mpu6050_readAllSensors:00000000 mpu6050_readAllSensors
+     /tmp/ccQcRDgw.s:1139   .text.mpu6050_getData:00000000 mpu6050_getData
+     /tmp/ccQcRDgw.s:1466   .text.mpu6050_calibration:00000000 mpu6050_calibration
+     /tmp/ccQcRDgw.s:1824   .text.mpu6050_init:00000000 mpu6050_init
+
+UNDEFINED SYMBOLS
+i2cReadRegisters
+i2cWriteRegisters
+__floatsisf
+__addsf3
+__divmodhi4
+__divsf3
+__mulsf3
+__fixsfsi
+I2CD1
+chThdSleep

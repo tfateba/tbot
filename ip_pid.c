@@ -12,7 +12,7 @@
 
 // TODO: Correct the general presentation of this file, also sam_pid.h
 
-#include "sam_pid.h"
+#include "ip_pid.h"
 void pid_initialize(pid_t* pid);
 
 /**

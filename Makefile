@@ -73,10 +73,10 @@ SRC = $(KERNSRC) \
       $(PLATFORMSRC) \
       $(BOARDSRC) \
       $(CHIBIOS)/os/various/evtimer.c \
-      sam_kalman.c \
-			sam_mpu6050.c \
-			sam_pid.c \
-			sam_i2c.c \
+      ip_kalman.c \
+			ip_mpu6050.c \
+			ip_pid.c \
+			ip_i2c.c \
 			main.c
 
 # List C++ source files here. (C dependencies are automatically generated.)

@@ -1,0 +1,905 @@
+   1               		.file	"ip_kalman.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__RAMPZ__ = 0x3b
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.text
+   9               	.Ltext0:
+  10               		.cfi_sections	.debug_frame
+  11               		.section	.text.kalman_init,"ax",@progbits
+  12               	.global	kalman_init
+  14               	kalman_init:
+  15               	.LFB0:
+  16               		.file 1 "ip_kalman.c"
+   1:ip_kalman.c   **** /* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+   2:ip_kalman.c   **** 
+   3:ip_kalman.c   ****  This software may be distributed and modified under the terms of the GNU
+   4:ip_kalman.c   ****  General Public License version 2 (GPL2) as published by the Free Software
+   5:ip_kalman.c   ****  Foundation and appearing in the file GPL2.TXT included in the packaging of
+   6:ip_kalman.c   ****  this file. Please note that GPL2 Section 2[b] requires that all works based
+   7:ip_kalman.c   ****  on this software must also be made publicly available under the terms of
+   8:ip_kalman.c   ****  the GPL2 ("Copyleft").
+   9:ip_kalman.c   **** 
+  10:ip_kalman.c   ****  Contact information
+  11:ip_kalman.c   ****  -------------------
+  12:ip_kalman.c   **** 
+  13:ip_kalman.c   ****  Kristian Lauszus, TKJ Electronics
+  14:ip_kalman.c   ****  Web      :  http://www.tkjelectronics.com
+  15:ip_kalman.c   ****  e-mail   :  kristianl@tkjelectronics.com
+  16:ip_kalman.c   ****  */
+  17:ip_kalman.c   **** 
+  18:ip_kalman.c   **** #include "ip_kalman.h"
+  19:ip_kalman.c   **** 
+  20:ip_kalman.c   **** /* Kalman filter variables */
+  21:ip_kalman.c   **** double Q_angle; // Process noise variance for the accelerometer
+  22:ip_kalman.c   **** double Q_bias; // Process noise variance for the gyro bias
+  23:ip_kalman.c   **** double R_measure; // Measurement noise variance - this is actually the variance of the measurement 
+  24:ip_kalman.c   **** 
+  25:ip_kalman.c   **** double angle; // The angle calculated by the Kalman filter - part of the 2x1 state vector
+  26:ip_kalman.c   **** double bias; // The gyro bias calculated by the Kalman filter - part of the 2x1 state vector
+  27:ip_kalman.c   **** double rate; // Unbiased rate calculated from the rate and the calculated bias - you have to call g
+  28:ip_kalman.c   **** 
+  29:ip_kalman.c   **** double P[2][2]; // Error covariance matrix - This is a 2x2 matrix
+  30:ip_kalman.c   **** double K[2]; // Kalman gain - This is a 2x1 vector
+  31:ip_kalman.c   **** double y; // Angle difference
+  32:ip_kalman.c   **** double S; // Estimate error
+  33:ip_kalman.c   **** 
+  34:ip_kalman.c   **** void kalman_init(void)
+  35:ip_kalman.c   **** {
+  17               		.loc 1 35 0
+  18               		.cfi_startproc
+  19               	/* prologue: function */
+  20               	/* frame size = 0 */
+  21               	/* stack size = 0 */
+  22               	.L__stack_usage = 0
+  36:ip_kalman.c   **** 	/* We will set the variables like so, these can also be tuned by the user */
+  37:ip_kalman.c   **** 	Q_angle = 0.001;
+  23               		.loc 1 37 0
+  24 0000 8FE6      		ldi r24,lo8(111)
+  25 0002 92E1      		ldi r25,lo8(18)
+  26 0004 A3E8      		ldi r26,lo8(-125)
+  27 0006 BAE3      		ldi r27,lo8(58)
+  28 0008 8093 0000 		sts Q_angle,r24
+  29 000c 9093 0000 		sts Q_angle+1,r25
+  30 0010 A093 0000 		sts Q_angle+2,r26
+  31 0014 B093 0000 		sts Q_angle+3,r27
+  38:ip_kalman.c   **** 	Q_bias = 0.003;
+  32               		.loc 1 38 0
+  33 0018 86EA      		ldi r24,lo8(-90)
+  34 001a 9BE9      		ldi r25,lo8(-101)
+  35 001c A4E4      		ldi r26,lo8(68)
+  36 001e BBE3      		ldi r27,lo8(59)
+  37 0020 8093 0000 		sts Q_bias,r24
+  38 0024 9093 0000 		sts Q_bias+1,r25
+  39 0028 A093 0000 		sts Q_bias+2,r26
+  40 002c B093 0000 		sts Q_bias+3,r27
+  39:ip_kalman.c   **** 	R_measure = 0.03;
+  41               		.loc 1 39 0
+  42 0030 8FE8      		ldi r24,lo8(-113)
+  43 0032 92EC      		ldi r25,lo8(-62)
+  44 0034 A5EF      		ldi r26,lo8(-11)
+  45 0036 BCE3      		ldi r27,lo8(60)
+  46 0038 8093 0000 		sts R_measure,r24
+  47 003c 9093 0000 		sts R_measure+1,r25
+  48 0040 A093 0000 		sts R_measure+2,r26
+  49 0044 B093 0000 		sts R_measure+3,r27
+  40:ip_kalman.c   **** 	angle = 0; // Reset the angle
+  50               		.loc 1 40 0
+  51 0048 1092 0000 		sts angle,__zero_reg__
+  52 004c 1092 0000 		sts angle+1,__zero_reg__
+  53 0050 1092 0000 		sts angle+2,__zero_reg__
+  54 0054 1092 0000 		sts angle+3,__zero_reg__
+  41:ip_kalman.c   **** 	bias = 0; // Reset bias
+  55               		.loc 1 41 0
+  56 0058 1092 0000 		sts bias,__zero_reg__
+  57 005c 1092 0000 		sts bias+1,__zero_reg__
+  58 0060 1092 0000 		sts bias+2,__zero_reg__
+  59 0064 1092 0000 		sts bias+3,__zero_reg__
+  42:ip_kalman.c   **** 	
+  43:ip_kalman.c   **** 	P[0][0] = 0; // Since we assume that the bias is 0 and we know the starting angle (use setAngle), 
+  60               		.loc 1 43 0
+  61 0068 1092 0000 		sts P,__zero_reg__
+  62 006c 1092 0000 		sts P+1,__zero_reg__
+  63 0070 1092 0000 		sts P+2,__zero_reg__
+  64 0074 1092 0000 		sts P+3,__zero_reg__
+  44:ip_kalman.c   **** 	P[0][1] = 0;
+  65               		.loc 1 44 0
+  66 0078 1092 0000 		sts P+4,__zero_reg__
+  67 007c 1092 0000 		sts P+4+1,__zero_reg__
+  68 0080 1092 0000 		sts P+4+2,__zero_reg__
+  69 0084 1092 0000 		sts P+4+3,__zero_reg__
+  45:ip_kalman.c   **** 	P[1][0] = 0;
+  70               		.loc 1 45 0
+  71 0088 1092 0000 		sts P+8,__zero_reg__
+  72 008c 1092 0000 		sts P+8+1,__zero_reg__
+  73 0090 1092 0000 		sts P+8+2,__zero_reg__
+  74 0094 1092 0000 		sts P+8+3,__zero_reg__
+  46:ip_kalman.c   **** 	P[1][1] = 0;
+  75               		.loc 1 46 0
+  76 0098 1092 0000 		sts P+12,__zero_reg__
+  77 009c 1092 0000 		sts P+12+1,__zero_reg__
+  78 00a0 1092 0000 		sts P+12+2,__zero_reg__
+  79 00a4 1092 0000 		sts P+12+3,__zero_reg__
+  80 00a8 0895      		ret
+  81               		.cfi_endproc
+  82               	.LFE0:
+  84               	.global	__subsf3
+  85               	.global	__mulsf3
+  86               	.global	__addsf3
+  87               	.global	__divsf3
+  88               		.section	.text.kalman_getAngle,"ax",@progbits
+  89               	.global	kalman_getAngle
+  91               	kalman_getAngle:
+  92               	.LFB1:
+  47:ip_kalman.c   **** };
+  48:ip_kalman.c   **** 
+  49:ip_kalman.c   ****     // The angle should be in degrees and the rate should be in degrees per second and the delta ti
+  50:ip_kalman.c   **** double kalman_getAngle(double newAngle, double newRate, double dt)
+  51:ip_kalman.c   **** {
+  93               		.loc 1 51 0
+  94               		.cfi_startproc
+  95               	.LVL0:
+  96 0000 2F92      		push r2
+  97               	.LCFI0:
+  98               		.cfi_def_cfa_offset 4
+  99               		.cfi_offset 2, -3
+ 100 0002 3F92      		push r3
+ 101               	.LCFI1:
+ 102               		.cfi_def_cfa_offset 5
+ 103               		.cfi_offset 3, -4
+ 104 0004 4F92      		push r4
+ 105               	.LCFI2:
+ 106               		.cfi_def_cfa_offset 6
+ 107               		.cfi_offset 4, -5
+ 108 0006 5F92      		push r5
+ 109               	.LCFI3:
+ 110               		.cfi_def_cfa_offset 7
+ 111               		.cfi_offset 5, -6
+ 112 0008 6F92      		push r6
+ 113               	.LCFI4:
+ 114               		.cfi_def_cfa_offset 8
+ 115               		.cfi_offset 6, -7
+ 116 000a 7F92      		push r7
+ 117               	.LCFI5:
+ 118               		.cfi_def_cfa_offset 9
+ 119               		.cfi_offset 7, -8
+ 120 000c 8F92      		push r8
+ 121               	.LCFI6:
+ 122               		.cfi_def_cfa_offset 10
+ 123               		.cfi_offset 8, -9
+ 124 000e 9F92      		push r9
+ 125               	.LCFI7:
+ 126               		.cfi_def_cfa_offset 11
+ 127               		.cfi_offset 9, -10
+ 128 0010 AF92      		push r10
+ 129               	.LCFI8:
+ 130               		.cfi_def_cfa_offset 12
+ 131               		.cfi_offset 10, -11
+ 132 0012 BF92      		push r11
+ 133               	.LCFI9:
+ 134               		.cfi_def_cfa_offset 13
+ 135               		.cfi_offset 11, -12
+ 136 0014 CF92      		push r12
+ 137               	.LCFI10:
+ 138               		.cfi_def_cfa_offset 14
+ 139               		.cfi_offset 12, -13
+ 140 0016 DF92      		push r13
+ 141               	.LCFI11:
+ 142               		.cfi_def_cfa_offset 15
+ 143               		.cfi_offset 13, -14
+ 144 0018 EF92      		push r14
+ 145               	.LCFI12:
+ 146               		.cfi_def_cfa_offset 16
+ 147               		.cfi_offset 14, -15
+ 148 001a FF92      		push r15
+ 149               	.LCFI13:
+ 150               		.cfi_def_cfa_offset 17
+ 151               		.cfi_offset 15, -16
+ 152 001c 0F93      		push r16
+ 153               	.LCFI14:
+ 154               		.cfi_def_cfa_offset 18
+ 155               		.cfi_offset 16, -17
+ 156 001e 1F93      		push r17
+ 157               	.LCFI15:
+ 158               		.cfi_def_cfa_offset 19
+ 159               		.cfi_offset 17, -18
+ 160 0020 CF93      		push r28
+ 161               	.LCFI16:
+ 162               		.cfi_def_cfa_offset 20
+ 163               		.cfi_offset 28, -19
+ 164 0022 DF93      		push r29
+ 165               	.LCFI17:
+ 166               		.cfi_def_cfa_offset 21
+ 167               		.cfi_offset 29, -20
+ 168 0024 CDB7      		in r28,__SP_L__
+ 169 0026 DEB7      		in r29,__SP_H__
+ 170               	.LCFI18:
+ 171               		.cfi_def_cfa_register 28
+ 172 0028 6C97      		sbiw r28,28
+ 173               	.LCFI19:
+ 174               		.cfi_def_cfa_offset 49
+ 175 002a 0FB6      		in __tmp_reg__,__SREG__
+ 176 002c F894      		cli
+ 177 002e DEBF      		out __SP_H__,r29
+ 178 0030 0FBE      		out __SREG__,__tmp_reg__
+ 179 0032 CDBF      		out __SP_L__,r28
+ 180               	/* prologue: function */
+ 181               	/* frame size = 28 */
+ 182               	/* stack size = 46 */
+ 183               	.L__stack_usage = 46
+ 184 0034 6D8B      		std Y+21,r22
+ 185 0036 7E8B      		std Y+22,r23
+ 186 0038 8F8B      		std Y+23,r24
+ 187 003a 988F      		std Y+24,r25
+ 188 003c CA01      		movw r24,r20
+ 189 003e B901      		movw r22,r18
+ 190               	.LVL1:
+ 191 0040 4701      		movw r8,r14
+ 192 0042 5801      		movw r10,r16
+  52:ip_kalman.c   **** 	// KasBot V2  -  Kalman filter module - http://www.x-firm.com/?page_id=145
+  53:ip_kalman.c   **** 	// Modified by Kristian Lauszus
+  54:ip_kalman.c   **** 	// See my blog post for more information: http://blog.tkjelectronics.dk/2012/09/a-practical-approa
+  55:ip_kalman.c   **** 	// Discrete Kalman filter time update equations - Time Update ("Predict")
+  56:ip_kalman.c   **** 	// Update xhat - Project the state ahead
+  57:ip_kalman.c   **** 	
+  58:ip_kalman.c   **** 	/* Step 1 */
+  59:ip_kalman.c   **** 	rate = newRate - bias;
+ 193               		.loc 1 59 0
+ 194 0044 2091 0000 		lds r18,bias
+ 195 0048 3091 0000 		lds r19,bias+1
+ 196 004c 4091 0000 		lds r20,bias+2
+ 197 0050 5091 0000 		lds r21,bias+3
+ 198               	.LVL2:
+ 199 0054 298B      		std Y+17,r18
+ 200 0056 3A8B      		std Y+18,r19
+ 201 0058 4B8B      		std Y+19,r20
+ 202 005a 5C8B      		std Y+20,r21
+ 203 005c 0E94 0000 		call __subsf3
+ 204               	.LVL3:
+ 205 0060 6093 0000 		sts rate,r22
+ 206 0064 7093 0000 		sts rate+1,r23
+ 207 0068 8093 0000 		sts rate+2,r24
+ 208 006c 9093 0000 		sts rate+3,r25
+  60:ip_kalman.c   **** 	angle += dt * rate;
+ 209               		.loc 1 60 0
+ 210 0070 A801      		movw r20,r16
+ 211 0072 9701      		movw r18,r14
+ 212 0074 0E94 0000 		call __mulsf3
+ 213               	.LVL4:
+ 214 0078 2091 0000 		lds r18,angle
+ 215 007c 3091 0000 		lds r19,angle+1
+ 216 0080 4091 0000 		lds r20,angle+2
+ 217 0084 5091 0000 		lds r21,angle+3
+ 218 0088 0E94 0000 		call __addsf3
+ 219               	.LVL5:
+ 220 008c 6D87      		std Y+13,r22
+ 221 008e 7E87      		std Y+14,r23
+ 222 0090 8F87      		std Y+15,r24
+ 223 0092 988B      		std Y+16,r25
+  61:ip_kalman.c   **** 	
+  62:ip_kalman.c   **** 	// Update estimation error covariance - Project the error covariance ahead
+  63:ip_kalman.c   **** 	/* Step 2 */
+  64:ip_kalman.c   **** 	P[0][0] += dt * (dt*P[1][1] - P[0][1] - P[1][0] + Q_angle);
+ 224               		.loc 1 64 0
+ 225 0094 A0E0      		ldi r26,lo8(P+12)
+ 226 0096 B0E0      		ldi r27,hi8(P+12)
+ 227 0098 8D91      		ld r24,X+
+ 228 009a 9D91      		ld r25,X+
+ 229 009c 0D90      		ld __tmp_reg__,X+
+ 230 009e BC91      		ld r27,X
+ 231 00a0 A02D      		mov r26,__tmp_reg__
+ 232 00a2 8983      		std Y+1,r24
+ 233 00a4 9A83      		std Y+2,r25
+ 234 00a6 AB83      		std Y+3,r26
+ 235 00a8 BC83      		std Y+4,r27
+ 236 00aa A801      		movw r20,r16
+ 237 00ac 9701      		movw r18,r14
+ 238 00ae BC01      		movw r22,r24
+ 239 00b0 CD01      		movw r24,r26
+ 240 00b2 0E94 0000 		call __mulsf3
+ 241               	.LVL6:
+ 242 00b6 6B01      		movw r12,r22
+ 243 00b8 7C01      		movw r14,r24
+ 244 00ba 00E0      		ldi r16,lo8(P+4)
+ 245 00bc 10E0      		ldi r17,hi8(P+4)
+ 246 00be D801      		movw r26,r16
+ 247 00c0 2D91      		ld r18,X+
+ 248 00c2 3D91      		ld r19,X+
+ 249 00c4 4D91      		ld r20,X+
+ 250 00c6 5C91      		ld r21,X
+ 251 00c8 2D83      		std Y+5,r18
+ 252 00ca 3E83      		std Y+6,r19
+ 253 00cc 4F83      		std Y+7,r20
+ 254 00ce 5887      		std Y+8,r21
+ 255 00d0 80E0      		ldi r24,lo8(P+8)
+ 256 00d2 282E      		mov r2,r24
+ 257 00d4 80E0      		ldi r24,hi8(P+8)
+ 258 00d6 382E      		mov r3,r24
+ 259 00d8 D101      		movw r26,r2
+ 260 00da 2D91      		ld r18,X+
+ 261 00dc 3D91      		ld r19,X+
+ 262 00de 4D91      		ld r20,X+
+ 263 00e0 5C91      		ld r21,X
+ 264 00e2 2987      		std Y+9,r18
+ 265 00e4 3A87      		std Y+10,r19
+ 266 00e6 4B87      		std Y+11,r20
+ 267 00e8 5C87      		std Y+12,r21
+ 268 00ea 2D81      		ldd r18,Y+5
+ 269 00ec 3E81      		ldd r19,Y+6
+ 270 00ee 4F81      		ldd r20,Y+7
+ 271 00f0 5885      		ldd r21,Y+8
+ 272 00f2 C701      		movw r24,r14
+ 273 00f4 B601      		movw r22,r12
+ 274 00f6 0E94 0000 		call __subsf3
+ 275               	.LVL7:
+ 276 00fa 2985      		ldd r18,Y+9
+ 277 00fc 3A85      		ldd r19,Y+10
+ 278 00fe 4B85      		ldd r20,Y+11
+ 279 0100 5C85      		ldd r21,Y+12
+ 280 0102 0E94 0000 		call __subsf3
+ 281               	.LVL8:
+ 282 0106 2091 0000 		lds r18,Q_angle
+ 283 010a 3091 0000 		lds r19,Q_angle+1
+ 284 010e 4091 0000 		lds r20,Q_angle+2
+ 285 0112 5091 0000 		lds r21,Q_angle+3
+ 286 0116 0E94 0000 		call __addsf3
+ 287               	.LVL9:
+ 288 011a A501      		movw r20,r10
+ 289 011c 9401      		movw r18,r8
+ 290 011e 0E94 0000 		call __mulsf3
+ 291               	.LVL10:
+ 292 0122 E0E0      		ldi r30,lo8(P)
+ 293 0124 F0E0      		ldi r31,hi8(P)
+ 294 0126 2081      		ld r18,Z
+ 295 0128 3181      		ldd r19,Z+1
+ 296 012a 4281      		ldd r20,Z+2
+ 297 012c 5381      		ldd r21,Z+3
+ 298 012e 0E94 0000 		call __addsf3
+ 299               	.LVL11:
+ 300 0132 2B01      		movw r4,r22
+ 301 0134 3C01      		movw r6,r24
+  65:ip_kalman.c   **** 	P[0][1] -= dt * P[1][1];
+ 302               		.loc 1 65 0
+ 303 0136 A701      		movw r20,r14
+ 304 0138 9601      		movw r18,r12
+ 305 013a 6D81      		ldd r22,Y+5
+ 306 013c 7E81      		ldd r23,Y+6
+ 307 013e 8F81      		ldd r24,Y+7
+ 308 0140 9885      		ldd r25,Y+8
+ 309 0142 0E94 0000 		call __subsf3
+ 310               	.LVL12:
+ 311 0146 6D83      		std Y+5,r22
+ 312 0148 7E83      		std Y+6,r23
+ 313 014a 8F83      		std Y+7,r24
+ 314 014c 9887      		std Y+8,r25
+  66:ip_kalman.c   **** 	P[1][0] -= dt * P[1][1];
+ 315               		.loc 1 66 0
+ 316 014e A701      		movw r20,r14
+ 317 0150 9601      		movw r18,r12
+ 318 0152 6985      		ldd r22,Y+9
+ 319 0154 7A85      		ldd r23,Y+10
+ 320 0156 8B85      		ldd r24,Y+11
+ 321 0158 9C85      		ldd r25,Y+12
+ 322 015a 0E94 0000 		call __subsf3
+ 323               	.LVL13:
+ 324 015e 6987      		std Y+9,r22
+ 325 0160 7A87      		std Y+10,r23
+ 326 0162 8B87      		std Y+11,r24
+ 327 0164 9C87      		std Y+12,r25
+  67:ip_kalman.c   **** 	P[1][1] += Q_bias * dt;
+ 328               		.loc 1 67 0
+ 329 0166 2091 0000 		lds r18,Q_bias
+ 330 016a 3091 0000 		lds r19,Q_bias+1
+ 331 016e 4091 0000 		lds r20,Q_bias+2
+ 332 0172 5091 0000 		lds r21,Q_bias+3
+ 333 0176 C501      		movw r24,r10
+ 334 0178 B401      		movw r22,r8
+ 335 017a 0E94 0000 		call __mulsf3
+ 336               	.LVL14:
+ 337 017e 9B01      		movw r18,r22
+ 338 0180 AC01      		movw r20,r24
+ 339 0182 6981      		ldd r22,Y+1
+ 340 0184 7A81      		ldd r23,Y+2
+ 341 0186 8B81      		ldd r24,Y+3
+ 342 0188 9C81      		ldd r25,Y+4
+ 343 018a 0E94 0000 		call __addsf3
+ 344               	.LVL15:
+ 345 018e 698F      		std Y+25,r22
+ 346 0190 7A8F      		std Y+26,r23
+ 347 0192 8B8F      		std Y+27,r24
+ 348 0194 9C8F      		std Y+28,r25
+  68:ip_kalman.c   **** 	
+  69:ip_kalman.c   **** 	// Discrete Kalman filter measurement update equations - Measurement Update ("Correct")
+  70:ip_kalman.c   **** 	// Calculate Kalman gain - Compute the Kalman gain
+  71:ip_kalman.c   **** 	/* Step 4 */
+  72:ip_kalman.c   **** 	S = P[0][0] + R_measure;
+ 349               		.loc 1 72 0
+ 350 0196 2091 0000 		lds r18,R_measure
+ 351 019a 3091 0000 		lds r19,R_measure+1
+ 352 019e 4091 0000 		lds r20,R_measure+2
+ 353 01a2 5091 0000 		lds r21,R_measure+3
+ 354 01a6 C301      		movw r24,r6
+ 355 01a8 B201      		movw r22,r4
+ 356 01aa 0E94 0000 		call __addsf3
+ 357               	.LVL16:
+ 358 01ae 6B01      		movw r12,r22
+ 359 01b0 7C01      		movw r14,r24
+ 360 01b2 6093 0000 		sts S,r22
+ 361 01b6 7093 0000 		sts S+1,r23
+ 362 01ba 8093 0000 		sts S+2,r24
+ 363 01be 9093 0000 		sts S+3,r25
+  73:ip_kalman.c   **** 	/* Step 5 */
+  74:ip_kalman.c   **** 	K[0] = P[0][0] / S;
+ 364               		.loc 1 74 0
+ 365 01c2 9B01      		movw r18,r22
+ 366 01c4 AC01      		movw r20,r24
+ 367 01c6 C301      		movw r24,r6
+ 368 01c8 B201      		movw r22,r4
+ 369 01ca 0E94 0000 		call __divsf3
+ 370               	.LVL17:
+ 371 01ce 4B01      		movw r8,r22
+ 372 01d0 5C01      		movw r10,r24
+ 373 01d2 6093 0000 		sts K,r22
+ 374 01d6 7093 0000 		sts K+1,r23
+ 375 01da 8093 0000 		sts K+2,r24
+ 376 01de 9093 0000 		sts K+3,r25
+  75:ip_kalman.c   **** 	K[1] = P[1][0] / S;
+ 377               		.loc 1 75 0
+ 378 01e2 A701      		movw r20,r14
+ 379 01e4 9601      		movw r18,r12
+ 380 01e6 6985      		ldd r22,Y+9
+ 381 01e8 7A85      		ldd r23,Y+10
+ 382 01ea 8B85      		ldd r24,Y+11
+ 383 01ec 9C85      		ldd r25,Y+12
+ 384 01ee 0E94 0000 		call __divsf3
+ 385               	.LVL18:
+ 386 01f2 6B01      		movw r12,r22
+ 387 01f4 7C01      		movw r14,r24
+ 388 01f6 6093 0000 		sts K+4,r22
+ 389 01fa 7093 0000 		sts K+4+1,r23
+ 390 01fe 8093 0000 		sts K+4+2,r24
+ 391 0202 9093 0000 		sts K+4+3,r25
+  76:ip_kalman.c   **** 	
+  77:ip_kalman.c   **** 	// Calculate angle and bias - Update estimate with measurement zk (newAngle)
+  78:ip_kalman.c   ****   /* Step 3 */
+  79:ip_kalman.c   **** 	y = newAngle - angle;
+ 392               		.loc 1 79 0
+ 393 0206 2D85      		ldd r18,Y+13
+ 394 0208 3E85      		ldd r19,Y+14
+ 395 020a 4F85      		ldd r20,Y+15
+ 396 020c 5889      		ldd r21,Y+16
+ 397 020e 6D89      		ldd r22,Y+21
+ 398 0210 7E89      		ldd r23,Y+22
+ 399 0212 8F89      		ldd r24,Y+23
+ 400 0214 988D      		ldd r25,Y+24
+ 401 0216 0E94 0000 		call __subsf3
+ 402               	.LVL19:
+ 403 021a 6983      		std Y+1,r22
+ 404 021c 7A83      		std Y+2,r23
+ 405 021e 8B83      		std Y+3,r24
+ 406 0220 9C83      		std Y+4,r25
+ 407 0222 6093 0000 		sts y,r22
+ 408 0226 7093 0000 		sts y+1,r23
+ 409 022a 8093 0000 		sts y+2,r24
+ 410 022e 9093 0000 		sts y+3,r25
+  80:ip_kalman.c   **** 	/* Step 6 */
+  81:ip_kalman.c   **** 	angle += K[0] * y;
+ 411               		.loc 1 81 0
+ 412 0232 9B01      		movw r18,r22
+ 413 0234 AC01      		movw r20,r24
+ 414 0236 C501      		movw r24,r10
+ 415 0238 B401      		movw r22,r8
+ 416 023a 0E94 0000 		call __mulsf3
+ 417               	.LVL20:
+ 418 023e 9B01      		movw r18,r22
+ 419 0240 AC01      		movw r20,r24
+ 420 0242 6D85      		ldd r22,Y+13
+ 421 0244 7E85      		ldd r23,Y+14
+ 422 0246 8F85      		ldd r24,Y+15
+ 423 0248 9889      		ldd r25,Y+16
+ 424 024a 0E94 0000 		call __addsf3
+ 425               	.LVL21:
+ 426 024e 6D87      		std Y+13,r22
+ 427 0250 7E87      		std Y+14,r23
+ 428 0252 8F87      		std Y+15,r24
+ 429 0254 988B      		std Y+16,r25
+ 430 0256 6093 0000 		sts angle,r22
+ 431 025a 7093 0000 		sts angle+1,r23
+ 432 025e 8093 0000 		sts angle+2,r24
+ 433 0262 9093 0000 		sts angle+3,r25
+  82:ip_kalman.c   **** 	bias += K[1] * y;
+ 434               		.loc 1 82 0
+ 435 0266 2981      		ldd r18,Y+1
+ 436 0268 3A81      		ldd r19,Y+2
+ 437 026a 4B81      		ldd r20,Y+3
+ 438 026c 5C81      		ldd r21,Y+4
+ 439 026e C701      		movw r24,r14
+ 440 0270 B601      		movw r22,r12
+ 441 0272 0E94 0000 		call __mulsf3
+ 442               	.LVL22:
+ 443 0276 9B01      		movw r18,r22
+ 444 0278 AC01      		movw r20,r24
+ 445 027a 6989      		ldd r22,Y+17
+ 446 027c 7A89      		ldd r23,Y+18
+ 447 027e 8B89      		ldd r24,Y+19
+ 448 0280 9C89      		ldd r25,Y+20
+ 449 0282 0E94 0000 		call __addsf3
+ 450               	.LVL23:
+ 451 0286 6093 0000 		sts bias,r22
+ 452 028a 7093 0000 		sts bias+1,r23
+ 453 028e 8093 0000 		sts bias+2,r24
+ 454 0292 9093 0000 		sts bias+3,r25
+  83:ip_kalman.c   **** 	// Calculate estimation error covariance - Update the error covariance
+  84:ip_kalman.c   **** 	/* Step 7 */
+  85:ip_kalman.c   **** 	P[0][0] -= K[0] * P[0][0];
+ 455               		.loc 1 85 0
+ 456 0296 A501      		movw r20,r10
+ 457 0298 9401      		movw r18,r8
+ 458 029a C301      		movw r24,r6
+ 459 029c B201      		movw r22,r4
+ 460 029e 0E94 0000 		call __mulsf3
+ 461               	.LVL24:
+ 462 02a2 9B01      		movw r18,r22
+ 463 02a4 AC01      		movw r20,r24
+ 464 02a6 C301      		movw r24,r6
+ 465 02a8 B201      		movw r22,r4
+ 466 02aa 0E94 0000 		call __subsf3
+ 467               	.LVL25:
+ 468 02ae 2B01      		movw r4,r22
+ 469 02b0 3C01      		movw r6,r24
+ 470 02b2 A0E0      		ldi r26,lo8(P)
+ 471 02b4 B0E0      		ldi r27,hi8(P)
+ 472 02b6 6D93      		st X+,r22
+ 473 02b8 7D93      		st X+,r23
+ 474 02ba 8D93      		st X+,r24
+ 475 02bc 9C93      		st X,r25
+ 476 02be 1397      		sbiw r26,3
+  86:ip_kalman.c   **** 	P[0][1] -= K[0] * P[0][1];
+ 477               		.loc 1 86 0
+ 478 02c0 A501      		movw r20,r10
+ 479 02c2 9401      		movw r18,r8
+ 480 02c4 6D81      		ldd r22,Y+5
+ 481 02c6 7E81      		ldd r23,Y+6
+ 482 02c8 8F81      		ldd r24,Y+7
+ 483 02ca 9885      		ldd r25,Y+8
+ 484 02cc 0E94 0000 		call __mulsf3
+ 485               	.LVL26:
+ 486 02d0 9B01      		movw r18,r22
+ 487 02d2 AC01      		movw r20,r24
+ 488 02d4 6D81      		ldd r22,Y+5
+ 489 02d6 7E81      		ldd r23,Y+6
+ 490 02d8 8F81      		ldd r24,Y+7
+ 491 02da 9885      		ldd r25,Y+8
+ 492 02dc 0E94 0000 		call __subsf3
+ 493               	.LVL27:
+ 494 02e0 4B01      		movw r8,r22
+ 495 02e2 5C01      		movw r10,r24
+ 496 02e4 F801      		movw r30,r16
+ 497 02e6 6083      		st Z,r22
+ 498 02e8 7183      		std Z+1,r23
+ 499 02ea 8283      		std Z+2,r24
+ 500 02ec 9383      		std Z+3,r25
+  87:ip_kalman.c   **** 	P[1][0] -= K[1] * P[0][0];
+ 501               		.loc 1 87 0
+ 502 02ee A301      		movw r20,r6
+ 503 02f0 9201      		movw r18,r4
+ 504 02f2 C701      		movw r24,r14
+ 505 02f4 B601      		movw r22,r12
+ 506 02f6 0E94 0000 		call __mulsf3
+ 507               	.LVL28:
+ 508 02fa 9B01      		movw r18,r22
+ 509 02fc AC01      		movw r20,r24
+ 510 02fe 6985      		ldd r22,Y+9
+ 511 0300 7A85      		ldd r23,Y+10
+ 512 0302 8B85      		ldd r24,Y+11
+ 513 0304 9C85      		ldd r25,Y+12
+ 514 0306 0E94 0000 		call __subsf3
+ 515               	.LVL29:
+ 516 030a D101      		movw r26,r2
+ 517 030c 6D93      		st X+,r22
+ 518 030e 7D93      		st X+,r23
+ 519 0310 8D93      		st X+,r24
+ 520 0312 9C93      		st X,r25
+ 521 0314 1397      		sbiw r26,3
+  88:ip_kalman.c   **** 	P[1][1] -= K[1] * P[0][1];
+ 522               		.loc 1 88 0
+ 523 0316 A501      		movw r20,r10
+ 524 0318 9401      		movw r18,r8
+ 525 031a C701      		movw r24,r14
+ 526 031c B601      		movw r22,r12
+ 527 031e 0E94 0000 		call __mulsf3
+ 528               	.LVL30:
+ 529 0322 9B01      		movw r18,r22
+ 530 0324 AC01      		movw r20,r24
+ 531 0326 698D      		ldd r22,Y+25
+ 532 0328 7A8D      		ldd r23,Y+26
+ 533 032a 8B8D      		ldd r24,Y+27
+ 534 032c 9C8D      		ldd r25,Y+28
+ 535 032e 0E94 0000 		call __subsf3
+ 536               	.LVL31:
+ 537 0332 E0E0      		ldi r30,lo8(P+12)
+ 538 0334 F0E0      		ldi r31,hi8(P+12)
+ 539 0336 6083      		st Z,r22
+ 540 0338 7183      		std Z+1,r23
+ 541 033a 8283      		std Z+2,r24
+ 542 033c 9383      		std Z+3,r25
+  89:ip_kalman.c   **** 	
+  90:ip_kalman.c   **** 	return angle;
+  91:ip_kalman.c   **** }
+ 543               		.loc 1 91 0
+ 544 033e 6D85      		ldd r22,Y+13
+ 545 0340 7E85      		ldd r23,Y+14
+ 546 0342 8F85      		ldd r24,Y+15
+ 547 0344 9889      		ldd r25,Y+16
+ 548               	/* epilogue start */
+ 549 0346 6C96      		adiw r28,28
+ 550 0348 0FB6      		in __tmp_reg__,__SREG__
+ 551 034a F894      		cli
+ 552 034c DEBF      		out __SP_H__,r29
+ 553 034e 0FBE      		out __SREG__,__tmp_reg__
+ 554 0350 CDBF      		out __SP_L__,r28
+ 555 0352 DF91      		pop r29
+ 556 0354 CF91      		pop r28
+ 557 0356 1F91      		pop r17
+ 558 0358 0F91      		pop r16
+ 559 035a FF90      		pop r15
+ 560 035c EF90      		pop r14
+ 561               	.LVL32:
+ 562 035e DF90      		pop r13
+ 563 0360 CF90      		pop r12
+ 564 0362 BF90      		pop r11
+ 565 0364 AF90      		pop r10
+ 566 0366 9F90      		pop r9
+ 567 0368 8F90      		pop r8
+ 568 036a 7F90      		pop r7
+ 569 036c 6F90      		pop r6
+ 570 036e 5F90      		pop r5
+ 571 0370 4F90      		pop r4
+ 572 0372 3F90      		pop r3
+ 573 0374 2F90      		pop r2
+ 574 0376 0895      		ret
+ 575               		.cfi_endproc
+ 576               	.LFE1:
+ 578               		.section	.text.set_angle,"ax",@progbits
+ 579               	.global	set_angle
+ 581               	set_angle:
+ 582               	.LFB2:
+  92:ip_kalman.c   **** 
+  93:ip_kalman.c   **** void set_angle(double newAngle)
+  94:ip_kalman.c   **** {
+ 583               		.loc 1 94 0
+ 584               		.cfi_startproc
+ 585               	.LVL33:
+ 586               	/* prologue: function */
+ 587               	/* frame size = 0 */
+ 588               	/* stack size = 0 */
+ 589               	.L__stack_usage = 0
+  95:ip_kalman.c   **** 	angle = newAngle;
+ 590               		.loc 1 95 0
+ 591 0000 6093 0000 		sts angle,r22
+ 592 0004 7093 0000 		sts angle+1,r23
+ 593 0008 8093 0000 		sts angle+2,r24
+ 594 000c 9093 0000 		sts angle+3,r25
+ 595 0010 0895      		ret
+ 596               		.cfi_endproc
+ 597               	.LFE2:
+ 599               		.section	.text.kalman_getRate,"ax",@progbits
+ 600               	.global	kalman_getRate
+ 602               	kalman_getRate:
+ 603               	.LFB3:
+  96:ip_kalman.c   **** }
+  97:ip_kalman.c   **** 
+  98:ip_kalman.c   **** // Used to set angle, this should be set as the starting angle
+  99:ip_kalman.c   **** double kalman_getRate(void)
+ 100:ip_kalman.c   **** {
+ 604               		.loc 1 100 0
+ 605               		.cfi_startproc
+ 606               	/* prologue: function */
+ 607               	/* frame size = 0 */
+ 608               	/* stack size = 0 */
+ 609               	.L__stack_usage = 0
+ 101:ip_kalman.c   **** 	return rate;
+ 610               		.loc 1 101 0
+ 611 0000 6091 0000 		lds r22,rate
+ 612 0004 7091 0000 		lds r23,rate+1
+ 613 0008 8091 0000 		lds r24,rate+2
+ 614 000c 9091 0000 		lds r25,rate+3
+ 102:ip_kalman.c   **** } // Return the unbiased rate
+ 615               		.loc 1 102 0
+ 616 0010 0895      		ret
+ 617               		.cfi_endproc
+ 618               	.LFE3:
+ 620               		.section	.text.kalman_setQangle,"ax",@progbits
+ 621               	.global	kalman_setQangle
+ 623               	kalman_setQangle:
+ 624               	.LFB4:
+ 103:ip_kalman.c   **** 
+ 104:ip_kalman.c   **** /* These are used to tune the Kalman filter */
+ 105:ip_kalman.c   **** void kalman_setQangle(double newQ_angle)
+ 106:ip_kalman.c   **** {
+ 625               		.loc 1 106 0
+ 626               		.cfi_startproc
+ 627               	.LVL34:
+ 628               	/* prologue: function */
+ 629               	/* frame size = 0 */
+ 630               	/* stack size = 0 */
+ 631               	.L__stack_usage = 0
+ 107:ip_kalman.c   **** 	Q_angle = newQ_angle;
+ 632               		.loc 1 107 0
+ 633 0000 6093 0000 		sts Q_angle,r22
+ 634 0004 7093 0000 		sts Q_angle+1,r23
+ 635 0008 8093 0000 		sts Q_angle+2,r24
+ 636 000c 9093 0000 		sts Q_angle+3,r25
+ 637 0010 0895      		ret
+ 638               		.cfi_endproc
+ 639               	.LFE4:
+ 641               		.section	.text.kalman_setQbias,"ax",@progbits
+ 642               	.global	kalman_setQbias
+ 644               	kalman_setQbias:
+ 645               	.LFB5:
+ 108:ip_kalman.c   **** }
+ 109:ip_kalman.c   **** 
+ 110:ip_kalman.c   **** void kalman_setQbias(double newQ_bias)
+ 111:ip_kalman.c   **** {
+ 646               		.loc 1 111 0
+ 647               		.cfi_startproc
+ 648               	.LVL35:
+ 649               	/* prologue: function */
+ 650               	/* frame size = 0 */
+ 651               	/* stack size = 0 */
+ 652               	.L__stack_usage = 0
+ 112:ip_kalman.c   **** 	Q_bias = newQ_bias;
+ 653               		.loc 1 112 0
+ 654 0000 6093 0000 		sts Q_bias,r22
+ 655 0004 7093 0000 		sts Q_bias+1,r23
+ 656 0008 8093 0000 		sts Q_bias+2,r24
+ 657 000c 9093 0000 		sts Q_bias+3,r25
+ 658 0010 0895      		ret
+ 659               		.cfi_endproc
+ 660               	.LFE5:
+ 662               		.section	.text.kalman_setRmeasure,"ax",@progbits
+ 663               	.global	kalman_setRmeasure
+ 665               	kalman_setRmeasure:
+ 666               	.LFB6:
+ 113:ip_kalman.c   **** }
+ 114:ip_kalman.c   **** 
+ 115:ip_kalman.c   **** void kalman_setRmeasure(double newR_measure)
+ 116:ip_kalman.c   **** {
+ 667               		.loc 1 116 0
+ 668               		.cfi_startproc
+ 669               	.LVL36:
+ 670               	/* prologue: function */
+ 671               	/* frame size = 0 */
+ 672               	/* stack size = 0 */
+ 673               	.L__stack_usage = 0
+ 117:ip_kalman.c   **** 	R_measure = newR_measure;
+ 674               		.loc 1 117 0
+ 675 0000 6093 0000 		sts R_measure,r22
+ 676 0004 7093 0000 		sts R_measure+1,r23
+ 677 0008 8093 0000 		sts R_measure+2,r24
+ 678 000c 9093 0000 		sts R_measure+3,r25
+ 679 0010 0895      		ret
+ 680               		.cfi_endproc
+ 681               	.LFE6:
+ 683               		.section	.text.kalman_getQangle,"ax",@progbits
+ 684               	.global	kalman_getQangle
+ 686               	kalman_getQangle:
+ 687               	.LFB7:
+ 118:ip_kalman.c   **** }
+ 119:ip_kalman.c   **** 
+ 120:ip_kalman.c   **** double kalman_getQangle(void)
+ 121:ip_kalman.c   **** {
+ 688               		.loc 1 121 0
+ 689               		.cfi_startproc
+ 690               	/* prologue: function */
+ 691               	/* frame size = 0 */
+ 692               	/* stack size = 0 */
+ 693               	.L__stack_usage = 0
+ 122:ip_kalman.c   **** 	return Q_angle;
+ 694               		.loc 1 122 0
+ 695 0000 6091 0000 		lds r22,Q_angle
+ 696 0004 7091 0000 		lds r23,Q_angle+1
+ 697 0008 8091 0000 		lds r24,Q_angle+2
+ 698 000c 9091 0000 		lds r25,Q_angle+3
+ 123:ip_kalman.c   **** }
+ 699               		.loc 1 123 0
+ 700 0010 0895      		ret
+ 701               		.cfi_endproc
+ 702               	.LFE7:
+ 704               		.section	.text.kalman_getQbias,"ax",@progbits
+ 705               	.global	kalman_getQbias
+ 707               	kalman_getQbias:
+ 708               	.LFB8:
+ 124:ip_kalman.c   **** 
+ 125:ip_kalman.c   **** double kalman_getQbias(void)
+ 126:ip_kalman.c   **** {
+ 709               		.loc 1 126 0
+ 710               		.cfi_startproc
+ 711               	/* prologue: function */
+ 712               	/* frame size = 0 */
+ 713               	/* stack size = 0 */
+ 714               	.L__stack_usage = 0
+ 127:ip_kalman.c   **** 	return Q_bias;
+ 715               		.loc 1 127 0
+ 716 0000 6091 0000 		lds r22,Q_bias
+ 717 0004 7091 0000 		lds r23,Q_bias+1
+ 718 0008 8091 0000 		lds r24,Q_bias+2
+ 719 000c 9091 0000 		lds r25,Q_bias+3
+ 128:ip_kalman.c   **** }
+ 720               		.loc 1 128 0
+ 721 0010 0895      		ret
+ 722               		.cfi_endproc
+ 723               	.LFE8:
+ 725               		.section	.text.kalman_getRmeasure,"ax",@progbits
+ 726               	.global	kalman_getRmeasure
+ 728               	kalman_getRmeasure:
+ 729               	.LFB9:
+ 129:ip_kalman.c   **** 
+ 130:ip_kalman.c   **** double kalman_getRmeasure(void)
+ 131:ip_kalman.c   **** {
+ 730               		.loc 1 131 0
+ 731               		.cfi_startproc
+ 732               	/* prologue: function */
+ 733               	/* frame size = 0 */
+ 734               	/* stack size = 0 */
+ 735               	.L__stack_usage = 0
+ 132:ip_kalman.c   **** 	return R_measure;
+ 736               		.loc 1 132 0
+ 737 0000 6091 0000 		lds r22,R_measure
+ 738 0004 7091 0000 		lds r23,R_measure+1
+ 739 0008 8091 0000 		lds r24,R_measure+2
+ 740 000c 9091 0000 		lds r25,R_measure+3
+ 133:ip_kalman.c   **** }
+ 741               		.loc 1 133 0
+ 742 0010 0895      		ret
+ 743               		.cfi_endproc
+ 744               	.LFE9:
+ 746               		.comm	S,4,1
+ 747               		.comm	y,4,1
+ 748               		.comm	K,8,1
+ 749               		.comm	P,16,1
+ 750               		.comm	rate,4,1
+ 751               		.comm	bias,4,1
+ 752               		.comm	angle,4,1
+ 753               		.comm	R_measure,4,1
+ 754               		.comm	Q_bias,4,1
+ 755               		.comm	Q_angle,4,1
+ 756               		.text
+ 757               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 ip_kalman.c
+     /tmp/ccK4nuoV.s:2      *ABS*:0000003e __SP_H__
+     /tmp/ccK4nuoV.s:3      *ABS*:0000003d __SP_L__
+     /tmp/ccK4nuoV.s:4      *ABS*:0000003f __SREG__
+     /tmp/ccK4nuoV.s:5      *ABS*:0000003b __RAMPZ__
+     /tmp/ccK4nuoV.s:6      *ABS*:00000000 __tmp_reg__
+     /tmp/ccK4nuoV.s:7      *ABS*:00000001 __zero_reg__
+     /tmp/ccK4nuoV.s:14     .text.kalman_init:00000000 kalman_init
+                            *COM*:00000004 Q_angle
+                            *COM*:00000004 Q_bias
+                            *COM*:00000004 R_measure
+                            *COM*:00000004 angle
+                            *COM*:00000004 bias
+                            *COM*:00000010 P
+     /tmp/ccK4nuoV.s:91     .text.kalman_getAngle:00000000 kalman_getAngle
+                            *COM*:00000004 rate
+                            *COM*:00000004 S
+                            *COM*:00000008 K
+                            *COM*:00000004 y
+     /tmp/ccK4nuoV.s:581    .text.set_angle:00000000 set_angle
+     /tmp/ccK4nuoV.s:602    .text.kalman_getRate:00000000 kalman_getRate
+     /tmp/ccK4nuoV.s:623    .text.kalman_setQangle:00000000 kalman_setQangle
+     /tmp/ccK4nuoV.s:644    .text.kalman_setQbias:00000000 kalman_setQbias
+     /tmp/ccK4nuoV.s:665    .text.kalman_setRmeasure:00000000 kalman_setRmeasure
+     /tmp/ccK4nuoV.s:686    .text.kalman_getQangle:00000000 kalman_getQangle
+     /tmp/ccK4nuoV.s:707    .text.kalman_getQbias:00000000 kalman_getQbias
+     /tmp/ccK4nuoV.s:728    .text.kalman_getRmeasure:00000000 kalman_getRmeasure
+
+UNDEFINED SYMBOLS
+__subsf3
+__mulsf3
+__addsf3
+__divsf3
+__do_clear_bss

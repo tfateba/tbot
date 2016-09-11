@@ -15,7 +15,7 @@
 /*==========================================================================*/
 /* Include Libraries                                                        */
 /*==========================================================================*/
-#include "sam_mpu6050.h"
+#include "ip_mpu6050.h"
 
 /*==========================================================================*/
 /* Driver Functions                                                         */ 
@@ -392,12 +392,12 @@ msg_t mpu6050_readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf){
 msg_t mpu6050_getData(I2CDriver *i2cp, mpu6050_t *mpup){
   uint8_t mpuData[14];
   int16_t temp;
-  int16_t x_accel;
-  int16_t y_accel;
-  int16_t z_accel;
-  int16_t x_gyro;
-  int16_t y_gyro;
-  int16_t z_gyro;
+  int16_t x_accel = 0;
+  int16_t y_accel = 0;
+  int16_t z_accel = 0;
+  int16_t x_gyro = 0;
+  int16_t y_gyro = 0;
+  int16_t z_gyro = 0;
   msg_t msg;
 
   msg = mpu6050_readAllSensors(i2cp, mpuData);
