@@ -49,7 +49,7 @@ F_CPU = 16000000
 FORMAT = ihex
 
 # Target file name (without extension).
-TARGET = sam
+TARGET = ip
 
 # Object files directory
 #     To put object files in current directory, use a dot (.), do NOT make
@@ -64,6 +64,7 @@ include $(CHIBIOS)/os/hal/ports/AVR/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/AVR/compilers/GCC/mk/port.mk
+include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC = $(KERNSRC) \
@@ -72,8 +73,9 @@ SRC = $(KERNSRC) \
       $(HALSRC) \
       $(PLATFORMSRC) \
       $(BOARDSRC) \
-      $(CHIBIOS)/os/various/evtimer.c \
-      ip_kalman.c \
+			$(STREAMSSRC) \
+			$(CHIBIOS)/os/various/evtimer.c \
+			ip_kalman.c \
 			ip_mpu6050.c \
 			ip_pid.c \
 			ip_i2c.c \
@@ -108,7 +110,7 @@ DEBUG = dwarf-2
 #     For a directory that has spaces, enclose it in quotes.
 EXTRAINCDIRS = $(PORTINC) $(KERNINC) $(TESTINC) \
                $(HALINC) $(OSALINC) $(PLATFORMINC) \
-               $(BOARDINC) $(CHIBIOS)/os/various
+							 $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various
 
 # Compiler flag to set the C Standard level.
 #     c89   = "ANSI" C

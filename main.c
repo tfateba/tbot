@@ -16,6 +16,9 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "chprintf.h"
+
+BaseSequentialStream* chp = (BaseSequentialStream*) &SD1;
 
 static WORKING_AREA(waThread1, 32);
 static THD_FUNCTION(Thread1, arg) {
@@ -24,7 +27,8 @@ static THD_FUNCTION(Thread1, arg) {
   chRegSetThreadName("Blinker");
   while (true) {
     palTogglePad(IOPORT2, PORTB_LED1);
-    chThdSleepMilliseconds(50);
+    chThdSleepMilliseconds(1000);
+		chprintf(chp, "\n\rHello world from Chibios RT on Arduino Mega2560\n");
   }
 }
 
@@ -43,19 +47,25 @@ int main(void) {
   halInit();
   chSysInit();
 
+	palSetPadMode(IOPORT2, 2, PAL_MODE_OUTPUT_PUSHPULL);
   palClearPad(IOPORT2, PORTB_LED1);
+	palClearPad(IOPORT2, 2);
 
   /*
    * Activates the serial driver 1 using the driver default configuration.
    */
   sdStart(&SD1, NULL);
 
+	chprintf(chp, "\n\r MPU: Configurations started...");
+  chThdSleepMilliseconds(1000);
   /*
    * Starts the LED blinker thread.
    */
   chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
   while(TRUE) {
-    chThdSleepMilliseconds(1000);
+    //palTogglePad(IOPORT2, 2);
+    //chThdSleepMilliseconds(1000);
+		//chprintf(chp, "\n\rHello world from Chibios RT on Arduino Mega2560\n");
   }
 }
