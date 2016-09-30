@@ -1,0 +1,12 @@
+*.patch
+build
+.dep
+*.lst
+*.o
+*.bin
+*.elf
+*.hex
+*.eep
+*.lss
+*.map
+*.sym
