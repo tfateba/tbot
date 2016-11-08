@@ -28,7 +28,17 @@
 /*
  * ADC driver system settings.
  */
-#define AVR_ADC_USE_ADC1                   FALSE
+#define AVR_ADC_USE_ADC1                    TRUE
+
+/*
+ * EXT driver system settings.
+ */
+#define AVR_EXT_USE_INT0                   FALSE
+#define AVR_EXT_USE_INT1                   FALSE
+#define AVR_EXT_USE_INT2                   TRUE
+#define AVR_EXT_USE_INT3                   TRUE
+#define AVR_EXT_USE_INT4                   FALSE
+#define AVR_EXT_USE_INT5                   FALSE
 
 /*
  * CAN driver system settings.
@@ -42,10 +52,10 @@
  * PWM driver system settings.
  */
 #define AVR_PWM_USE_TIM1                   FALSE
-#define AVR_PWM_USE_TIM2                   TRUE
+#define AVR_PWM_USE_TIM2                   FALSE
 #define AVR_PWM_USE_TIM3                   TRUE
 #define AVR_PWM_USE_TIM4                   TRUE
-#define AVR_PWM_USE_TIM5                   TRUE
+#define AVR_PWM_USE_TIM5                   FALSE
 
 /*
  * ICU driver system settings.
