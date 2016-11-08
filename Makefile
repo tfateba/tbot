@@ -73,13 +73,18 @@ SRC = $(KERNSRC) \
       $(HALSRC) \
       $(PLATFORMSRC) \
       $(BOARDSRC) \
-			$(STREAMSSRC) \
-			$(CHIBIOS)/os/various/evtimer.c \
-			ip_kalman.c \
-			ip_mpu6050.c \
-			ip_pid.c \
-			ip_i2c.c \
-			main.c
+      $(STREAMSSRC) \
+      $(CHIBIOS)/os/various/evtimer.c \
+      ip_asserv.c \
+      ip_i2c.c \
+      ip_kalman.c \
+      ip_motor.c \
+      ip_mpu6050.c \
+      ip_pid.c \
+      ip_pwm.c \
+      main.c
+#ip_ext.c \
+#ip_adc.c \
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC =
@@ -208,7 +213,7 @@ PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt
 # If this is left blank, then it will use the Standard printf version.
 PRINTF_LIB = $(PRINTF_LIB_MIN)
 #PRINTF_LIB = $(PRINTF_LIB_MIN)
-#PRINTF_LIB = $(PRINTF_LIB_FLOAT)
+PRINTF_LIB = $(PRINTF_LIB_FLOAT)
 
 # Minimalistic scanf version
 SCANF_LIB_MIN = -Wl,-u,vfscanf -lscanf_min
@@ -263,9 +268,8 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 AVRDUDE_PROGRAMMER = wiring
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-#AVRDUDE_PORT = /dev/tty.usbserial-A7004IPU
-AVRDUDE_PORT = /dev/ttyUSB0
-#AVRDUDE_PORT = /dev/ttyACM2
+#AVRDUDE_PORT = /dev/ttyUSB1
+AVRDUDE_PORT = /dev/ttyACM0
 
 AVRDUDE_WRITE_FLASH = -D -U flash:w:$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
