@@ -1,199 +1,345 @@
 /**
  *
- * @file    sam_motor.c
+ * @file          ip_motor.c
  *
- * @brief   Fonctions use to manage the LM298N dual step motor driver.
+ * @brief         motor driver.
  *
- * @author  Theodore Ateba
+ * @author        Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    27 June 2016
- *TODO: Correst the description with the LM298N driver
- * @description The robot is an autonomous explorer robot. It avoid obstacle
- *              and run in stand-alone mode. To do that, the robot use a 
- *              ultrasonic sensor to mesure the distance.
+ * @date          07 Septembre 2015
  *
- *              The motor driver is the HG7881 dual channel.
- *              We can control two motors with this driver.
- *              The interface is as follow:
- *              B-IA  Motor B input A. Speed control with a PWM.
- *              B-IB  Motor B input B. Direction control with a GPIO.
- *              GND   Ground.
- *              VCC   Operating voltage 2,5-12V.
- *              A-IA  Motor A input A. Speed control with a PWM.
- *              A-IB  Motor A input B. Direction control with a GPIO.
+ * @update        30 September 2016
  *
- *              The Driver wiring is made as follow:
- *              B-IA pin  GPIOA8 pin
- *              B-IB pin  GPIOB10 pin
- *              GND pin   GND pin
- *              VCC pin   5V pin
- *              A-IA pin  GPIOA9 pin
- *              A-IB pin  GPIOC7 pin
+ * @version       1.2
  *
- *              The Ultrasonic sensor is connected as follow:
- *              VCC pin   5V
- *              Trig pin  GPIOB5
- *              Echo pin  GPIOB4
- *              GND pin   GND pin
- *
- *
- * @description The Motor driver is the L298N from ST Micro-electronics
- *              It is a Dual Stepper Motors Driver.
- *              Driver-Pin  Pin-type  Nucleo-Pin  Description
- *                  IN1       GPIO      GPIOA1    Motor 1 direction control.
- *                  IN2       GPIO      GPIOA1    Motor 1 direction control.
- *                  ENA       PWM       GPIOA1    Motor 1 speed control.
- *                  IN3       GPIO      GPIOA1    Motor 2 direction control.
- *                  IN4       GPIO      GPIOA1    Motor 2 direction control.
- *                  ENB       PWM       GPIOA1    Motor 2 speed control.
- *                  VCC       Power       5V      Driver power supply.
- *                  GND       Power       GND     Driver power supply.
+ * @description   Motor control and Encoder Read
+ *                Description:
+ *                Get the PWM control value from the I2C.
+ *                Send the Encoder value to the I2C master when required.
+ *                Motor Power:	white
+ *                Motor Power:	yellow
+ *                Encoder GND:	blue
+ *                Encoder VCC:	green
+ *                Encoder A:		black
+ *                Encoder B:		Red
  */
 
-/*===========================================================================*/
-/* Includes Files                                                            */
-/*===========================================================================*/
-#include "sam_motor.h"
+/*=========================================================================*/
+/* Includes files.                                                         */
+/*=========================================================================*/
+#include "ip_motor.h"
+#include "chprintf.h"
 
-/*===========================================================================*/
-/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations    */
-/*===========================================================================*/
+#define DEBUG 1
+/*=========================================================================*/
+/* Global variables.                                                       */
+/*=========================================================================*/
+bool steerForward;          /**< TODO: comment                             */
+bool steerBackward;         /**< TODO: comment                             */
+bool steerStop      = true; /* Stop by default                             */
+bool steerLeft;             /**< TODO: comment                             */
+bool steerRight;            /**< TODO: comment                             */
 
-/*===========================================================================*/
-/* Functions and threads                                                     */
-/*===========================================================================*/
+long wheelPosition;     /**< TODO: comment                                 */
+long wheelVelocity;     /**< TODO: comment                                 */
+long lastWheelPosition; /**< TODO: comment                                 */
+long targetPosition;    /**< TODO: comment                                 */
+
+static bool     stopped;                /**< Target position after breaking*/
+static long     leftCounter   = 0;      /**< TODO: comment                 */
+static long     rightCounter  = 0;      /**< TODO: comment                 */
+static bool     lstateA       = false;
+static bool     lstateB       = false;
+static bool     rstateA       = false;
+static bool     rstateB       = false;
+static uint8_t  loopCounter   = 0;      /**< Used to update wheel velocity */
+
+/*=========================================================================*/
+/* Encoders callback.                                                      */
+/*=========================================================================*/
+/**
+ * @brief   This is the External interrupt callback for the Left motor
+ *          encoder.
+ */
+static void cbLeftEncoder(EXTDriver *extp, expchannel_t channel) {
+  (void)extp;
+  (void)channel;
+
+  chSysLockFromISR();
+
+  if (palReadPad(L_ENCODER_B_PORT, L_ENCODER_B))
+    leftCounter--;
+  else
+    leftCounter++;
+
+  lstateA = palReadPad(L_ENCODER_A_PORT, L_ENCODER_A);
+  lstateB = palReadPad(L_ENCODER_B_PORT, L_ENCODER_B);
+
+  chSysUnlockFromISR();
+}
 
 /**
- * @fn    motor_setDirection 
- * @brief Set the direction of a motor, forward or backward
- *
- * @param[in] motorId   The Id of the motor top be control.
- * @param[in] direction The direction of the selected motor.
+ * @brief   This is the External interrupt callback for the Rigth motor
+ *          encoder.
  */
-void motor_setDirection(uint8_t motorId, bool direction){
-  if(motorId == MOTOR1){
-    if(direction ==  MOTOR_FORWARD){
-      palSetPad(LM298N_IN1_PORT, LM298N_IN1_PIN);
-      palClearPad(LM298N_IN2_PORT, LM298N_IN2_PIN);
+static void cbRightEncoder(EXTDriver *extp, expchannel_t channel) {
+  (void)extp;
+  (void)channel;
+
+  chSysLockFromISR();
+
+  if (palReadPad(R_ENCODER_A_PORT, R_ENCODER_A))
+    rightCounter--;
+  else
+    rightCounter++;
+
+  rstateA = palReadPad(R_ENCODER_A_PORT, R_ENCODER_A);
+  rstateB = palReadPad(R_ENCODER_B_PORT, R_ENCODER_B);
+
+  chSysUnlockFromISR();
+}
+
+/**
+ * @brief EXT Driver configurations.
+ */
+static const EXTConfig extcfg = {
+  {
+    {EXT_CH_MODE_DISABLED , NULL},              /***< INT0 Config */
+    {EXT_CH_MODE_DISABLED , NULL},              /***< INT1 Config */
+    {EXT_CH_MODE_RISING_EDGE , cbRightEncoder}, /***< INT2 Config */
+    {EXT_CH_MODE_RISING_EDGE , cbLeftEncoder},  /***< INT3 Config */
+    {EXT_CH_MODE_DISABLED , NULL},              /***< INT4 Config */
+    {EXT_CH_MODE_DISABLED , NULL},              /***< INT5 Config */
+  }
+};
+
+/*=========================================================================*/
+/* Functions.                                                              */
+/*=========================================================================*/
+
+/**
+ * @fn    stopMotor
+ * @brief Stop the corresponding motor.
+ *
+ * @param[in] motor the motor to stop, rigth or left
+ */
+void stopMotor(uint8_t motor) {
+  if (motor == MOTOR_L)
+    setPWM(MOTOR_L, MOTOR_DIR_F, 0);
+  if (motor == MOTOR_R)
+    setPWM(MOTOR_R, MOTOR_DIR_F, 0);
+}
+
+/**
+ * @fn    setPWM
+ * @brief Generate the corresponding PWM for speed control.
+ *
+ * @param[in] motor     the motor to pilot, rigth or left.
+ * @param[in] direction the direction of the motor, backward or forward.
+ * @param[in] dutyCycle the duty cycle to set the pwm.
+ */
+void setPWM(uint8_t motor, uint8_t direction, int dutyCycle) {
+  if (motor == MOTOR_L) {
+    palSetPad(LMD_EN_PORT, LMD_EN); // digitalWrite(LMD_EN, HIGH);
+    if(direction == MOTOR_DIR_F){
+      palSetPad(LMD_LPWM_PORT, LMD_LPWM);//analogWrite(LMD_LPWM, HIGH);		// Reverse
+      //pwm_setPulseWidth(&PWMD1, 0, dutyCycle);
+      //analogWrite(LMD_RPWM, dutyCycle);	// Forward
     }
-    else if(direction == MOTOR_REVERSE){
-      palSetPad(LM298N_IN2_PORT, LM298N_IN2_PIN);
-      palClearPad(LM298N_IN1_PORT, LM298N_IN1_PIN);
+    else if (direction == MOTOR_DIR_B) {
+      //analogWrite(LMD_LPWM, dutyCycle);	// Reverse
+      palSetPad(LMD_RPWM_PORT, LMD_RPWM);//analogWrite(LMD_RPWM, HIGH);		// Forward
     }
   }
-  else if(motorId == MOTOR2){
-    if(direction ==  MOTOR_FORWARD){
-      palSetPad(LM298N_IN3_PORT, LM298N_IN3_PIN);
-      palClearPad(LM298N_IN4_PORT, LM298N_IN4_PIN);
+  else if (motor == MOTOR_R) {
+    palSetPad(RMD_EN_PORT, RMD_EN); // digitalWrite(RMD_EN, HIGH);
+    if (direction == MOTOR_DIR_F) {
+      palSetPad(RMD_LPWM_PORT, RMD_LPWM); //analogWrite(RMD_LPWM, HIGH);		// Reverse
+      //analogWrite(RMD_RPWM, dutyCycle);	// Forward
     }
-    else if(direction == MOTOR_REVERSE){
-      palSetPad(LM298N_IN4_PORT, LM298N_IN4_PIN);
-      palClearPad(LM298N_IN3_PORT, LM298N_IN3_PIN);
+    else if (direction == MOTOR_DIR_B) {
+      //analogWrite(RMD_LPWM, dutyCycle);	// Reverse
+      palSetPad(RMD_RPWM_PORT, RMD_RPWM); //analogWrite(RMD_RPWM, HIGH);		// Forward
     }
   }
 }
 
 /**
- * @fn    motor_setSpeed
- * @brief Set the motor speed
- *
- * @param[in] pwmp    PWM driver interface pointer
- * @param[in] motorId Motor to control, ID = 1 or 2 for this project.
- * @param[in] speed   The speed to driver the motor.
+ * @fn    motorsStopAndReset
+ * @brief Stop both motors and initialize wheels position, PID parameters.
  */
-void motor_setSpeed(PWMDriver *pwmp, uint8_t motorId, uint16_t speed){
-  if(motorId == MOTOR1)
-    pwm_setPulseWidth(pwmp, MOTOR1_PWM_CHANNEL, speed);
-  else if(motorId == MOTOR2)
-    pwm_setPulseWidth(pwmp, MOTOR2_PWM_CHANNEL, speed);
+void motorsStopAndReset(void) {
+  stopMotor(MOTOR_R);
+  stopMotor(MOTOR_L);
+  //pidParametersReset();
 }
 
 /**
- * @fn    motor_init
- * @brief Initialize the motors. Direction and configure the pwm for speed.
+ * @fn    moveMotor
+ * @brief Driving the motor to set to the given speed.
  *
- * @param[in] pwmp    The pwm interface pointer
- * @param[in] pwmcfg  The pwm interface configuration
+ * @param[in] motor     the motor to pilot, rigth or left
+ * @param[in] direction the direction of the motor, backward or forward
+ * @param[in] speedRaw  the speed to set the motor
  */
-void motors_init(PWMDriver *pwmp, PWMConfig *pwmcfg){
-  /* Configure the motors pins */
-  palSetPadMode(LM298N_IN1_PORT, LM298N_IN1_PIN, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(LM298N_IN2_PORT, LM298N_IN2_PIN, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(LM298N_IN3_PORT, LM298N_IN3_PIN, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(LM298N_IN4_PORT, LM298N_IN4_PIN, PAL_MODE_OUTPUT_PUSHPULL);
+void moveMotor(uint8_t motor, uint8_t direction, double speedRaw) {
+  int speed;
+  if(speedRaw > 255)
+    speedRaw = 255;
 
-  /* Set the direction of the motors */
-  motor_setDirection(MOTOR1, MOTOR_FORWARD);
-  motor_setDirection(MOTOR2, MOTOR_FORWARD);
-  
-  /* Configure the motors PWM pin for speed control */
-  pwm_init(pwmp, pwmcfg);
+  speed = speedRaw*((double)PWMVALUE)/255; // Scale from 100 to PWMVALUE
+  setPWM(motor, direction, speed);
 }
 
 /**
- * @fn    demo
- * @brief demo function to test the motor.
+ * @fn      readLeftEncoder
+ * @brief   The encoders decrease when motor is traveling forward and increase
+ *          when traveling backward.
  *
- * @param[in] pwmp    The pwm interface pointer
- * @param[in] pwmcfg  The pwm interface configuration
+ * @return  leftCounter the value of the left encoder
  */
-void demo(PWMDriver *pwmp, PWMConfig *pwmcfg){
-  uint16_t i;
-
-  pwm_disable(pwmp);
-  chThdSleepMilliseconds(1000);
-  pwm_enable(pwmp, pwmcfg, 0);
-  pwm_enable(pwmp, pwmcfg, 1);
-  chThdSleepMilliseconds(1000);
-
-  motor_setDirection(MOTOR1, MOTOR_FORWARD);
-  motor_setDirection(MOTOR2, MOTOR_FORWARD);
-  for(i = 0; i <= 10000; i+= 1000){
-    motor_setSpeed(pwmp, MOTOR1, i);
-    motor_setSpeed(pwmp, MOTOR2, i);
-    chThdSleepMilliseconds(100);
-  }
-  for(i = 10000; i > 0; i-= 1000){
-    motor_setSpeed(pwmp, MOTOR1, i);
-    motor_setSpeed(pwmp, MOTOR2, i);
-    chThdSleepMilliseconds(100);
-  }
-
-  motor_setDirection(MOTOR1, MOTOR_REVERSE);
-  motor_setDirection(MOTOR2, MOTOR_REVERSE);
-  for(i = 0; i <= 10000; i+= 1000){
-    motor_setSpeed(pwmp, MOTOR1, i);
-    motor_setSpeed(pwmp, MOTOR2, i);
-    chThdSleepMilliseconds(100);
-  }
-  for(i = 10000; i > 0; i-= 1000){
-    motor_setSpeed(pwmp, MOTOR1, i);
-    motor_setSpeed(pwmp, MOTOR2, i);
-    chThdSleepMilliseconds(100);
-  }
-  pwm_disable(pwmp);
+long readLeftEncoder(void) {
+  return leftCounter;
 }
 
 /**
- * @fn    controlMotor
- * @brief Control the motors of the robot.
+ * @fn      readRightEncoder
+ * @brief   The encoders decrease when motor is traveling forward and increase
+ *          when traveling backward.
  *
- * @param[in] pwmp    The pwm interface pointer.
- * @param[in] pwmcfg  The pwm interface configuration.
+ * @return  rightCounter the value of the right encoder
  */
-void controlMotor(PWMDriver *pwmp, float speed){
-/*
-  // Set the direction
-  if( speed < 0 ){
-    motor_setDirection(MOTOR1, MOTOR_FORWARD);
-    motor_setDirection(MOTOR2, MOTOR_FORWARD);
-  }
-  else{
-    motor_setDirection(MOTOR1, MOTOR_REVERSE);
-    motor_setDirection(MOTOR2, MOTOR_REVERSE);
-  }
-*/
-  // Set speed
-  motor_setSpeed(pwmp, MOTOR1, speed);
-  motor_setSpeed(pwmp, MOTOR2, speed);
+long readRightEncoder(void) {
+  return rightCounter;
 }
+
+//============================================================================
+/**
+ * @fn      readLeftEncoderStateA
+ * @brief   return the state of the rigth encder A.
+ *
+ * @return  rightCounter the value of the right encoder
+ */
+long readLeftEncoderStateA(void) {
+  long ret;
+
+  if(lstateA)
+    ret = 1;
+  else
+    ret = 0;
+
+  return ret;
+}
+
+/**
+ * @fn      readLeftEncoderStateB
+ * @brief   return the state of the rigth encder A.
+ *
+ * @return  rightCounter the value of the right encoder
+ */
+long readLeftEncoderStateB(void) {
+  long ret;
+
+  if(lstateB)
+    ret = 1;
+  else
+    ret = 0;
+
+  return ret;
+}
+
+/**
+ * @fn      readRightEncoderStateA
+ * @brief   return the state of the rigth encder A.
+ *
+ * @return  rightCounter the value of the right encoder
+ */
+long readRightEncoderStateA(void) {
+  long ret;
+
+  if(rstateA)
+    ret = 1;
+  else
+    ret = 0;
+
+  return ret;
+}
+
+/**
+ * @fn      readRightEncoderStateB
+ * @brief   return the state of the rigth encder A.
+ *
+ * @return  rightCounter the value of the right encoder
+ */
+long readRightEncoderStateB(void) {
+  long ret;
+
+  if(rstateB)
+    ret = 1;
+  else
+    ret = 0;
+
+  return ret;
+}
+
+//======================================================================
+
+/**
+ * @fn      motorInit
+ * @brief   Initialize all pins needs for motor control
+ */
+void motorInit(void) {
+
+  // Set left Motors Encoders
+  palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT); // pin D19 [PD2]
+  palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT); // pin D5  [PG5]
+
+  // Set Rigth motor encoders
+  palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT); // pin D18 [PD3]
+  palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT); // pin D3  [PE5]
+
+  // Setup Left Motor Driver ( LMD )
+  palSetPadMode(LMD_RPWM_PORT, LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
+  palSetPadMode(LMD_LPWM_PORT, LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
+  palSetPadMode(LMD_EN_PORT, LMD_EN, PAL_MODE_OUTPUT_PUSHPULL);     // pin
+
+  // Setup Rigth Motor Driver ( RMD )
+  palSetPadMode(RMD_RPWM_PORT, RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
+  palSetPadMode(RMD_LPWM_PORT, RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
+  palSetPadMode(RMD_EN_PORT, RMD_EN, PAL_MODE_OUTPUT_PUSHPULL);     // pin
+
+  // Eneble Motors.
+  palSetPad(LMD_EN_PORT, LMD_EN);
+  palSetPad(RMD_EN_PORT, RMD_EN);
+
+  // Motor Enable pins configuration.
+  //palSetPadMode(IOPORT2, PB4, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor Enable
+  //palSetPadMode(IOPORT8, PH4, PAL_MODE_OUTPUT_PUSHPULL); // left motor Enable
+
+  // Configure the EXT Driver and Validate the External interrupt for encoders:
+  extStart(&EXTD1, &extcfg);
+  extChannelEnable(&EXTD1, INT2); // pin D19 [PD2]
+  extChannelEnable(&EXTD1, INT3); // pin D18 [PD3]
+}
+
+/**
+ * @fn      motorGetWheelVelocity
+ * @brief   Get the wheel velocity for asservissement routine.
+ */
+void motorGetWheelVelocity(void) {
+  loopCounter++;
+
+  if (loopCounter == 10) {
+    loopCounter = 0;
+    wheelPosition = readLeftEncoder() + readRightEncoder();
+    wheelVelocity = wheelPosition - lastWheelPosition;
+    lastWheelPosition = wheelPosition;
+
+    if (abs(wheelVelocity) <= 20 && !stopped) {
+      // Set new targetPosition if braking.
+      targetPosition = wheelPosition;
+      stopped = true;
+    }
+  }
+}
+

@@ -54,8 +54,8 @@
 #define PWMVALUE F_CPU/PWM_FREQUENCY/2
 
 /* Arduino Interruption */
-#define INT0 0      /**< On pin 2.                                         */
-#define INT1 1      /**< On Pin 3.                                         */
+#define INT2 2      /**< On Pin 19 [PD2] .                                 */
+#define INT3 3      /**< On Pin 18 [PD3].                                  */
 
 /* Motor encoders Ports on arduino Mega.*/
 #define L_ENCODER_A_PORT IOPORT4 /**< Red wire. PE4                        */
