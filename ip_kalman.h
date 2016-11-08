@@ -13,6 +13,9 @@
  Kristian Lauszus, TKJ Electronics
  Web      :  http://www.tkjelectronics.com
  e-mail   :  kristianl@tkjelectronics.com
+
+ Modify by:
+ Theodore Ateba, tf.ateba@gmail.com
  */
 
 #ifndef __SAM_KALMAN_H_
