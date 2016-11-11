@@ -155,9 +155,9 @@ int main(void) {
   msg = mpu6050_init(&I2CD1, &imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
-  	chprintf(chp, "\n\r %s: Error while initialising the %s sensor.", mpu, mpu);
-		return -1;
-	}
+    chprintf(chp, "\n\r %s: Error while initialising the %s sensor.", mpu, mpu);
+    return -1;
+  }
 
   chprintf(chp, "\n\r MPU: Initialisation Ok.");
   chprintf(chp, "\n\r MPU: Calibration, please wait while processing...");
