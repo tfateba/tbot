@@ -91,9 +91,9 @@ void pwm_setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
  * @fn      pwm_enable.
  * @brief   Enable PWM channel.
  *
- * @param[in] pwmp    pointer to the pwm driver
- * @param[in] pwmcfg  configuration of the pwm driver
- * @param[in] channel channel to enable
+ * @param[in] pwmp      pointer to the pwm driver
+ * @param[in] pwmcfg    configuration of the pwm driver
+ * @param[in] channel   channel to enable
  */
 void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
   pwmStart(pwmp, pwmcfg);
@@ -104,7 +104,7 @@ void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
  * @fn      pwm_disable.
  * @brief   Disable PWM channel.
  *
- * @param[in] pwmp pointer of the pwm driver to disable
+ * @param[in] pwmp  pointer of the pwm driver to disable
  */
 void pwm_disable(PWMDriver *pwmp) {
   pwmStop(pwmp);

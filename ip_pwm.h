@@ -1,9 +1,3 @@
-/*
- * TODO Find how to create a copy rigth for my robot such as the chibios 
- * copy rigth.
- */
-
-
 /**
  *
  * @file    ip_pwm.h
@@ -14,7 +8,7 @@
  *
  * @date    30 June 2016
  *
- * @update	22 August 2016
+ * @update	11 November 2016
  *
  * @TODO:		Complete the function description.(parameters, returned value
  */
