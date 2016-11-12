@@ -45,11 +45,12 @@ extern long wheelPosition;      /**< TODO: comment                         */
 extern long lastWheelPosition;  /**< TODO: comment                         */
 extern long wheelVelocity;      /**< TODO: comment                         */
 extern long targetPosition;     /**< TODO: comment                         */
-extern bool steerForward;       /**< TODO: comment                       */
-extern bool steerBackward;      /**< TODO: comment                       */
-extern bool steerStop;          /* Stop by default                       */
-extern bool steerLeft;          /**< TODO: comment                       */
-extern bool steerRight;         /**< TODO: comment                       */
+
+bool steerForward;          /**< TODO: comment                             */
+bool steerBackward;         /**< TODO: comment                             */
+bool steerStop      = true; /* Stop by default                             */
+bool steerLeft;             /**< TODO: comment                             */
+bool steerRight;            /**< TODO: comment                             */
 
 /*=========================================================================*/
 /* Functions.                                                              */

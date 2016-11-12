@@ -1,13 +1,13 @@
 /**
- * @file    sam_pid.h
+ * @file    ip_pid.h
  *
  * @brief   pid corrector header file.
  *
- * @author  Theodore Ateba
+ * @author  Theodore Ateba, tf.ateba@gmail.com
  *
  * @date    13 July 2016
  *
- * @update  13 July 2016
+ * @update  11 November 2016
  *
  */
 
@@ -24,9 +24,14 @@
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
+
+/*==========================================================================*/
+/* Functions.                                                               */
+/*==========================================================================*/
+
 /**
- * @fn     pid
- * @brief	Calcul the command to send to the motors according to last error.
+ * @fn      pid
+ * @brief   Calcul the command to send to the motors according to last error.
  *
  * @param[in] restAngle
  * @param[in] offset
@@ -35,10 +40,10 @@
 void pid(double pitch, double restAngle, double offset, double turning);
 
 /**
- * @fn    pidParametersReset
- * @brief Reset the PID parameters.
+ * @fn      pidParametersReset
+ * @brief   Reset the PID parameters.
  */
 void pidParametersReset(void);
 
-#endif
+#endif /* _IP_PID_H_ */
 
