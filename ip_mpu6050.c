@@ -8,7 +8,7 @@
  *
  * @date    26 June 2016
  *
- * @update  2 November 2016
+ * @update  11 November 2016
  *
  */
 
@@ -125,8 +125,8 @@ msg_t mpu6050_reset(I2CDriver *i2cp) {
  * @fn      mpu6050_gyroConfig
  * @brief   Configure the gyroscope full scale.
  *
- * @param[in] i2cp  pointer of the i2C interface
- * @param[in] scale scale to set the MPU6050(250, 500, 1000 or 2000)
+ * @param[in] i2cp    pointer of the i2C interface
+ * @param[in] scale   scale to set the MPU6050(250, 500, 1000 or 2000)
  *
  * @return    msg   result of the wakeup operation
  */
@@ -164,8 +164,8 @@ msg_t mpu6050_gyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
  * @fn      mpu6050_accelConfig
  * @brief   Configure the accelerometer full scale.
  *
- * @param[in] i2cp  pointer of the i2C interface
- * @param[in] scale scale to set the MPU6050(2, 4, 8 or 16)
+ * @param[in] i2cp    pointer of the i2C interface
+ * @param[in] scale   scale to set the MPU6050(2, 4, 8 or 16)
  *
  * @return    msg   result of the wakeup operation
  */
@@ -377,8 +377,8 @@ msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp) {
  * @fn      mpu6050_readAllSensors
  * @brief   Read all axis of data and also the temperature.
  *
- * @param[in] i2cp  pointer of the i2C interface
- * @param[in] rxbuf reception buffer for the i2c data readed
+ * @param[in] i2cp    pointer of the i2C interface
+ * @param[in] rxbuf   reception buffer for the i2c data readed
  *
  * @return    msg   result of the reading operation
  */
