@@ -1,6 +1,6 @@
 /**
  *
- * @file    ip_ip.h
+ * @file    ip_asserv.h
  *
  * @brief   Robot asservissement header file.
  *
@@ -8,7 +8,7 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  28 September 2016
+ * @update  11 November 2016
  *
  * @version 1.2
  *
@@ -20,6 +20,22 @@
 /*=========================================================================*/
 /* Includes files.                                                         */
 /*=========================================================================*/
+/* Standard libraries. */
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+/* ChibiOS libraries. */
+#include "ch.h"
+#include "hal.h"
+#include "chprintf.h"
+/* Local files. */
+//#include "ip_adc.h"
+//#include "ip_i2c.h"
+#include "ip_kalman.h"
+#include "ip_motor.h"
+#include "ip_mpu6050.h"
+#include "ip_pid.h"
+#include "ip_pwm.h"
 
 /*=========================================================================*/
 /* Enumerations, Structures and macros.                                    */
