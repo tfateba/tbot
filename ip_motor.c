@@ -8,7 +8,7 @@
  *
  * @date          07 Septembre 2015
  *
- * @update        30 September 2016
+ * @update        11 November 2016
  *
  * @version       1.2
  *
@@ -34,12 +34,6 @@
 /*=========================================================================*/
 /* Global variables.                                                       */
 /*=========================================================================*/
-bool steerForward;          /**< TODO: comment                             */
-bool steerBackward;         /**< TODO: comment                             */
-bool steerStop      = true; /* Stop by default                             */
-bool steerLeft;             /**< TODO: comment                             */
-bool steerRight;            /**< TODO: comment                             */
-
 long wheelPosition;     /**< TODO: comment                                 */
 long wheelVelocity;     /**< TODO: comment                                 */
 long lastWheelPosition; /**< TODO: comment                                 */
@@ -118,10 +112,10 @@ static const EXTConfig extcfg = {
 /*=========================================================================*/
 
 /**
- * @fn    stopMotor
- * @brief Stop the corresponding motor.
+ * @fn      stopMotor
+ * @brief   Stop the corresponding motor.
  *
- * @param[in] motor the motor to stop, rigth or left
+ * @param[in] motor   the motor to stop, rigth or left
  */
 void stopMotor(uint8_t motor) {
   if (motor == MOTOR_L)
@@ -131,24 +125,23 @@ void stopMotor(uint8_t motor) {
 }
 
 /**
- * @fn    setPWM
- * @brief Generate the corresponding PWM for speed control.
+ * @fn      setPWM
+ * @brief   Generate the corresponding PWM for speed control.
  *
- * @param[in] motor     the motor to pilot, rigth or left.
- * @param[in] direction the direction of the motor, backward or forward.
- * @param[in] dutyCycle the duty cycle to set the pwm.
+ * @param[in] motor       the motor to pilot, rigth or left.
+ * @param[in] direction   the direction of the motor, backward or forward.
+ * @param[in] dutyCycle   the duty cycle to set the pwm.
  */
 void setPWM(uint8_t motor, uint8_t direction, int dutyCycle) {
   if (motor == MOTOR_L) {
-    palSetPad(LMD_EN_PORT, LMD_EN); // digitalWrite(LMD_EN, HIGH);
+    palSetPad(LMD_EN_PORT, LMD_EN);               // digitalWrite(LMD_EN, HIGH);
     if(direction == MOTOR_DIR_F){
-      palSetPad(LMD_LPWM_PORT, LMD_LPWM);//analogWrite(LMD_LPWM, HIGH);		// Reverse
-      //pwm_setPulseWidth(&PWMD1, 0, dutyCycle);
-      //analogWrite(LMD_RPWM, dutyCycle);	// Forward
+      palSetPad(LMD_LPWM_PORT, LMD_LPWM);         //analogWrite(LMD_LPWM, HIGH);		// Reverse
+      //pwm_setPulseWidth(&PWMD1, 0, dutyCycle);  //analogWrite(LMD_RPWM, dutyCycle);	// Forward
     }
     else if (direction == MOTOR_DIR_B) {
-      //analogWrite(LMD_LPWM, dutyCycle);	// Reverse
-      palSetPad(LMD_RPWM_PORT, LMD_RPWM);//analogWrite(LMD_RPWM, HIGH);		// Forward
+      //analogWrite(LMD_LPWM, dutyCycle); // Reverse
+      palSetPad(LMD_RPWM_PORT, LMD_RPWM); //analogWrite(LMD_RPWM, HIGH);		// Forward
     }
   }
   else if (motor == MOTOR_R) {
@@ -165,22 +158,22 @@ void setPWM(uint8_t motor, uint8_t direction, int dutyCycle) {
 }
 
 /**
- * @fn    motorsStopAndReset
- * @brief Stop both motors and initialize wheels position, PID parameters.
+ * @fn      motorsStopAndReset
+ * @brief   Stop both motors and initialize wheels position, PID parameters.
  */
 void motorsStopAndReset(void) {
   stopMotor(MOTOR_R);
   stopMotor(MOTOR_L);
-  //pidParametersReset();
+  pidParametersReset();
 }
 
 /**
- * @fn    moveMotor
- * @brief Driving the motor to set to the given speed.
+ * @fn      moveMotor
+ * @brief   Driving the motor to set to the given speed.
  *
- * @param[in] motor     the motor to pilot, rigth or left
- * @param[in] direction the direction of the motor, backward or forward
- * @param[in] speedRaw  the speed to set the motor
+ * @param[in] motor       the motor to pilot, rigth or left
+ * @param[in] direction   the direction of the motor, backward or forward
+ * @param[in] speedRaw    the speed to set the motor
  */
 void moveMotor(uint8_t motor, uint8_t direction, double speedRaw) {
   int speed;
@@ -196,7 +189,7 @@ void moveMotor(uint8_t motor, uint8_t direction, double speedRaw) {
  * @brief   The encoders decrease when motor is traveling forward and increase
  *          when traveling backward.
  *
- * @return  leftCounter the value of the left encoder
+ * @return  leftCounter   the value of the left encoder
  */
 long readLeftEncoder(void) {
   return leftCounter;
@@ -207,7 +200,7 @@ long readLeftEncoder(void) {
  * @brief   The encoders decrease when motor is traveling forward and increase
  *          when traveling backward.
  *
- * @return  rightCounter the value of the right encoder
+ * @return  rightCounter  the value of the right encoder
  */
 long readRightEncoder(void) {
   return rightCounter;
@@ -252,7 +245,7 @@ long readLeftEncoderStateB(void) {
  * @fn      readRightEncoderStateA
  * @brief   return the state of the rigth encder A.
  *
- * @return  rightCounter the value of the right encoder
+ * @return  rightCounter  the value of the right encoder
  */
 long readRightEncoderStateA(void) {
   long ret;
@@ -269,7 +262,7 @@ long readRightEncoderStateA(void) {
  * @fn      readRightEncoderStateB
  * @brief   return the state of the rigth encder A.
  *
- * @return  rightCounter the value of the right encoder
+ * @return  rightCounter  the value of the right encoder
  */
 long readRightEncoderStateB(void) {
   long ret;
