@@ -76,8 +76,8 @@ static THD_FUNCTION(asserThd, arg) {
 
   chRegSetThreadName("Asservissement");
 
-	while (true) {
-		asserv();
+  while (true) {
+    asserv();
     chThdSleepMilliseconds(10);
   }
 }
@@ -132,7 +132,7 @@ int main(void) {
   #endif
 
   /* Init Kalman filter. */
-	kalman_init();
+  kalman_init();
   #if (DEBUG == TRUE)
   chprintf(chp, "\n\r Kalman filter initialization ended.");
   chThdSleepMilliseconds(1000);
