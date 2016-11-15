@@ -22,6 +22,20 @@
 /*==========================================================================*/
 
 /*
+ * PWM3 configuration.
+ */
+static PWMConfig pwm3cfg = {
+  1023,   /* Not real clock */
+  1023,   /* Maximum PWM count */
+  NULL,
+  {
+    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM   */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C */
+  },
+};
+
+/*
  * PWM4 configuration.
  */
 static PWMConfig pwm4cfg = {
@@ -31,20 +45,6 @@ static PWMConfig pwm4cfg = {
   {
     {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A */
     {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C */
-  },
-};
-
-/*
- * PWM3 configuration.
- */
-static PWMConfig pwm3cfg = {
-  1023,   /* Not real clock */
-  1023,   /* Maximum PWM count */
-  NULL,
-  {
-    {PWM_OUTPUT_DISABLED, NULL},    /* PH3 use as PWM, OC4A */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH4 Not use as PWM   */
     {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C */
   },
 };
