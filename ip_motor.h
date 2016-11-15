@@ -74,17 +74,17 @@
 #define LMD_RPWM_PORT IOPORT8  /**< Motor Backward. PH5                    */
 #define LMD_EN_PORT   IOPORT8  /**< Motor Enable.   PH4                    */
 
-/* Right Motor driver Pins*/
+/* Left Motor driver Pins*/
 #define LMD_LPWM PH3  /**< Motor Forward.   PH3                            */
 #define LMD_RPWM PH5  /**< Motor Backward.  PH5                            */
 #define LMD_EN   PH4  /**< Motor Enable.    PH4                            */
 
-/* Left Motor driver */
+/* Right Motor driver */
 #define RMD_LPWM_PORT IOPORT5 /**< Motor Forward.  PE4                     */
 #define RMD_RPWM_PORT IOPORT5 /**< Motor Backward. PE5                     */
 #define RMD_EN_PORT   IOPORT2 /**< Motor Enable.   PB4                     */
 
-/* Left Motor driver */
+/* Right Motor driver */
 #define RMD_LPWM PE4 /**< Motor Forward.  PE4                              */
 #define RMD_RPWM PE5 /**< Motor Backward. PE5                              */
 #define RMD_EN   PB4 /**< Motor Enable.   PB4                              */
@@ -109,7 +109,7 @@ void stopMotor(uint8_t motor);
  * @param[in] direction The direction of the motor, backward or forward.
  * @param[in] dutyCycle The duty cycle to set the pwm.
  */
-void setPWM(uint8_t motor, uint8_t direction, int dutyCycle);
+void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
 
 /**
  * @fn    motorsStopAndReset

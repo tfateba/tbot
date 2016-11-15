@@ -98,12 +98,12 @@ static void cbRightEncoder(EXTDriver *extp, expchannel_t channel) {
  */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_DISABLED , NULL},              /***< INT0 Config */
-    {EXT_CH_MODE_DISABLED , NULL},              /***< INT1 Config */
-    {EXT_CH_MODE_RISING_EDGE , cbRightEncoder}, /***< INT2 Config */
-    {EXT_CH_MODE_RISING_EDGE , cbLeftEncoder},  /***< INT3 Config */
-    {EXT_CH_MODE_DISABLED , NULL},              /***< INT4 Config */
-    {EXT_CH_MODE_DISABLED , NULL},              /***< INT5 Config */
+    {EXT_CH_MODE_DISABLED, NULL},               /***< INT0 Config */
+    {EXT_CH_MODE_DISABLED, NULL},               /***< INT1 Config */
+    {EXT_CH_MODE_RISING_EDGE, cbRightEncoder},  /***< INT2 Config */
+    {EXT_CH_MODE_RISING_EDGE, cbLeftEncoder},   /***< INT3 Config */
+    {EXT_CH_MODE_DISABLED, NULL},               /***< INT4 Config */
+    {EXT_CH_MODE_DISABLED, NULL},               /***< INT5 Config */
   }
 };
 
@@ -132,27 +132,30 @@ void stopMotor(uint8_t motor) {
  * @param[in] direction   the direction of the motor, backward or forward.
  * @param[in] dutyCycle   the duty cycle to set the pwm.
  */
-void setPWM(uint8_t motor, uint8_t direction, int dutyCycle) {
+void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
+  // Calcul the numeric value of the PWM.
+  dutyCycle = (dutyCycle*1023)/100;
+
   if (motor == MOTOR_L) {
-    palSetPad(LMD_EN_PORT, LMD_EN);               // digitalWrite(LMD_EN, HIGH);
-    if(direction == MOTOR_DIR_F){
-      palSetPad(LMD_LPWM_PORT, LMD_LPWM);         //analogWrite(LMD_LPWM, HIGH);		// Reverse
-      //pwm_setPulseWidth(&PWMD1, 0, dutyCycle);  //analogWrite(LMD_RPWM, dutyCycle);	// Forward
+    palSetPad(LMD_EN_PORT, LMD_EN);
+    if (direction == MOTOR_DIR_F) {
+      pwmEnableChannel(&PWMD4, 0, 1023);      // Reverse
+      pwmEnableChannel(&PWMD4, 2, dutyCycle); // Forward
     }
     else if (direction == MOTOR_DIR_B) {
-      //analogWrite(LMD_LPWM, dutyCycle); // Reverse
-      palSetPad(LMD_RPWM_PORT, LMD_RPWM); //analogWrite(LMD_RPWM, HIGH);		// Forward
+      pwmEnableChannel(&PWMD4, 0, dutyCycle);  // Reverse
+      pwmEnableChannel(&PWMD4, 2, 1023);       // Forward
     }
   }
   else if (motor == MOTOR_R) {
-    palSetPad(RMD_EN_PORT, RMD_EN); // digitalWrite(RMD_EN, HIGH);
+    palSetPad(RMD_EN_PORT, RMD_EN);
     if (direction == MOTOR_DIR_F) {
-      palSetPad(RMD_LPWM_PORT, RMD_LPWM); //analogWrite(RMD_LPWM, HIGH);		// Reverse
-      //analogWrite(RMD_RPWM, dutyCycle);	// Forward
+      pwmEnableChannel(&PWMD3, 1, 1023);      // Reverse
+      pwmEnableChannel(&PWMD3, 2, dutyCycle); // Forward
     }
     else if (direction == MOTOR_DIR_B) {
-      //analogWrite(RMD_LPWM, dutyCycle);	// Reverse
-      palSetPad(RMD_RPWM_PORT, RMD_RPWM); //analogWrite(RMD_RPWM, HIGH);		// Forward
+      pwmEnableChannel(&PWMD3, 1, dutyCycle); // Reverse
+      pwmEnableChannel(&PWMD3, 2, 1023);      // Forward
     }
   }
 }
