@@ -12,21 +12,21 @@
  *
  */
 
-/*==========================================================================*/
-/* Include Libraries                                                        */
-/*==========================================================================*/
+/*===========================================================================*/
+/* Include Libraries                                                         */
+/*===========================================================================*/
 #include "ip_mpu6050.h"
 
-/*==========================================================================*/
-/* Driver Functions                                                         */ 
-/*==========================================================================*/
+/*===========================================================================*/
+/* Driver Functions                                                          */
+/*===========================================================================*/
 
 /**
  * @fn      mpu6050_getIdentity
  * @brief   Get the identity of the MPU6050 device.
  *
  * @param[in] i2cp  pointer to the I2C driver interface
- * @param[in] idp	  pointer to the id variable of the MPU6050 sensor
+ * @param[in] idp   pointer to the id variable of the MPU6050 sensor
  *
  * @return    msg   result of the reading identity operation
  */
@@ -34,7 +34,7 @@ msg_t mpu6050_getIdentity(I2CDriver *i2cp, uint8_t *idp) {
   uint8_t   txbuf;
   uint8_t   rxbuf;
   msg_t     msg;
-  
+
   txbuf = MPU6050_WHO_AM_I;
   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, &rxbuf, 1);
 
@@ -42,8 +42,8 @@ msg_t mpu6050_getIdentity(I2CDriver *i2cp, uint8_t *idp) {
     *idp = rxbuf;
     return msg;
   }
-	
-	return msg;
+
+  return msg;
 }
 
 /**
@@ -58,10 +58,10 @@ msg_t mpu6050_sleep(I2CDriver *i2cp) {
   uint8_t config;
   uint8_t txbuf[2];
   msg_t   msg;
-  
+
   txbuf[0] = MPU6050_PWR_MGMT_1;
   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
-  
+
   if (msg != MSG_OK)
     return msg;
 
@@ -83,11 +83,11 @@ msg_t mpu6050_wakeup(I2CDriver *i2cp) {
   uint8_t config;
   uint8_t txbuf[2];
   msg_t   msg;
-  
+
   txbuf[0] = MPU6050_PWR_MGMT_1;
   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
-  
-	if (msg != MSG_OK)
+
+  if (msg != MSG_OK)
     return msg;
 
   txbuf[1] = config & ~(1 << 6);
@@ -108,10 +108,10 @@ msg_t mpu6050_reset(I2CDriver *i2cp) {
   uint8_t config;
   uint8_t txbuf[2];
   msg_t   msg;
-  
+
   txbuf[0] = MPU6050_PWR_MGMT_1;
   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
-  
+
   if (msg != MSG_OK)
     return msg;
 
@@ -133,7 +133,7 @@ msg_t mpu6050_reset(I2CDriver *i2cp) {
 msg_t mpu6050_gyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
   uint8_t txbuf[2];
   msg_t   msg;
-  
+
   txbuf[0] = MPU6050_GYRO_CONFIG;
 
   if (scale == MPU6050_GYRO_FS_250 ) {
@@ -172,7 +172,7 @@ msg_t mpu6050_gyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
 msg_t mpu6050_accelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
   uint8_t txbuf[2];
   msg_t   msg;
-  
+
   txbuf[0] = MPU6050_ACCEL_CONFIG;
 
   if (scale == MPU6050_ACCEL_FS_2 ) {
@@ -362,11 +362,11 @@ msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp) {
   uint8_t config;
   uint8_t txbuf;
   msg_t   msg;
-  
+
   txbuf = MPU6050_PWR_MGMT_1;
 
   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, &config, 1);
-  
+
   if (msg != MSG_OK)
     return msg;
   *pmp = config;
@@ -385,11 +385,11 @@ msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp) {
 msg_t mpu6050_readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
   uint8_t txbuf;
   msg_t   msg;
-  
+
   txbuf = MPU6050_ACCEL_XOUT_H;
 
   msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 14);
-  
+
   return msg;
 }
 
@@ -421,7 +421,7 @@ msg_t mpu6050_getData(I2CDriver *i2cp, mpu6050_t *mpup) {
     x_accel |= (((int16_t)mpuData[0]) << 8) | mpuData[1];
     y_accel |= (((int16_t)mpuData[2]) << 8) | mpuData[3];
     z_accel |= (((int16_t)mpuData[4]) << 8) | mpuData[5];
-    
+
     temp |= (((int16_t)mpuData[6]) << 8)   | mpuData[7];
 
     x_gyro |= (((int16_t)mpuData[8]) << 8)  | mpuData[9];
@@ -429,7 +429,7 @@ msg_t mpu6050_getData(I2CDriver *i2cp, mpu6050_t *mpup) {
     z_gyro |= (((int16_t)mpuData[12]) << 8) | mpuData[13];
 
     mpup->temp = (float)(temp/340)+36.53;
-    
+
     mpup->x_accel = (float)x_accel;
     mpup->y_accel = (float)y_accel;
     mpup->z_accel = (float)z_accel;
@@ -464,7 +464,7 @@ msg_t mpu6050_calibration(I2CDriver *i2cp, mpu6050_t *mpup) {
 
   for (i = 0; i < sampleNumber + 100; i++) {
     msg = mpu6050_getData(i2cp, mpup);
-        
+
     if (i > 100) {
       mpup->x_accel_offset  += mpup->x_accel;
       mpup->y_accel_offset  += mpup->y_accel;
@@ -521,4 +521,3 @@ msg_t mpu6050_init(I2CDriver *i2cp, mpu6050_t *mpu, mpu6050_sad_e sad) {
 
   return msg;
 }
-

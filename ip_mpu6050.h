@@ -7,7 +7,7 @@
  *
  * @date    22 June 2016
  *
- * @update  11 November 2016
+ * @update  17 November 2016
  *
  */
 
@@ -25,14 +25,14 @@
 /*===========================================================================*/
 
 /**
- * @brief MPU6050 Slave I2C adress enumeration type.
+ * @brief   MPU6050 Slave I2C adress enumeration type.
  */
 typedef enum {
   MPU6050_ADDR = 0x68  /**< SAD of the temperature sensor                    */
 }mpu6050_sad_e;
 
 /**
- * @brief External Frame Synchronisation values
+ * @brief   External Frame Synchronisation values
  */
 typedef enum{
   MPU6050_INPUT_DISABLED  = 0x00, /**< External Frame Synchronization 0.     */
@@ -46,7 +46,7 @@ typedef enum{
 }mpu6050_ext_sync_set_e;          /**< External Frame Synchronization type   */
 
 /**
- * @brief Digital Low Pass Filter setting for Accelerator and the Gyroscope.
+ * @brief   Digital Low Pass Filter setting for Accelerator and the Gyroscope.
  */
 typedef enum{
   MPU6050_DLPF_CFG_0  = 0x00, /**< Digital Low Pass Filter value 0.          */
@@ -59,10 +59,9 @@ typedef enum{
   MPU6050_DLPF_CFG_7  = 0x07  /**< Digital Low Pass Filter value 7.          */
 }mpu6050_dlpf_cfg_e;          /**< Digital Low Pass Filter type              */
 
-
 /**
- * @brief Power management 1 enumeration. Configuration of the device 
- *        Power mode and Clock source.
+ * @brief   Power management 1 enumeration. Configuration of the device
+ *          Power mode and Clock source.
  */
 typedef enum{
   MPU6050_PM1_DEVICE_RESET  = 0x00, /**< Bit for reset the entire device.    */
@@ -73,9 +72,9 @@ typedef enum{
 }mpu6050_pm1_e;                     /**< Power Management type enumeration.  */
 
 /**
- * @brief Power Management 2 enumeration. Configuration of the device Accele
- *        ration frequency wake-up. Also help to enable or disable individual
- *        accelerometer and gyroscope axes.
+ * @brief   Power Management 2 enumeration. Configuration of the device
+ *          Acceleration frequency wake-up. Also help to enable or disable
+ *          individual accelerometer and gyroscope axes.
  */
 typedef enum{
   MPU6050_LP_WAKE_CTRL  = 0x00, /**< Bits to control Frequency of wake-up    */
@@ -88,7 +87,7 @@ typedef enum{
 }mpu6050_pm2_e;
 
 /**
- * @brief Gyroscope full scale values.
+ * @brief   Gyroscope full scale values.
  */
 typedef enum{
   MPU6050_GYRO_FS_250   = 0x00, /**< Gyroscope full Scale value 0.           */
@@ -98,7 +97,7 @@ typedef enum{
 }mpu6050_gyro_fs_e;             /**< Gyroscope full scale enum.              */
 
 /**
- * @brief Accelerometer full scale values.
+ * @brief   Accelerometer full scale values.
  */
 typedef enum{
   MPU6050_ACCEL_FS_2  = 0x00, /**< Accelerometer full scale value 0.         */
@@ -108,10 +107,9 @@ typedef enum{
 }mpu6050_accel_fs_e;          /**< Accelerometer full scale enum.            */
 
 /**
- * @brief MPU6050 data structure
+ * @brief   MPU6050 data structure
  */
 typedef struct{
-  
   mpu6050_sad_e sad;            /**< MPU6050 I2C slave address               */
   float         x_accel;        /**< Accelerometer x data.                   */
   float         y_accel;        /**< Accelerometer y data.                   */
@@ -136,7 +134,6 @@ typedef struct{
   float         yaw_c;          /**< Yaw angle by complementary filter.      */
   float         temp;           /**< MPU Temperature.                        */
 }mpu6050_t;
-
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
