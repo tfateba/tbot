@@ -8,42 +8,40 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  11 November 2016
- *
- * @version 1.2
+ * @update  17 November 2016
  *
  */
 
-/*=========================================================================*/
-/* Includes files.                                                         */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Includes files.                                                           */
+/*===========================================================================*/
 #include "ip_asserv.h"
 
-/*=========================================================================*/
-/* Application macros.                                                     */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Application macros.                                                       */
+/*===========================================================================*/
 /* MPU6050 device name */
 #define mpu "MPU6050"
 /* Debug message activation. */
 #define DEBUG TRUE
 
-/*=========================================================================*/
-/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations  */
-/*=========================================================================*/
-extern BaseSequentialStream* chp; /*                                       */
-extern mpu6050_t       imu;       /**< MPU6050 instance.                   */
-extern msg_t           msg;       /**< Message error.                      */
+/*===========================================================================*/
+/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations    */
+/*===========================================================================*/
+extern BaseSequentialStream* chp; /*                                         */
+extern mpu6050_t       imu;       /**< MPU6050 instance.                     */
+extern msg_t           msg;       /**< Message error.                        */
 
-const uint8_t   delta = 10; /*                                             */
+const uint8_t   delta = 10; /*                                               */
 
 bool    layingDown = true;
-double  targetAngle = 178; /**< The angle we want the robot to reach.      */
-double  targetOffset = 0;  /**< Offset for going forward and backwrd.      */
-double  turningOffset = 0; /**< Offset for turning left and right.         */
+double  targetAngle = 178; /**< The angle we want the robot to reach.        */
+double  targetOffset = 0;  /**< Offset for going forward and backwrd.        */
+double  turningOffset = 0; /**< Offset for turning left and right.           */
 
-/*=========================================================================*/
-/* Functions.                                                              */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Functions.                                                                */
+/*===========================================================================*/
 
 /**
  * @fn     asserv
