@@ -8,9 +8,7 @@
  *
  * @date          07 Septembre 2015
  *
- * @update        11 November 2016
- *
- * @version       1.2
+ * @update        17 November 2016
  *
  * @description   Motor control and Encoder Read
  *                Description:
@@ -24,33 +22,33 @@
  *                Encoder B:		Red
  */
 
-/*=========================================================================*/
-/* Includes files.                                                         */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Includes files.                                                           */
+/*===========================================================================*/
 #include "ip_motor.h"
 #include "chprintf.h"
 
 #define DEBUG 1
-/*=========================================================================*/
-/* Global variables.                                                       */
-/*=========================================================================*/
-long wheelPosition;     /**< TODO: comment                                 */
-long wheelVelocity;     /**< TODO: comment                                 */
-long lastWheelPosition; /**< TODO: comment                                 */
-long targetPosition;    /**< TODO: comment                                 */
+/*===========================================================================*/
+/* Global variables.                                                         */
+/*===========================================================================*/
+long wheelPosition;     /**< TODO: comment                                   */
+long wheelVelocity;     /**< TODO: comment                                   */
+long lastWheelPosition; /**< TODO: comment                                   */
+long targetPosition;    /**< TODO: comment                                   */
 
-static bool     stopped;                /**< Target position after breaking*/
-static long     leftCounter   = 0;      /**< TODO: comment                 */
-static long     rightCounter  = 0;      /**< TODO: comment                 */
+static bool     stopped;                /**< Target position after breaking  */
+static long     leftCounter   = 0;      /**< TODO: comment                   */
+static long     rightCounter  = 0;      /**< TODO: comment                   */
 static bool     lstateA       = false;
 static bool     lstateB       = false;
 static bool     rstateA       = false;
 static bool     rstateB       = false;
-static uint8_t  loopCounter   = 0;      /**< Used to update wheel velocity */
+static uint8_t  loopCounter   = 0;      /**< Used to update wheel velocity   */
 
-/*=========================================================================*/
-/* Encoders callback.                                                      */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Encoders callback.                                                        */
+/*===========================================================================*/
 /**
  * @brief   This is the External interrupt callback for the Left motor
  *          encoder.
@@ -107,9 +105,9 @@ static const EXTConfig extcfg = {
   }
 };
 
-/*=========================================================================*/
-/* Functions.                                                              */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Functions.                                                                */
+/*===========================================================================*/
 
 /**
  * @fn      stopMotor
@@ -209,12 +207,11 @@ long readRightEncoder(void) {
   return rightCounter;
 }
 
-//============================================================================
 /**
  * @fn      readLeftEncoderStateA
- * @brief   return the state of the rigth encder A.
+ * @brief   return the state of the left encder A.
  *
- * @return  rightCounter the value of the right encoder
+ * @return  ret the value of the left encoder
  */
 long readLeftEncoderStateA(void) {
   long ret;
@@ -229,9 +226,9 @@ long readLeftEncoderStateA(void) {
 
 /**
  * @fn      readLeftEncoderStateB
- * @brief   return the state of the rigth encder A.
+ * @brief   return the state of the left encder B.
  *
- * @return  rightCounter the value of the right encoder
+ * @return  ret the value of the left encoder B
  */
 long readLeftEncoderStateB(void) {
   long ret;
@@ -248,7 +245,7 @@ long readLeftEncoderStateB(void) {
  * @fn      readRightEncoderStateA
  * @brief   return the state of the rigth encder A.
  *
- * @return  rightCounter  the value of the right encoder
+ * @return  ret  the value of the right encoder A
  */
 long readRightEncoderStateA(void) {
   long ret;
@@ -263,9 +260,9 @@ long readRightEncoderStateA(void) {
 
 /**
  * @fn      readRightEncoderStateB
- * @brief   return the state of the rigth encder A.
+ * @brief   return the state of the rigth encder B.
  *
- * @return  rightCounter  the value of the right encoder
+ * @return  ret  the value of the right encoder B
  */
 long readRightEncoderStateB(void) {
   long ret;
@@ -277,8 +274,6 @@ long readRightEncoderStateB(void) {
 
   return ret;
 }
-
-//======================================================================
 
 /**
  * @fn      motorInit
@@ -338,4 +333,3 @@ void motorGetWheelVelocity(void) {
     }
   }
 }
-
