@@ -8,7 +8,7 @@
  *
  * @date    05 Jully 2016
  *
- * @update  11 November 2016
+ * @update  17 November 2016
  *
  */
 
@@ -65,4 +65,3 @@ msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr,
     uint8_t *txbuf, uint8_t lenght);
 
 #endif /* _IP_I2C_H_ */
-
