@@ -1,4 +1,5 @@
 /**
+ *
  * @file    ip_pid.h
  *
  * @brief   pid corrector header file.
@@ -7,7 +8,7 @@
  *
  * @date    13 July 2016
  *
- * @update  11 November 2016
+ * @update  17 November 2016
  *
  */
 
@@ -25,10 +26,11 @@
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
 
-/*==========================================================================*/
-/* Functions.                                                               */
-/*==========================================================================*/
+/*===========================================================================*/
+/* Functions.                                                                */
+/*===========================================================================*/
 
+// TODO: Get the function prototypes from the c file.
 /**
  * @fn      pid
  * @brief   Calcul the command to send to the motors according to last error.
@@ -46,4 +48,3 @@ void pid(double pitch, double restAngle, double offset, double turning);
 void pidParametersReset(void);
 
 #endif /* _IP_PID_H_ */
-

@@ -1,68 +1,70 @@
 /**
- * @file ip_pid.c
+ * 
+ * @file    ip_pid.c
  *
- * @brief PID controller
+ * @brief   PID controller
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
  * @date    17 July 2016
  *
  * @update  24 October 2016
+ *
  */
 
-/*=========================================================================*/
-/* Includes files.                                                         */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Includes files.                                                           */
+/*===========================================================================*/
 #include "ip_pid.h"
 
-/*=========================================================================*/
-/* Global variables.                                                       */
-/*=========================================================================*/
-static double lastError; /**< Store position error.                        */
-static double iTerm;     /**< Store integral term                          */
-static double error;     /**< Error between two measurement                */
-static double pTerm;     /**< Proportionnal error.                         */
-static double dTerm;     /**< Derivate error.                              */
-static double PIDValue;  /**< PID value, sum of all the errors.            */
-static double PIDLeft;   /**< PID result for Left motor.                   */
-static double PIDRight;  /**< PID result for Right motor.                  */
+/*===========================================================================*/
+/* Global variables.                                                         */
+/*===========================================================================*/
+static double lastError; /**< Store position error.                          */
+static double iTerm;     /**< Store integral term                            */
+static double error;     /**< Error between two measurement                  */
+static double pTerm;     /**< Proportionnal error.                           */
+static double dTerm;     /**< Derivate error.                                */
+static double PIDValue;  /**< PID value, sum of all the errors.              */
+static double PIDLeft;   /**< PID result for Left motor.                     */
+static double PIDRight;  /**< PID result for Right motor.                    */
 
-static double Kp = 13.6;   /**< Proportional parameter for the PID corrector.*/
-static double Ki = 0.0377; /**< Integral parameter for the PID corrector.  */
-static double Kd = 9.3;    /**< Derivate parameter for the PID corrector.  */
+static double Kp = 13.6;   /**< Proportional parameter of PID corrector.     */
+static double Ki = 0.0377; /**< Integral parameter of PID corrector.         */
+static double Kd = 9.3;    /**< Derivate parameter of PID corrector.         */
 
-static double velocityScaleStop = 30;    /**< TODO: comment                */
-static double velocityScaleTurning = 35; /**< TODO: comment                */
+static double velocityScaleStop = 30;    /**< TODO: comment                  */
+static double velocityScaleTurning = 35; /**< TODO: comment                  */
 
-static int16_t zoneA = 4000;          /**< TODO: comment                   */
-static int16_t zoneB = 2000;          /**< TODO: comment                   */
-static double positionScaleA = 250;   /**< One resolution is 464 pulses    */
-static double positionScaleB = 500;   /**< TODO: comment                   */
-static double positionScaleC = 1000;  /**< TODO: comment                   */
-static double velocityScaleMove = 35; /**< TODO: comment                   */
+static int16_t zoneA = 4000;          /**< TODO: comment                     */
+static int16_t zoneB = 2000;          /**< TODO: comment                     */
+static double positionScaleA = 250;   /**< One resolution is 464 pulses      */
+static double positionScaleB = 500;   /**< TODO: comment                     */
+static double positionScaleC = 1000;  /**< TODO: comment                     */
+static double velocityScaleMove = 35; /**< TODO: comment                     */
 
-extern long wheelPosition;      /**< TODO: comment                         */
-extern long lastWheelPosition;  /**< TODO: comment                         */
-extern long wheelVelocity;      /**< TODO: comment                         */
-extern long targetPosition;     /**< TODO: comment                         */
+extern long wheelPosition;      /**< TODO: comment                           */
+extern long lastWheelPosition;  /**< TODO: comment                           */
+extern long wheelVelocity;      /**< TODO: comment                           */
+extern long targetPosition;     /**< TODO: comment                           */
 
-bool steerForward;          /**< TODO: comment                             */
-bool steerBackward;         /**< TODO: comment                             */
-bool steerStop      = true; /* Stop by default                             */
-bool steerLeft;             /**< TODO: comment                             */
-bool steerRight;            /**< TODO: comment                             */
+bool steerForward;          /**< TODO: comment                               */
+bool steerBackward;         /**< TODO: comment                               */
+bool steerStop      = true; /* Stop by default                               */
+bool steerLeft;             /**< TODO: comment                               */
+bool steerRight;            /**< TODO: comment                               */
 
-/*=========================================================================*/
-/* Functions.                                                              */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Functions.                                                                */
+/*===========================================================================*/
 
 /**
  * @fn      pid
  * @brief   Calcul the command to send to the motors according to last error.
  *
- * @param[in] restAngle
- * @param[in] offset
- * @param[in] turning
+ * @param[in] restAngle TODO: comment
+ * @param[in] offset    TODO: comment
+ * @param[in] turning   TODO: comment
  */
 void pid(double pitch, double restAngle, double offset, double turning) {
   /*
@@ -71,6 +73,7 @@ void pid(double pitch, double restAngle, double offset, double turning) {
    * for your system.
    */
   /*
+  // TODO: Use the chibios ADC read functions.
   Kp = (double)analogRead(A15)/10.0;
   Serial.print(Kp);
   Serial.print("\t");
@@ -160,4 +163,3 @@ void pidParametersReset(void) {
   lastError = 0;
   targetPosition = wheelPosition;
 }
-
