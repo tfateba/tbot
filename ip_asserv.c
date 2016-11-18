@@ -32,12 +32,12 @@ extern BaseSequentialStream* chp; /*                                         */
 extern mpu6050_t       imu;       /**< MPU6050 instance.                     */
 extern msg_t           msg;       /**< Message error.                        */
 
-const uint8_t   delta = 10; /*                                               */
+const uint8_t   delta = 10;       /**< Asservissement period.                */
 
-bool    layingDown = true;
-double  targetAngle = 178; /**< The angle we want the robot to reach.        */
-double  targetOffset = 0;  /**< Offset for going forward and backwrd.        */
-double  turningOffset = 0; /**< Offset for turning left and right.           */
+bool    layingDown    = true; /**<                                           */
+double  targetAngle   = 178;  /**< The angle we want the robot to reach.     */
+double  targetOffset  = 0;    /**< Offset for going forward and backwrd.     */
+double  turningOffset = 0;    /**< Offset for turning left and right.        */
 
 /*===========================================================================*/
 /* Functions.                                                                */
@@ -48,14 +48,19 @@ double  turningOffset = 0; /**< Offset for turning left and right.           */
  * @brief  Asservissement routine of the robot.
  */
 void asserv(void) {
+
+  /* Read the IMU data (x,y,z accel and gyroscope). */
   msg = mpu6050_getData(&I2CD1, &imu);
 
   if (msg != MSG_OK) {
     chprintf(chp, "\n\r %s: Error while reading the %s sensor data.", mpu, mpu);
-    return -1;
+    return;
   }
 
+  /* Calcul of the Pitch angle of the selbalancing robot. */
   imu.pitch = (atan2(imu.y_accel, imu.z_accel) + 3.14)*(180/3.14);
+
+  /* Get the Kalman estimation of the angle. */
   imu.pitch_k = kalman_getAngle(imu.pitch, (imu.x_gyro / 131.0), delta);
 
   #if (DEBUG == TRUE)
@@ -80,6 +85,7 @@ void asserv(void) {
     pid(imu.pitch_k, targetAngle, targetOffset, turningOffset);
   }
 
-  /* Update wheel velocity every 100ms. */
+  /* Update the robot wheel velocity every 100ms. */
   motorGetWheelVelocity();
 }
+
