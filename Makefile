@@ -83,8 +83,6 @@ SRC = $(KERNSRC) \
       ip_pid.c \
       ip_pwm.c \
       main.c
-#ip_ext.c \
-#ip_adc.c \
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC =
