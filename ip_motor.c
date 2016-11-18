@@ -28,7 +28,11 @@
 #include "ip_motor.h"
 #include "chprintf.h"
 
+/*===========================================================================*/
+/* Macro definitions.                                                        */
+/*===========================================================================*/
 #define DEBUG 1
+
 /*===========================================================================*/
 /* Global variables.                                                         */
 /*===========================================================================*/
@@ -136,6 +140,7 @@ void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
 
   if (motor == MOTOR_L) {
     palSetPad(LMD_EN_PORT, LMD_EN);
+
     if (direction == MOTOR_DIR_F) {
       pwmEnableChannel(&PWMD4, 0, 1023);      // Reverse
       pwmEnableChannel(&PWMD4, 2, dutyCycle); // Forward
@@ -147,6 +152,7 @@ void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
   }
   else if (motor == MOTOR_R) {
     palSetPad(RMD_EN_PORT, RMD_EN);
+
     if (direction == MOTOR_DIR_F) {
       pwmEnableChannel(&PWMD3, 1, 1023);      // Reverse
       pwmEnableChannel(&PWMD3, 2, dutyCycle); // Forward
@@ -178,10 +184,11 @@ void motorsStopAndReset(void) {
  */
 void moveMotor(uint8_t motor, uint8_t direction, double speedRaw) {
   int speed;
+
   if(speedRaw > 255)
     speedRaw = 255;
 
-  speed = speedRaw*((double)PWMVALUE)/255; // Scale from 100 to PWMVALUE
+  speed = speedRaw*((double)PWMVALUE)/255; // Scale from 100 to PWM_VALUE
   setPWM(motor, direction, speed);
 }
 
@@ -333,3 +340,4 @@ void motorGetWheelVelocity(void) {
     }
   }
 }
+
