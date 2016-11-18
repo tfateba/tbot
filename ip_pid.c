@@ -141,11 +141,13 @@ void pid(double pitch, double restAngle, double offset, double turning) {
     PIDRight = PIDValue;
   }
 
-  //==> Set PWM Values
+  /* Set the left motor PWM value. */
   if (PIDLeft >= 0)
     moveMotor(MOTOR_L, MOTOR_DIR_F, PIDLeft);
   else
     moveMotor(MOTOR_L, MOTOR_DIR_B, PIDLeft * -1);
+
+  /* Set the rigth motor PWM value. */
   if (PIDRight >= 0)
     moveMotor(MOTOR_R, MOTOR_DIR_F, PIDRight);
   else
@@ -163,3 +165,4 @@ void pidParametersReset(void) {
   lastError = 0;
   targetPosition = wheelPosition;
 }
+
