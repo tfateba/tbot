@@ -25,13 +25,13 @@
  * PWM3 configuration.
  */
 static PWMConfig pwm3cfg = {
-  1023,   /* Not real clock */
-  1023,   /* Maximum PWM count */
+  512,  /* Not real clock.     */
+  512,  /* Maximum PWM count.  */
   NULL,
   {
-    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C */
+    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A. */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM.   */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C. */
   },
 };
 
@@ -39,13 +39,13 @@ static PWMConfig pwm3cfg = {
  * PWM4 configuration.
  */
 static PWMConfig pwm4cfg = {
-  1023,   /* Not real clock */
-  1023,   /* Maximum PWM count */
+  512,  /* Not real clock.     */
+  512,  /* Maximum PWM count.  */
   NULL,
   {
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A */
-    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A .*/
+    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM.   */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C. */
   },
 };
 
@@ -69,7 +69,7 @@ void pwm_init(void) {
   palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor PWM forward
   palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor PWM backward
 
-  // Start PWM
+  /* Start PWM3 and PWM4. */
   pwmStart(&PWMD4, &pwm4cfg);
   pwmStart(&PWMD3, &pwm3cfg);
 }
@@ -110,25 +110,4 @@ void pwm_disable(PWMDriver *pwmp) {
   pwmStop(pwmp);
 }
 
-/*
-void pwmDemo(void) {
-  int i;
 
-  for (i = 0; i < 1023; i++) {
-     pwm_setPulseWidth(&PWMD4, 0, i);
-     pwm_setPulseWidth(&PWMD4, 2, i);
-     pwm_setPulseWidth(&PWMD3, 1, i);
-     pwm_setPulseWidth(&PWMD3, 2, i);
-
-     chThdSleepMilliseconds(1);
-    }
-    for (i = 1023; i > 0; i--) {
-      pwm_setPulseWidth(&PWMD4, 0, i);
-      pwm_setPulseWidth(&PWMD4, 2, i);
-      pwm_setPulseWidth(&PWMD3, 1, i);
-      pwm_setPulseWidth(&PWMD3, 2, i);
-
-      chThdSleepMilliseconds(1);
-    }
-}
-*/

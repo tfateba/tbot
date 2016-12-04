@@ -18,7 +18,7 @@
 /*===========================================================================*/
 /* Includes Files                                                            */
 /*===========================================================================*/
-#include "hal.h"
+#include "ip_motor.h"
 
 /*===========================================================================*/
 /* Globals variable and configurations                                       */
@@ -33,7 +33,6 @@
  * @brief   Initialize the PWM output.
  */
 void pwm_init(void);
-//void pwm_init(PWMDriver *pwmp, PWMConfig *pwmcfg);
 
 /**
  * @fn      pwm_enable.
@@ -52,8 +51,6 @@ void pwm_setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width);
  * @brief   Disable PWM channel.
  */
 void pwm_disable(PWMDriver *pwmp);
-
-//void pwmDemo(void);
 
 #endif /* _IP__PWM_H_ */
 
