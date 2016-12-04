@@ -28,7 +28,7 @@
 /*
  * ADC driver system settings.
  */
-#define AVR_ADC_USE_ADC1                    FALSE
+#define AVR_ADC_USE_ADC1                   TRUE
 
 /*
  * EXT driver system settings.
