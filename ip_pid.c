@@ -29,9 +29,13 @@ static double PIDValue;  /**< PID value, sum of all the errors.              */
 static double PIDLeft;   /**< PID result for Left motor.                     */
 static double PIDRight;  /**< PID result for Right motor.                    */
 
-static double Kp = 13.6;   /**< Proportional parameter of PID corrector.     */
-static double Ki = 0.0377; /**< Integral parameter of PID corrector.         */
-static double Kd = 9.3;    /**< Derivate parameter of PID corrector.         */
+//static double Kp = 13.6;   /**< Proportional parameter of PID corrector.     */
+//static double Ki = 0.0377; /**< Integral parameter of PID corrector.         */
+//static double Kd = 9.3;    /**< Derivate parameter of PID corrector.         */
+
+double Kp = 26;   /**< Proportional parameter of PID corrector.     */
+double Ki = 0.0; /**< Integral parameter of PID corrector.         */
+double Kd = 22;    /**< Derivate parameter of PID corrector.         */
 
 static double velocityScaleStop = 30;    /**< TODO: comment                  */
 static double velocityScaleTurning = 35; /**< TODO: comment                  */
@@ -67,35 +71,22 @@ bool steerRight;            /**< TODO: comment                               */
  * @param[in] turning   TODO: comment
  */
 void pid(double pitch, double restAngle, double offset, double turning) {
-  /*
-   * Read the Potentiometer to tune the PID:
-   * This is done juste once when your want to find the rigth PID parameters
-   * for your system.
-   */
-  /*
-  // TODO: Use the chibios ADC read functions.
-  Kp = (double)analogRead(A15)/10.0;
-  Serial.print(Kp);
-  Serial.print("\t");
-  Ki = (double)analogRead(A14)/10000.000;
-  Serial.print(Ki, 4);
-  Serial.print("\t");
-  Kd = (double)analogRead(A13)/10.0;
-  Serial.println(Kd);
-  */
 
-  //==> Steer robot
+  /* Steer robot forward. */
   if (steerForward) {
     /* Scale down offset at high speed and scale up when reversing */
     offset += (double)wheelVelocity/velocityScaleMove;
     restAngle -= offset;
   }
+
+  /* Steer robot backward. */
   else if (steerBackward) {
     /* Scale down offset at high speed and scale up when reversing */
     offset -= (double)wheelVelocity/velocityScaleMove;
     restAngle += offset;
   }
-  //==> Brake
+
+  /* Default steer. */
   else if (steerStop) {
     long positionError = wheelPosition - targetPosition;
     if (abs(positionError) > zoneA) // Inside zone A
@@ -119,7 +110,7 @@ void pid(double pitch, double restAngle, double offset, double turning) {
   lastError = error;
   PIDValue = pTerm + iTerm + dTerm;
 
-  //==> Steer robot sideways
+  /* Steer robot sideways. */
   if (steerLeft) {
     /* Scale down at high speed */
     turning -= abs((double)wheelVelocity/velocityScaleTurning);
@@ -145,13 +136,13 @@ void pid(double pitch, double restAngle, double offset, double turning) {
   if (PIDLeft >= 0)
     moveMotor(MOTOR_L, MOTOR_DIR_F, PIDLeft);
   else
-    moveMotor(MOTOR_L, MOTOR_DIR_B, PIDLeft * -1);
+    moveMotor(MOTOR_L, MOTOR_DIR_B, abs(PIDLeft));
 
   /* Set the rigth motor PWM value. */
   if (PIDRight >= 0)
     moveMotor(MOTOR_R, MOTOR_DIR_F, PIDRight);
   else
-    moveMotor(MOTOR_R, MOTOR_DIR_B, PIDRight * -1);
+    moveMotor(MOTOR_R, MOTOR_DIR_B, abs(PIDRight));
 }
 
 /**
