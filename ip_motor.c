@@ -26,16 +26,18 @@
 /* Includes files.                                                           */
 /*===========================================================================*/
 #include "ip_motor.h"
-#include "chprintf.h"
 
 /*===========================================================================*/
-/* Macro definitions.                                                        */
+/* Application macros.                                                       */
 /*===========================================================================*/
-#define DEBUG 1
+/* Debug message activation. */
+#define DEBUG FALSE
 
 /*===========================================================================*/
 /* Global variables.                                                         */
 /*===========================================================================*/
+extern BaseSequentialStream* chp; /*                                         */
+
 long wheelPosition;     /**< TODO: comment                                   */
 long wheelVelocity;     /**< TODO: comment                                   */
 long lastWheelPosition; /**< TODO: comment                                   */
@@ -49,6 +51,7 @@ static bool     lstateB       = false;
 static bool     rstateA       = false;
 static bool     rstateB       = false;
 static uint8_t  loopCounter   = 0;      /**< Used to update wheel velocity   */
+const uint16_t maxValue = 512;
 
 /*===========================================================================*/
 /* Encoders callback.                                                        */
@@ -120,10 +123,15 @@ static const EXTConfig extcfg = {
  * @param[in] motor   the motor to stop, rigth or left
  */
 void stopMotor(uint8_t motor) {
-  if (motor == MOTOR_L)
+  if (motor == MOTOR_L) {
     setPWM(MOTOR_L, MOTOR_DIR_F, 0);
-  if (motor == MOTOR_R)
+    palClearPad(LMD_EN_PORT, LMD_EN);
+  }
+
+  if (motor == MOTOR_R) {
     setPWM(MOTOR_R, MOTOR_DIR_F, 0);
+    palClearPad(RMD_EN_PORT, RMD_EN);
+  }
 }
 
 /**
@@ -135,31 +143,32 @@ void stopMotor(uint8_t motor) {
  * @param[in] dutyCycle   the duty cycle to set the pwm.
  */
 void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
-  // Calcul the numeric value of the PWM.
-  dutyCycle = (dutyCycle*1023)/100;
+  #if (DEBUG == TRUE)
+  chprintf(chp, "pwm: %d\t", dutyCycle);
+  #endif
 
   if (motor == MOTOR_L) {
     palSetPad(LMD_EN_PORT, LMD_EN);
 
     if (direction == MOTOR_DIR_F) {
-      pwmEnableChannel(&PWMD4, 0, 1023);      // Reverse
-      pwmEnableChannel(&PWMD4, 2, dutyCycle); // Forward
+      pwm_setPulseWidth(&PWMD4, 0, maxValue);      // Reverse
+      pwm_setPulseWidth(&PWMD4, 2, dutyCycle); // Forward
     }
     else if (direction == MOTOR_DIR_B) {
-      pwmEnableChannel(&PWMD4, 0, dutyCycle);  // Reverse
-      pwmEnableChannel(&PWMD4, 2, 1023);       // Forward
+      pwm_setPulseWidth(&PWMD4, 0, dutyCycle);  // Reverse
+      pwm_setPulseWidth(&PWMD4, 2, maxValue);       // Forward
     }
   }
   else if (motor == MOTOR_R) {
     palSetPad(RMD_EN_PORT, RMD_EN);
 
     if (direction == MOTOR_DIR_F) {
-      pwmEnableChannel(&PWMD3, 1, 1023);      // Reverse
-      pwmEnableChannel(&PWMD3, 2, dutyCycle); // Forward
+      pwm_setPulseWidth(&PWMD3, 1, maxValue);      // Reverse
+      pwm_setPulseWidth(&PWMD3, 2, dutyCycle); // Forward
     }
     else if (direction == MOTOR_DIR_B) {
-      pwmEnableChannel(&PWMD3, 1, dutyCycle); // Reverse
-      pwmEnableChannel(&PWMD3, 2, 1023);      // Forward
+      pwm_setPulseWidth(&PWMD3, 1, dutyCycle); // Reverse
+      pwm_setPulseWidth(&PWMD3, 2, maxValue);      // Forward
     }
   }
 }
@@ -185,10 +194,10 @@ void motorsStopAndReset(void) {
 void moveMotor(uint8_t motor, uint8_t direction, double speedRaw) {
   int speed;
 
-  if(speedRaw > 255)
-    speedRaw = 255;
+  if(speedRaw > maxValue)
+    speedRaw = maxValue;
 
-  speed = speedRaw*((double)PWMVALUE)/255; // Scale from 100 to PWM_VALUE
+  speed = speedRaw*((double)PWMVALUE)/maxValue; // Scale from 100 to PWM_VALUE
   setPWM(motor, direction, speed);
 }
 
@@ -223,7 +232,7 @@ long readRightEncoder(void) {
 long readLeftEncoderStateA(void) {
   long ret;
 
-  if(lstateA)
+  if (lstateA)
     ret = 1;
   else
     ret = 0;
@@ -240,7 +249,7 @@ long readLeftEncoderStateA(void) {
 long readLeftEncoderStateB(void) {
   long ret;
 
-  if(lstateB)
+  if (lstateB)
     ret = 1;
   else
     ret = 0;
@@ -257,7 +266,7 @@ long readLeftEncoderStateB(void) {
 long readRightEncoderStateA(void) {
   long ret;
 
-  if(rstateA)
+  if (rstateA)
     ret = 1;
   else
     ret = 0;
@@ -274,12 +283,44 @@ long readRightEncoderStateA(void) {
 long readRightEncoderStateB(void) {
   long ret;
 
-  if(rstateB)
+  if (rstateB)
     ret = 1;
   else
     ret = 0;
 
   return ret;
+}
+
+/**
+ * @fn      enableLeftMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void enableLeftMotor(void) {
+  palSetPad(LMD_EN_PORT, LMD_EN);
+}
+
+/**
+ * @fn      enableRightMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void enableRightMotor(void) {
+  palSetPad(RMD_EN_PORT, RMD_EN);
+}
+
+/**
+ * @fn      disableLeftMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void disableLeftMotor(void) {
+  palClearPad(LMD_EN_PORT, LMD_EN);
+}
+
+/**
+ * @fn      disableRightMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void disableRightMotor(void) {
+  palClearPad(RMD_EN_PORT, RMD_EN);
 }
 
 /**
@@ -289,35 +330,35 @@ long readRightEncoderStateB(void) {
 void motorInit(void) {
 
   // Set left Motors Encoders
-  palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT); // pin D19 [PD2]
-  palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT); // pin D5  [PG5]
+  palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT); // D18 [Pxx]
+  palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT); // D4  [Pxx]
 
   // Set Rigth motor encoders
-  palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT); // pin D18 [PD3]
-  palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT); // pin D3  [PE5]
+  palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT); // D19 [Pxx]
+  palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT); // D5  [Pxx]
 
   // Setup Left Motor Driver ( LMD )
-  palSetPadMode(LMD_RPWM_PORT, LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
-  palSetPadMode(LMD_LPWM_PORT, LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
-  palSetPadMode(LMD_EN_PORT, LMD_EN, PAL_MODE_OUTPUT_PUSHPULL);     // pin
+  palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); // D2  [Pxx]
+  palSetPadMode(LMD_LPWM_PORT,  LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); // D3  [Pxx]
+  palSetPadMode(LMD_EN_PORT,    LMD_EN,   PAL_MODE_OUTPUT_PUSHPULL); // D11 [Pxx]
 
   // Setup Rigth Motor Driver ( RMD )
-  palSetPadMode(RMD_RPWM_PORT, RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
-  palSetPadMode(RMD_LPWM_PORT, RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); // pin
-  palSetPadMode(RMD_EN_PORT, RMD_EN, PAL_MODE_OUTPUT_PUSHPULL);     // pin
+  palSetPadMode(RMD_RPWM_PORT,  RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); // D8  [Pxx]
+  palSetPadMode(RMD_LPWM_PORT,  RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); // D6  [Pxx]
+  palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL); // D7  [Pxx]
 
   // Eneble Motors.
-  palSetPad(LMD_EN_PORT, LMD_EN);
-  palSetPad(RMD_EN_PORT, RMD_EN);
+  enableRightMotor();
+  enableLeftMotor();
 
   // Motor Enable pins configuration.
   //palSetPadMode(IOPORT2, PB4, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor Enable
   //palSetPadMode(IOPORT8, PH4, PAL_MODE_OUTPUT_PUSHPULL); // left motor Enable
 
-  // Configure the EXT Driver and Validate the External interrupt for encoders:
+  // Configure the EXT Driver and Validate the Externals interrupts for encoders:
   extStart(&EXTD1, &extcfg);
-  extChannelEnable(&EXTD1, INT2); // pin D19 [PD2]
-  extChannelEnable(&EXTD1, INT3); // pin D18 [PD3]
+  extChannelEnable(&EXTD1, INT2); // D19 [PD2]
+  extChannelEnable(&EXTD1, INT3); // D18 [PD3]
 }
 
 /**

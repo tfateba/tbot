@@ -23,9 +23,20 @@
 /*===========================================================================*/
 /* Includes files.                                                           */
 /*===========================================================================*/
+/* Standard libraries. */
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
+#include <stdbool.h>
+/* ChibiOS libraries. */
+#include "ch.h"
 #include "hal.h"
+#include "chprintf.h"
+/* Local files. */
 #include "ip_pid.h"
+
+
 
 /*===========================================================================*/
 /* Enumerations, Structures and macros.                                      */
@@ -52,40 +63,44 @@
 #define PWMVALUE F_CPU/PWM_FREQUENCY/2
 
 /* Arduino Interruption */
-#define INT2 2      /**< On Pin 19 [PD2] .                                   */
-#define INT3 3      /**< On Pin 18 [PD3].                                    */
+#define INT2 2      /**< D19 [PD2], BLACK wire motor Right                   */
+#define INT3 3      /**< D18 [PD3], RED wire Motor Left                      */
 
-/* Motor encoders Ports on arduino Mega.*/
-#define L_ENCODER_A_PORT IOPORT4 /**< Red wire. PE4                          */
-#define R_ENCODER_B_PORT IOPORT4 /**< Red wire. PE5                          */
-#define L_ENCODER_B_PORT IOPORT7 /**< Black wire. PG5                        */
-#define R_ENCODER_A_PORT IOPORT5 /**< Black wire. PE3                        */
+/* Left Motor encoders Ports definition. */
+#define L_ENCODER_A_PORT IOPORT4 /**< Red wire.   D18 [PD3]                  */
+#define L_ENCODER_B_PORT IOPORT7 /**< Black wire. D4  [PG5]                  */
 
-/* Motor encoders Pins on Arduino Mega. */
-#define L_ENCODER_A PD2 /**< Red wire. D19                                   */
-#define R_ENCODER_B PD3 /**< Red wire. D18                                   */
-#define L_ENCODER_B PG5 /**< Black wire. PG5                                 */
-#define R_ENCODER_A PE3 /**< Black wire. PE3                                 */
+/* Left Motor encoders Pins definition. */
+#define L_ENCODER_A PD3 /**< Red wire.    D18 [PD3]                          */
+#define L_ENCODER_B PG5 /**< Black wire.  D4  [PG5]                          */
 
-/* Left Motor driver Ports. */
-#define LMD_LPWM_PORT IOPORT8  /**< Motor Forward.  PH3                      */
-#define LMD_RPWM_PORT IOPORT8  /**< Motor Backward. PH5                      */
-#define LMD_EN_PORT   IOPORT8  /**< Motor Enable.   PH4                      */
+/* Right Motor encoders Ports definition. */
+#define R_ENCODER_B_PORT IOPORT5 /**< Red wire.   D5  [PE3]                  */
+#define R_ENCODER_A_PORT IOPORT4 /**< Black wire. D19 [PD2]                  */
 
-/* Left Motor driver Pins*/
-#define LMD_LPWM PH3  /**< Motor Forward.   PH3                              */
-#define LMD_RPWM PH5  /**< Motor Backward.  PH5                              */
-#define LMD_EN   PH4  /**< Motor Enable.    PH4                              */
+/* Right Motor encoders Pins definition. */
+#define R_ENCODER_A PD2 /**< Black wire.  D19 [PD2]                          */
+#define R_ENCODER_B PE3 /**< Red wire.    D5  [PE3]                          */
 
-/* Right Motor driver */
-#define RMD_LPWM_PORT IOPORT5 /**< Motor Forward.  PE4                       */
-#define RMD_RPWM_PORT IOPORT5 /**< Motor Backward. PE5                       */
-#define RMD_EN_PORT   IOPORT2 /**< Motor Enable.   PB4                       */
+/* Left Motor driver Ports definition. */
+#define LMD_LPWM_PORT IOPORT5  /**< Motor Forward.  D3  [PE5]                */
+#define LMD_RPWM_PORT IOPORT5  /**< Motor Backward. D2  [PE4]                */
+#define LMD_EN_PORT   IOPORT2  /**< Motor Enable.   D11 [PB5]                */
 
-/* Right Motor driver */
-#define RMD_LPWM PE4 /**< Motor Forward.  PE4                                */
-#define RMD_RPWM PE5 /**< Motor Backward. PE5                                */
-#define RMD_EN   PB4 /**< Motor Enable.   PB4                                */
+/* Left Motor driver Pins definition. */
+#define LMD_LPWM PE5  /**< Motor Forward.   D3  [PE5]                        */
+#define LMD_RPWM PE4  /**< Motor Backward.  D2  [PE4]                        */
+#define LMD_EN   PB5  /**< Motor Enable.    D11 [PB5]                        */
+
+/* Right Motor driver Ports definition. */
+#define RMD_LPWM_PORT IOPORT8 /**< Motor Forward.  D6 [PH3]                  */
+#define RMD_RPWM_PORT IOPORT8 /**< Motor Backward. D8 [PH5]                  */
+#define RMD_EN_PORT   IOPORT8 /**< Motor Enable.   D7 [PH4]                  */
+
+/* Right Motor driver Pins definition. */
+#define RMD_LPWM PH3 /**< Motor Forward.  D6 [PH3]                           */
+#define RMD_RPWM PH5 /**< Motor Backward. D8 [PH5]                           */
+#define RMD_EN   PH4 /**< Motor Enable.   D7 [PH4]                           */
 
 /*===========================================================================*/
 /* Functions prototypes.                                                     */
@@ -156,6 +171,29 @@ long readLeftEncoder(void);
  */
 long readRightEncoder(void);
 
+/**
+ * @fn      enableLeftMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void enableLeftMotor(void);
+
+/**
+ * @fn      enableRightMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void enableRightMotor(void);
+
+/**
+ * @fn      disableLeftMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void disableLeftMotor(void);
+
+/**
+ * @fn      disableRightMotor
+ * @brief   Initialize all pins needs for motor control
+ */
+void disableRightMotor(void);
 /**
  * @fn      motorInit
  * @brief   Initialize all pins needs for motor control
