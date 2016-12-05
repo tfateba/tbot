@@ -137,13 +137,13 @@ static THD_FUNCTION(adcThd, arg) {
 
     adcConvA0 /= (MY_NUM_CH * MY_SAMPLING_NUMBER);
     voltageA0 = (((float)adcConvA0 * 5) / 1024);
-    Kp = (voltageA0 * 10);
+    //Kp = (voltageA0 * 10);
     //Kd = (voltageA0 * 6);
     //Ki = (voltageA0 / 10);
 
-    //Kp = 25.429;
-    Kd = 0.0;
-    Ki = 0.0;
+    Kp = 55.468;
+    Kd = 42.524;
+    Ki = 0.554;
     chThdSleepUntil(time);
   }
 }
