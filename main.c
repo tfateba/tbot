@@ -47,7 +47,7 @@ msg_t           msg;        /**< Message error.                            */
 BaseSequentialStream * chp;
 static int32_t  adcConvA0 = 0;      /**< A0 adc conversion. */
 static float    voltageA0 = 0;      /**< A0 voltage.        */
-istatic adcsample_t sample_buff[MY_NUM_CH * MY_SAMPLING_NUMBER];
+static adcsample_t sample_buff[MY_NUM_CH * MY_SAMPLING_NUMBER];
 
 extern double Kp;   /* Proportional parameter of PID corrector.    */
 extern double Kd;   /* Derivative parameter of PID corrector.      */
@@ -137,9 +137,13 @@ static THD_FUNCTION(adcThd, arg) {
 
     adcConvA0 /= (MY_NUM_CH * MY_SAMPLING_NUMBER);
     voltageA0 = (((float)adcConvA0 * 5) / 1024);
-    Kp = (voltageA0 * 6);
+    Kp = (voltageA0 * 10);
     //Kd = (voltageA0 * 6);
     //Ki = (voltageA0 / 10);
+
+    //Kp = 25.429;
+    Kd = 0.0;
+    Ki = 0.0;
     chThdSleepUntil(time);
   }
 }
@@ -262,7 +266,7 @@ int main(void) {
 
   while (TRUE) {
     //chprintf(chp, "   %.3fv \r\n", voltageA0);
-    chprintf(chp, " Kp = %.3f \r\n", Kp);
+    //chprintf(chp, " Kp = %.3f \r\n", Kp);
     //chprintf(chp, " Kd = %.3f \r\n", Kd);
     //chprintf(chp, " Ki = %.3f \r\n", Ki);
     chThdSleepMilliseconds(100);
