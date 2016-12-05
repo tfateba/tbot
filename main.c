@@ -34,41 +34,6 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /*               */
 mpu6050_t       imu;        /**< MPU6050 instance.                         */
 msg_t           msg;        /**< Message error.                            */
 
-/*
- * In this demo we use a single channel to sample voltage across
- * a potentiometer.
- */
- #define MY_NUM_CH           1
- #define MY_SAMPLING_NUMBER  10
-
-/**
- * @brief Global variables
- */
-BaseSequentialStream * chp;
-static int32_t  adcConvA0 = 0;      /**< A0 adc conversion. */
-static float    voltageA0 = 0;      /**< A0 voltage.        */
-static adcsample_t sample_buff[MY_NUM_CH * MY_SAMPLING_NUMBER];
-
-extern double Kp;   /* Proportional parameter of PID corrector.    */
-extern double Kd;   /* Derivative parameter of PID corrector.      */
-extern double Ki;   /* Integral parameter of PID corrector.        */
-
-/*
- * ADC conversion group.
- * Mode:        Linear buffer, 10 samples of 1 channel, SW triggered.
- * Channels:    IN0 (Arduino Pin A0).
- */
-static const ADCConversionGroup my_conversion_group = {
-  FALSE,      /* Not circular buffer.       */
-  MY_NUM_CH,  /* Number of channels.        */
-  NULL,       /* No ADC callback function.  */
-  1,          /* Channel mask.              */
-};
-
-static const ADCConfig adcConfig = {
-  ANALOG_REFERENCE_AVCC, /* Analog reference. */
-};
-
 /*=========================================================================*/
 /* Local functions.                                                        */
 /*=========================================================================*/
@@ -106,44 +71,6 @@ static THD_FUNCTION(asserThd, arg) {
   while (true) {
     time += MS2ST(10);
     asserv();
-    chThdSleepUntil(time);
-  }
-}
-
-/*
- * @brief Robot asservissement thread.
- * @TODO: Find the correct size of the working area.
- */
-static THD_WORKING_AREA(waAdc, 128);
-static THD_FUNCTION(adcThd, arg) {
-  (void)arg;
-  systime_t time = chVTGetSystemTimeX();
-  uint8_t i;
-
-  chRegSetThreadName("Adc");
-
-  /* Activates the ADC1 driver. */
-  adcStart(&ADCD1, &adcConfig);
-
-  while (true) {
-    time += MS2ST(10);
-    /* Make ADC conversion of the voltage on A0. */
-    adcConvert(&ADCD1, &my_conversion_group, sample_buff, MY_SAMPLING_NUMBER);
-
-    /* Making mean of sampled values.*/
-    for (i = 0; i < MY_NUM_CH * MY_SAMPLING_NUMBER; i++) {
-      adcConvA0 += sample_buff[i];
-    }
-
-    adcConvA0 /= (MY_NUM_CH * MY_SAMPLING_NUMBER);
-    voltageA0 = (((float)adcConvA0 * 5) / 1024);
-    //Kp = (voltageA0 * 10);
-    //Kd = (voltageA0 * 6);
-    //Ki = (voltageA0 / 10);
-
-    Kp = 55.468;
-    Kd = 42.524;
-    Ki = 0.554;
     chThdSleepUntil(time);
   }
 }
@@ -257,18 +184,7 @@ int main(void) {
   chThdSleepMilliseconds(10);
   #endif
 
-  /* Create and starts asservissement thread. */
-  chThdCreateStatic(waAdc, sizeof(waAdc), NORMALPRIO + 6, adcThd, NULL);
-  #if (DEBUG == TRUE)
-  chprintf(chp, "\n\r Create ADC thread.");
-  chThdSleepMilliseconds(10);
-  #endif
-
   while (TRUE) {
-    //chprintf(chp, "   %.3fv \r\n", voltageA0);
-    //chprintf(chp, " Kp = %.3f \r\n", Kp);
-    //chprintf(chp, " Kd = %.3f \r\n", Kd);
-    //chprintf(chp, " Ki = %.3f \r\n", Ki);
     chThdSleepMilliseconds(100);
   }
 }
