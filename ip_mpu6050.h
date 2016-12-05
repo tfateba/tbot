@@ -1,4 +1,5 @@
 /**
+ *
  * @file    ip_mpu6050.h
  *
  * @brief   MPU6050 driver header file.
@@ -18,7 +19,7 @@
 /* Include file.                                                             */
 /*===========================================================================*/
 #include "ip_i2c.h"
-#include "chprintf.h"
+#include "ip_motor.h"
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
