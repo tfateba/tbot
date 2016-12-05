@@ -35,6 +35,7 @@
 #include "chprintf.h"
 /* Local files. */
 #include "ip_pid.h"
+#include "ip_pwm.h"
 
 
 
