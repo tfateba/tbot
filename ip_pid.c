@@ -20,22 +20,18 @@
 /*===========================================================================*/
 /* Global variables.                                                         */
 /*===========================================================================*/
-static double lastError; /**< Store position error.                          */
-static double iTerm;     /**< Store integral term                            */
-static double error;     /**< Error between two measurement                  */
-static double pTerm;     /**< Proportionnal error.                           */
-static double dTerm;     /**< Derivate error.                                */
-static double PIDValue;  /**< PID value, sum of all the errors.              */
-static double PIDLeft;   /**< PID result for Left motor.                     */
-static double PIDRight;  /**< PID result for Right motor.                    */
+static double lastError;    /**< Store position error.                       */
+static double iTerm;        /**< Store integral term                         */
+static double error;        /**< Error between two measurement               */
+static double pTerm;        /**< Proportionnal error.                        */
+static double dTerm;        /**< Derivate error.                             */
+static double PIDValue;     /**< PID value, sum of all the errors.           */
+static double PIDLeft;      /**< PID result for Left motor.                  */
+static double PIDRight;     /**< PID result for Right motor.                 */
 
-//static double Kp = 13.6;   /**< Proportional parameter of PID corrector.     */
-//static double Ki = 0.0377; /**< Integral parameter of PID corrector.         */
-//static double Kd = 9.3;    /**< Derivate parameter of PID corrector.         */
-
-double Kp = 26;   /**< Proportional parameter of PID corrector.     */
-double Ki = 0.0; /**< Integral parameter of PID corrector.         */
-double Kd = 22;    /**< Derivate parameter of PID corrector.         */
+static double Kp = 55.468;  /**< Proportional parameter of PID corrector.    */
+static double Ki = 0.554;   /**< Integral parameter of PID corrector.        */
+static double Kd = 42.524;  /**< Derivate parameter of PID corrector.        */
 
 static double velocityScaleStop = 30;    /**< TODO: comment                  */
 static double velocityScaleTurning = 35; /**< TODO: comment                  */
