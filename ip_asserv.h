@@ -18,17 +18,7 @@
 /*===========================================================================*/
 /* Includes files.                                                           */
 /*===========================================================================*/
-/* Standard libraries. */
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-/* ChibiOS libraries. */
-#include "ch.h"
-#include "hal.h"
-#include "chprintf.h"
 /* Local files. */
-//#include "ip_adc.h"
-//#include "ip_i2c.h"
 #include "ip_kalman.h"
 #include "ip_motor.h"
 #include "ip_mpu6050.h"

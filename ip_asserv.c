@@ -32,7 +32,7 @@ extern BaseSequentialStream* chp; /*                                         */
 extern mpu6050_t       imu;       /**< MPU6050 instance.                     */
 extern msg_t           msg;       /**< Message error.                        */
 
-const uint8_t   delta = 10;       /**< Asservissement period.                */
+const double   delta = 0.01;       /**< Asservissement period.              */
 
 bool    layingDown    = true; /**<                                           */
 double  targetAngle   = 178;  /**< The angle we want the robot to reach.     */
@@ -63,16 +63,13 @@ void asserv(void) {
   /* Get the Kalman estimation of the angle. */
   imu.pitch_k = kalman_getAngle(imu.pitch, (imu.x_gyro / 131.0), delta);
 
-  #if (DEBUG == TRUE)
-  chprintf(chp, " pitch_kalman is %.3f °c\r\n", imu.pitch_k);
-  #endif
-
   if ((layingDown && (imu.pitch_k < 170 || imu.pitch_k > 190)) ||
     (!layingDown && (imu.pitch_k < 135 || imu.pitch_k > 225))) {
     /*
      * The robot is in a unsolvable position, so turn off both motors and
      * wait until it's vertical again.
      */
+
     layingDown = true;
     motorsStopAndReset();
   }
@@ -83,6 +80,9 @@ void asserv(void) {
      */
     layingDown = false;
     pid(imu.pitch_k, targetAngle, targetOffset, turningOffset);
+    #if (DEBUG == TRUE)
+    chprintf(chp, " pitch:%.3f\r\n", imu.pitch_k);
+    #endif
   }
 
   /* Update the robot wheel velocity every 100ms. */
