@@ -35,7 +35,7 @@ extern msg_t           msg;       /**< Message error.                        */
 const double   delta = 0.01;       /**< Asservissement period.              */
 
 bool    layingDown    = true; /**<                                           */
-double  targetAngle   = 178;  /**< The angle we want the robot to reach.     */
+double  targetAngle   = 180;  /**< The angle we want the robot to reach.     */
 double  targetOffset  = 0;    /**< Offset for going forward and backwrd.     */
 double  turningOffset = 0;    /**< Offset for turning left and right.        */
 
@@ -86,6 +86,6 @@ void asserv(void) {
   }
 
   /* Update the robot wheel velocity every 100ms. */
-  motorGetWheelVelocity();
+  //motorGetWheelVelocity();
 }
 
