@@ -1,22 +1,28 @@
 *****************************************************************************
-** ChibiOS/RT port for Atmel AVR ATmega1280.                                **
+** IP robot.                                                               **
 *****************************************************************************
 
 ** TARGET **
 
-The demo runs on an Arduino Mega board.
+The software runs on Inverted Pendulum robot.
+The brain of the robot is the Arduino Mega board(mcu is atmega2560).
 
-** The Demo **
+** The Software **
 
-The demo currently just prints the TestThread output on Serial0, which is
-available on the board USB connector (FT232 converter), and toggles the LED
-on PB7 (pin 13 on Arduino IDE) every second.
+The goal is to stabilize the robot, to do that, there are several steps:
+- Read data from IMU (accelerometer and gyroscope)
+- Compute data to have an angle by using a kalman filter.
+- Calcul the asservissement value with a PID.
+- Control the robot according the offset between the mesured angle and
+the target angle.
+
+The Sofware is based on ChibiOS stable version (16.1.5) with small
+modifications on the PWM low device driver to control the motors.
 
 ** Build Procedure **
 
-The demo was built using the GCC AVR toolchain. It should build with WinAVR too!
+The demo was built using the GCC AVR toolchain.
+It should build with WinAVR too!
 
 ** Notes **
 
-This demo runs natively so the Arduino bootloader must be removed and the FUSEs
-reprogrammed. The values used for fuses are LFUSE=0xe7 and HFUSE=0x99.
