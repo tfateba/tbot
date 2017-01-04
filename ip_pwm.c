@@ -22,7 +22,7 @@
 /*===========================================================================*/
 
 /*
- * PWM3 configuration.
+ * @brief   PWM3 configuration structure.
  */
 static PWMConfig pwm3cfg = {
   512,  /* Not real clock.     */
@@ -36,7 +36,7 @@ static PWMConfig pwm3cfg = {
 };
 
 /*
- * PWM4 configuration.
+ * @brief   PWM4 configuration structure.
  */
 static PWMConfig pwm4cfg = {
   512,  /* Not real clock.     */
@@ -56,9 +56,6 @@ static PWMConfig pwm4cfg = {
 /**
  * @fn      pwm_init
  * @brief   Initialize the PWM output.
- *
- * @param[in] pwmp    pointer to the pwm driver
- * @param[in] pwmcfg  configuration of the pwm driver
  */
 void pwm_init(void) {
   /* PH3 and PH5 are timer 4 pwm channels outputs */
@@ -83,12 +80,11 @@ void pwm_init(void) {
  * @param[in] width     pwm width to generate
  */
 void pwm_setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
-  //pwmEnableChannel(pwmp, channel, PWM_PERCENTAGE_TO_WIDTH(pwmp, width));
   pwmEnableChannel(pwmp, channel, width);
 }
 
 /**
- * @fn      pwm_enable.
+ * @fn      pwm_enable
  * @brief   Enable PWM channel.
  *
  * @param[in] pwmp      pointer to the pwm driver
@@ -101,7 +97,7 @@ void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
 }
 
 /**
- * @fn      pwm_disable.
+ * @fn      pwm_disable
  * @brief   Disable PWM channel.
  *
  * @param[in] pwmp  pointer of the pwm driver to disable
@@ -109,5 +105,4 @@ void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
 void pwm_disable(PWMDriver *pwmp) {
   pwmStop(pwmp);
 }
-
 
