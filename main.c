@@ -57,7 +57,7 @@ msg_t           msg;        /**< Message error.                              */
 /*===========================================================================*/
 
 /*
- * @brief Onboard led Blink thread.
+ * @brief   Onboard led Blink thread.
  */
 static THD_WORKING_AREA(waBlink, 32);
 static THD_FUNCTION(blinkThd, arg) {
@@ -81,7 +81,7 @@ static THD_FUNCTION(blinkThd, arg) {
 }
 
 /*
- * @brief Robot asservissement thread.
+ * @brief   Robot asservissement thread.
  */
 static THD_WORKING_AREA(waAsser, 64);
 static THD_FUNCTION(asserThd, arg) {
@@ -212,3 +212,4 @@ int main(void) {
     chThdSleepMilliseconds(100);
   }
 }
+
