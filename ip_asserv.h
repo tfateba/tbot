@@ -8,7 +8,7 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  17 November 2016
+ * @update  08 December 2016
  *
  */
 
@@ -19,6 +19,7 @@
 /* Includes files.                                                           */
 /*===========================================================================*/
 /* Local files. */
+#include "ip_conf.h"
 #include "ip_kalman.h"
 #include "ip_motor.h"
 #include "ip_mpu6050.h"

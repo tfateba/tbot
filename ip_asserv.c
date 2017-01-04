@@ -8,7 +8,7 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  17 November 2016
+ * @update  04 January 2017
  *
  */
 
@@ -21,18 +21,20 @@
 /* Application macros.                                                       */
 /*===========================================================================*/
 /* MPU6050 device name */
-#define mpu "MPU6050"
-/* Debug message activation. */
-#define DEBUG TRUE
+#define mpu         "MPU6050"
+#define PI          3.14159265359
+#define RAD_TO_DEG  180/PI
 
 /*===========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations    */
 /*===========================================================================*/
+#if (DEBUG == TRUE)
 extern BaseSequentialStream* chp; /*                                         */
+#endif
 extern mpu6050_t       imu;       /**< MPU6050 instance.                     */
 extern msg_t           msg;       /**< Message error.                        */
 
-const double   delta = 0.01;       /**< Asservissement period.              */
+const double   dt = 0.01;       /**< Asservissement period.              */
 
 bool    layingDown    = true; /**<                                           */
 double  targetAngle   = 180;  /**< The angle we want the robot to reach.     */
@@ -53,15 +55,17 @@ void asserv(void) {
   msg = mpu6050_getData(&I2CD1, &imu);
 
   if (msg != MSG_OK) {
+#if (DEBUG == TRUE)
     chprintf(chp, "\n\r %s: Error while reading the %s sensor data.", mpu, mpu);
+#endif
     return;
   }
 
   /* Calcul of the Pitch angle of the selbalancing robot. */
-  imu.pitch = (atan2(imu.y_accel, imu.z_accel) + 3.14)*(180/3.14);
+  imu.pitch = (atan2(imu.y_accel, imu.z_accel) + PI)*(RAD_TO_DEG);
 
   /* Get the Kalman estimation of the angle. */
-  imu.pitch_k = kalman_getAngle(imu.pitch, (imu.x_gyro / 131.0), delta);
+  imu.pitch_k = kalman_getAngle(imu.pitch, (imu.x_gyro / 131.0), dt);
 
   if ((layingDown && (imu.pitch_k < 170 || imu.pitch_k > 190)) ||
     (!layingDown && (imu.pitch_k < 135 || imu.pitch_k > 225))) {
@@ -80,9 +84,9 @@ void asserv(void) {
      */
     layingDown = false;
     pid(imu.pitch_k, targetAngle, targetOffset, turningOffset);
-    #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
     chprintf(chp, " pitch:%.3f\r\n", imu.pitch_k);
-    #endif
+#endif
   }
 
   /* Update the robot wheel velocity every 100ms. */
