@@ -1,5 +1,3 @@
-// TODO: Make a test to use a mutex, binary semaphore and count semaphore.
-
 /**
  *
  * @file    main.c
@@ -84,7 +82,6 @@ static THD_FUNCTION(blinkThd, arg) {
 
 /*
  * @brief Robot asservissement thread.
- * @TODO: Find the correct size of the working area.
  */
 static THD_WORKING_AREA(waAsser, 64);
 static THD_FUNCTION(asserThd, arg) {
