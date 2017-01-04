@@ -1,5 +1,21 @@
+// TODO: Make a test to use a mutex, binary semaphore and count semaphore.
+
+/**
+ *
+ * @file    main.c
+ *
+ * @brief   main file of inverted pendulum Robot.
+ *
+ * @author  Theodore Ateba, tf.ateba@gmail.com
+ *
+ * @date    07 Septembre 2015
+ *
+ * @update  08 December 2016
+ *
+ */
+
 /*
-    ChibiOS - Copyright (C) 2016 Theodore Ateba
+    IP - Copyright (C) 2016 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,46 +30,55 @@
     limitations under the License.
 */
 
-/*========================================================================*/
-/* Includes Files.                                                        */
-/*========================================================================*/
+/*===========================================================================*/
+/* Includes Files.                                                           */
+/*===========================================================================*/
 #include "ip_asserv.h"
+#include "ip_conf.h"
 
-/*=========================================================================*/
-/* Application macros.                                                     */
-/*=========================================================================*/
-/* MPU6050 device name */
-#define mpu "MPU6050"
-/* Debug message activation. */
-#define DEBUG TRUE
+/*===========================================================================*/
+/* Application macros.                                                       */
+/*===========================================================================*/
 
-/*=========================================================================*/
-/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations  */
-/*=========================================================================*/
-BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /*               */
-mpu6050_t       imu;        /**< MPU6050 instance.                         */
-msg_t           msg;        /**< Message error.                            */
+/*===========================================================================*/
+/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.   */
+/*===========================================================================*/
+#if (DEBUG == TRUE)
+BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /*                 */
+#endif
 
-/*=========================================================================*/
-/* Local functions.                                                        */
-/*=========================================================================*/
+mpu6050_t       imu;        /**< MPU6050 instance.                           */
+msg_t           msg;        /**< Message error.                              */
 
-/*=========================================================================*/
-/* Threads and main function.                                              */
-/*=========================================================================*/
+/*===========================================================================*/
+/* Local functions.                                                          */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Threads and main function.                                                */
+/*===========================================================================*/
 
 /*
  * @brief Onboard led Blink thread.
  */
-static WORKING_AREA(waBlink, 64);
+static THD_WORKING_AREA(waBlink, 32);
 static THD_FUNCTION(blinkThd, arg) {
   (void)arg;
+  systime_t time = chVTGetSystemTimeX();
+  uint16_t init_time = 0;
 
   chRegSetThreadName("Blinker");
 
   while (true) {
-    palTogglePad(IOPORT2, PORTB_LED1);
-    chThdSleepMilliseconds(100);
+    time += MS2ST(100);
+    if (init_time <= 200) {
+      init_time++;
+    }
+    else {
+      palTogglePad(IOPORT2, PORTB_LED1);
+    }
+
+    chThdSleepUntil(time);
   }
 }
 
@@ -61,7 +86,7 @@ static THD_FUNCTION(blinkThd, arg) {
  * @brief Robot asservissement thread.
  * @TODO: Find the correct size of the working area.
  */
-static THD_WORKING_AREA(waAsser, 2048);
+static THD_WORKING_AREA(waAsser, 64);
 static THD_FUNCTION(asserThd, arg) {
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
@@ -91,7 +116,7 @@ int main(void) {
 
   /* Start the serial. */
   sdStart(&SD1, NULL);
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r");
   chprintf(chp, "\n\r/*==============================================*/");
   chprintf(chp, "\n\r/*                                              */");
@@ -108,81 +133,83 @@ int main(void) {
   chprintf(chp, "\n\r Start Robot initialization:");
   chprintf(chp, "\n\r Serial driver initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Turn off the debug LED. */
   palClearPad(IOPORT2, PORTB_LED1);
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r On-board LED initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Start I2C interface. */
   i2cStart(&I2CD1, &i2cConfig);
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r I2C bus interface initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Init Kalman filter. */
   kalman_init();
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r Kalman filter initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Init MPU module. */
   msg = mpu6050_init(&I2CD1, &imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
+#if (DEBUG == TRUE)
     chprintf(chp, "\n\r Error while initialising the mpu sensor.");
+#endif
     return -1;
   }
 
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r IMU sensor initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Start MPU calibration process. */
   mpu6050_calibration(&I2CD1, &imu);
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r IMU sensor calibration ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Init Motors. */
   motorInit();
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r Motors initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Init PWM modules. */
   pwm_init();
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r PWM initialization ended.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r Robot initialization end.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Create and starts the LED blinker thread. */
   chThdCreateStatic(waBlink, sizeof(waBlink), NORMALPRIO + 4, blinkThd, NULL);
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r Create Blink thread.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   /* Create and starts asservissement thread. */
   chThdCreateStatic(waAsser, sizeof(waAsser), NORMALPRIO + 8, asserThd, NULL);
-  #if (DEBUG == TRUE)
+#if (DEBUG == TRUE)
   chprintf(chp, "\n\r Create Asservissement thread.");
   chThdSleepMilliseconds(10);
-  #endif
+#endif
 
   while (TRUE) {
     chThdSleepMilliseconds(100);
