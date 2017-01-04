@@ -62,6 +62,7 @@ bool steerRight;            /**< TODO: comment                               */
  * @fn      pid
  * @brief   Calcul the command to send to the motors according to last error.
  *
+ * @param[in] pitch     mesured angle of the robot
  * @param[in] restAngle TODO: comment
  * @param[in] offset    TODO: comment
  * @param[in] turning   TODO: comment
@@ -85,11 +86,11 @@ void pid(double pitch, double restAngle, double offset, double turning) {
   /* Default steer. */
   else if (steerStop) {
     long positionError = wheelPosition - targetPosition;
-    if (abs(positionError) > zoneA) // Inside zone A
+    if (abs(positionError) > zoneA)                       /* Inside zone A. */
       restAngle -= (double)positionError/positionScaleA;
-    else if (abs(positionError) > zoneB) // Inside zone B
+    else if (abs(positionError) > zoneB)                  /* Inside zone B. */
       restAngle -= (double)positionError/positionScaleB;
-    else // Inside zone C
+    else                                                  /* Inside zone C. */
       restAngle -= (double)positionError/positionScaleC;
     restAngle -= (double)wheelVelocity/velocityScaleStop;
     if (restAngle < 160) // Limit rest Angle
@@ -98,7 +99,7 @@ void pid(double pitch, double restAngle, double offset, double turning) {
       restAngle = 200;
   }
 
-  //==> Update PID values
+  /* Update PID values. */
   error = (restAngle - pitch);
   pTerm = Kp * error;
   iTerm += Ki * error;
