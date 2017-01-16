@@ -29,9 +29,9 @@ static PWMConfig pwm3cfg = {
   512,  /* Maximum PWM count.  */
   NULL,
   {
-    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A. */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM.   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C. */
+    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A.  */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM.    */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C.  */
   },
 };
 
@@ -43,9 +43,9 @@ static PWMConfig pwm4cfg = {
   512,  /* Maximum PWM count.  */
   NULL,
   {
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A .*/
-    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM.   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C. */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A.  */
+    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM.    */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C.  */
   },
 };
 
@@ -59,12 +59,12 @@ static PWMConfig pwm4cfg = {
  */
 void pwm_init(void) {
   /* PH3 and PH5 are timer 4 pwm channels outputs */
-  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL); // left motor PWM forward
-  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL); // left motor PWM backward
+  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL); /* left motor PWM forward.   */
+  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL); /* left motor PWM backward.  */
 
   /* PE4 and PE5 are timer 3 pwm channels outputs */
-  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor PWM forward
-  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor PWM backward
+  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL); /* rigth motor PWM forward.   */
+  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL); /* rigth motor PWM backward.  */
 
   /* Start PWM3 and PWM4. */
   pwmStart(&PWMD4, &pwm4cfg);
