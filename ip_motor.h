@@ -8,7 +8,7 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  17 November 2016
+ * @update  16 January 2017
  *
  * @note
  *          Motor Wires, connexion to the Motor Drivers
@@ -106,140 +106,21 @@
 /*===========================================================================*/
 /* Functions prototypes.                                                     */
 /*===========================================================================*/
-// TODO: Get the functions prototypes from the c file.
-
-/**
- * @fn      stopMotor
- * @brief   Stop the corresponding motor.
- *
- * @param[in] motor   the motor to stop, rigth or left
- */
 void stopMotor(uint8_t motor);
-
-/**
- * @fn      setPWM
- * @brief   Generate the corresponding PWM for speed control.
- *
- * @param[in] motor       the motor to pilot, rigth or left
- * @param[in] direction   the direction of the motor, backward or forward
- * @param[in] dutyCycle   the duty cycle to set the pwm
- */
 void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
-
-/**
- * @fn      motorsStopAndReset
- * @brief   Stop both motors and initialize wheels position, PID parameters.
- */
 void motorsStopAndReset(void);
-
-/**
- * @fn      moveMotor
- * @brief   Driving the motor to set to the given speed.
- *
- * @param[in] motor       the motor to pilot, rigth or left
- * @param[in] direction   the direction of the motor, backward or forward
- * @param[in] speedRaw    the speed to set the motor
- */
 void moveMotor(uint8_t motor, uint8_t direction, double speedRaw);
-
-/**
- * @fn      cbLeftEncoder
- * @brief   The left encoder callback function.
- */
-//void cbLeftEncoder(void);
-
-/**
- * @fn      cbRightEncoder
- * @brief   The right encoder callback function.
- */
-//void cbRightEncoder(void);
-
-/**
- * @fn      readLeftEncoder
- * @brief   The encoders decrease when motor is traveling forward and increase
- *          when traveling backward.
- *
- * @return  leftCounter   the value of the left encode
- */
 long readLeftEncoder(void);
-
-/**
- * @fn      readRightEncoder
- * @brief   The encoders decrease when motor is traveling forward and increase
- *          when traveling backward.
- *
- * @return  rightCounter  the value of the right encoder
- */
 long readRightEncoder(void);
-
-/**
- * @fn      enableLeftMotor
- * @brief   Initialize all pins needs for motor control
- */
 void enableLeftMotor(void);
-
-/**
- * @fn      enableRightMotor
- * @brief   Initialize all pins needs for motor control
- */
 void enableRightMotor(void);
-
-/**
- * @fn      disableLeftMotor
- * @brief   Initialize all pins needs for motor control
- */
 void disableLeftMotor(void);
-
-/**
- * @fn      disableRightMotor
- * @brief   Initialize all pins needs for motor control
- */
 void disableRightMotor(void);
-/**
- * @fn      motorInit
- * @brief   Initialize all pins needs for motor control
- */
 void motorInit(void);
-
-/**
- * @fn      motorGetWheelVelocity
- * @brief   Get the wheel velocity for asservissement routine.
- */
 void motorGetWheelVelocity(void);
-
-
 // TODO: Remove this test functions define just for test purpose.
-
-/**
- * @fn      readLeftEncoderStateA
- * @brief   return the state of the left encder A.
- *
- * @return  ret the value of the left encoder A
- */
 long readLeftEncoderStateA(void);
-
-/**
- * @fn      readLeftEncoderStateB
- * @brief   return the state of the left encder B.
- *
- * @return  ret  the value of the left encoder B
- */
 long readLeftEncoderStateB(void);
-
-/**
- * @fn      readRightEncoderStateA
- * @brief   return the state of the rigth encder A.
- *
- * @return  ret  the value of the right encoder A
- */
 long readRightEncoderStateA(void);
-
-/**
- * @fn      readRightEncoderStateB
- * @brief   return the state of the rigth encder B.
- *
- * @return  ret  the value of the right encoder B
- */
 long readRightEncoderStateB(void);
-
 #endif
