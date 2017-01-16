@@ -8,7 +8,7 @@
  *
  * @date    30 June 2016
  *
- * @update	16 January 2017
+ * @update  16 January 2017
  *
  */
 #ifndef _IP_PWM_H_
