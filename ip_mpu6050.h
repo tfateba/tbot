@@ -264,7 +264,6 @@ typedef struct{
 /*===========================================================================*/
 /* Functions.                                                                */
 /*===========================================================================*/
-// TODO: Add functions prototypes descriptions.
 msg_t mpu6050_getIdentity(I2CDriver *i2cp, uint8_t *idp);
 msg_t mpu6050_sleep(I2CDriver *i2cp);
 msg_t mpu6050_wakeup(I2CDriver *i2cp);
