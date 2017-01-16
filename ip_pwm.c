@@ -8,12 +8,12 @@
  *
  * @date    30 June 2016
  *
- * @update  17 November 2016
+ * @update  16 January 2017
  *
  */
 
 /*===========================================================================*/
-/* Includes Files                                                            */
+/* Includes Files.                                                           */
 /*===========================================================================*/
 #include "ip_pwm.h"
 
@@ -54,17 +54,16 @@ static PWMConfig pwm4cfg = {
 /*===========================================================================*/
 
 /**
- * @fn      pwm_init
  * @brief   Initialize the PWM output.
  */
 void pwm_init(void) {
   /* PH3 and PH5 are timer 4 pwm channels outputs */
-  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL); /* left motor PWM forward.   */
-  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL); /* left motor PWM backward.  */
+  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL);
 
   /* PE4 and PE5 are timer 3 pwm channels outputs */
-  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL); /* rigth motor PWM forward.   */
-  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL); /* rigth motor PWM backward.  */
+  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL);
 
   /* Start PWM3 and PWM4. */
   pwmStart(&PWMD4, &pwm4cfg);
@@ -72,7 +71,6 @@ void pwm_init(void) {
 }
 
 /**
- * @fn      pwm_setPulseWidth
  * @brief   Set the pulse width on the specify channel of a PWM driver.
  *
  * @param[in] pwmp      pointer to the pwm driver
@@ -84,7 +82,6 @@ void pwm_setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
 }
 
 /**
- * @fn      pwm_enable
  * @brief   Enable PWM channel.
  *
  * @param[in] pwmp      pointer to the pwm driver
@@ -97,7 +94,6 @@ void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
 }
 
 /**
- * @fn      pwm_disable
  * @brief   Disable PWM channel.
  *
  * @param[in] pwmp  pointer of the pwm driver to disable
