@@ -8,7 +8,7 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  04 January 2017
+ * @update  16 January 2017
  *
  */
 
@@ -20,33 +20,35 @@
 /*===========================================================================*/
 /* Application macros.                                                       */
 /*===========================================================================*/
-/* MPU6050 device name */
-#define mpu         "MPU6050"
-#define PI          3.14159265359
-#define RAD_TO_DEG  180/PI
+
+#if (DEBUG == TRUE)
+#define mpu         "MPU6050"      /**< MPU6050 device name.                 */
+#endif
+
+#define PI          3.14159265359  /**< Mathematical PI constant.            */
+#define RAD_TO_DEG  180/PI         /**< Constant for Radian to degre.        */
 
 /*===========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations    */
 /*===========================================================================*/
+const double   dt = 0.01;      /**< Asservissement period.                   */
+
+bool    layingDown    = true;  /**< See if the robot is down.                */
+double  targetAngle   = 180;   /**< The angle we want the robot to reach.    */
+double  targetOffset  = 0;     /**< Offset for going forward and backwrd.    */
+double  turningOffset = 0;     /**< Offset for turning left and right.       */
+
 #if (DEBUG == TRUE)
-extern BaseSequentialStream* chp; /*                                         */
+extern BaseSequentialStream* chp; /* Stream debug message pointer.           */
 #endif
-extern mpu6050_t       imu;       /**< MPU6050 instance.                     */
-extern msg_t           msg;       /**< Message error.                        */
-
-const double   dt = 0.01;       /**< Asservissement period.              */
-
-bool    layingDown    = true; /**<                                           */
-double  targetAngle   = 180;  /**< The angle we want the robot to reach.     */
-double  targetOffset  = 0;    /**< Offset for going forward and backwrd.     */
-double  turningOffset = 0;    /**< Offset for turning left and right.        */
+extern mpu6050_t  imu; /**< MPU6050 instance.                                */
+extern msg_t      msg; /**< Message error.                                   */
 
 /*===========================================================================*/
 /* Functions.                                                                */
 /*===========================================================================*/
 
 /**
- * @fn     asserv
  * @brief  Asservissement routine of the robot.
  */
 void asserv(void) {
@@ -56,7 +58,8 @@ void asserv(void) {
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE)
-    chprintf(chp, "\n\r %s: Error while reading the %s sensor data.", mpu, mpu);
+    chprintf(chp, "\n\r %s: Error while reading the %s sensor data.",
+	mpu, mpu);
 #endif
     return;
   }
@@ -73,7 +76,6 @@ void asserv(void) {
      * The robot is in a unsolvable position, so turn off both motors and
      * wait until it's vertical again.
      */
-
     layingDown = true;
     motorsStopAndReset();
   }
