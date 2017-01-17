@@ -36,8 +36,7 @@
 /* Local files. */
 #include "ip_pid.h"
 #include "ip_pwm.h"
-
-
+#include "ip_conf.h"
 
 /*===========================================================================*/
 /* Enumerations, Structures and macros.                                      */
@@ -48,13 +47,13 @@
  */
 #define PWM_FREQUENCY 20000
 
-#define MOTOR_L     0 // Left motor
-#define MOTOR_R     1 // Rigth motor
-#define MOTOR_DIR_F 2 // Direction forward
-#define MOTOR_DIR_B 3 // Direction backward
-#define STOP        4 // Stop the motor
-#define IMU         5 // Imu input
-#define JOYSTICK    6 // Joystick input
+#define MOTOR_L     0 /* Left motor.          */
+#define MOTOR_R     1 /* Rigth motor.         */
+#define MOTOR_DIR_F 2 /* Direction forward.   */
+#define MOTOR_DIR_B 3 /* Direction backward.  */
+#define STOP        4 /* Stop the motor.      */
+#define IMU         5 /* Imu input.           */
+#define JOYSTICK    6 /* Joystick input.      */
 
 /*
  * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
@@ -118,9 +117,4 @@ void disableLeftMotor(void);
 void disableRightMotor(void);
 void motorInit(void);
 void motorGetWheelVelocity(void);
-// TODO: Remove this test functions define just for test purpose.
-long readLeftEncoderStateA(void);
-long readLeftEncoderStateB(void);
-long readRightEncoderStateA(void);
-long readRightEncoderStateB(void);
-#endif
+#endif /* _IP_MOTOR_H_ */
