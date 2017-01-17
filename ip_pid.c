@@ -8,7 +8,7 @@
  *
  * @date    17 July 2016
  *
- * @update  24 October 2016
+ * @update  17 January 2017
  *
  */
 
@@ -33,39 +33,38 @@ static double Kp = 55.468;  /**< Proportional parameter of PID corrector.    */
 static double Ki = 0.554;   /**< Integral parameter of PID corrector.        */
 static double Kd = 42.524;  /**< Derivate parameter of PID corrector.        */
 
-static double velocityScaleStop = 30;    /**< TODO: comment                  */
-static double velocityScaleTurning = 35; /**< TODO: comment                  */
+static double velocityScaleStop = 30;     /**< Max velocity of the robot.    */
+static double velocityScaleTurning = 35;  /**< Max turning velocity.         */
 
-static int16_t zoneA = 4000;          /**< TODO: comment                     */
-static int16_t zoneB = 2000;          /**< TODO: comment                     */
-static double positionScaleA = 250;   /**< One resolution is 464 pulses      */
-static double positionScaleB = 500;   /**< TODO: comment                     */
-static double positionScaleC = 1000;  /**< TODO: comment                     */
-static double velocityScaleMove = 35; /**< TODO: comment                     */
+static int16_t zoneA = 4000;           /**< Area to ajust robot PID.         */
+static int16_t zoneB = 2000;           /**< Area to ajust robot PID.         */
+static double positionScaleA = 250;    /**< One resolution is 464 pulses     */
+static double positionScaleB = 500;    /**< Max position scale for control.  */
+static double positionScaleC = 1000;   /**< Max position scale for control.  */
+static double velocityScaleMove = 35;  /**< Velocity scale use to move.      */
 
-extern long wheelPosition;      /**< TODO: comment                           */
-extern long lastWheelPosition;  /**< TODO: comment                           */
-extern long wheelVelocity;      /**< TODO: comment                           */
-extern long targetPosition;     /**< TODO: comment                           */
+bool steerForward;           /**< Robot oriantation forward.                 */
+bool steerBackward;          /**< Robot oriantation backward.                */
+bool steerStop      = true;  /**< Stop by default.                           */
+bool steerLeft;              /**< Robot orientation left.                    */
+bool steerRight;             /**< Robot oriantation rigth.                   */
 
-bool steerForward;          /**< TODO: comment                               */
-bool steerBackward;         /**< TODO: comment                               */
-bool steerStop      = true; /* Stop by default                               */
-bool steerLeft;             /**< TODO: comment                               */
-bool steerRight;            /**< TODO: comment                               */
+extern long wheelPosition;
+extern long lastWheelPosition;
+extern long wheelVelocity;
+extern long targetPosition;
 
 /*===========================================================================*/
 /* Functions.                                                                */
 /*===========================================================================*/
 
 /**
- * @fn      pid
  * @brief   Calcul the command to send to the motors according to last error.
  *
- * @param[in] pitch     mesured angle of the robot
- * @param[in] restAngle TODO: comment
- * @param[in] offset    TODO: comment
- * @param[in] turning   TODO: comment
+ * @param[in] pitch      mesured angle of the robot
+ * @param[in] restAngle  target angle of the robot
+ * @param[in] offset     angle we want to add to the target angle
+ * @param[in] turning    value use to turn robot over rigth or left
  */
 void pid(double pitch, double restAngle, double offset, double turning) {
 
@@ -93,7 +92,7 @@ void pid(double pitch, double restAngle, double offset, double turning) {
     else                                                  /* Inside zone C. */
       restAngle -= (double)positionError/positionScaleC;
     restAngle -= (double)wheelVelocity/velocityScaleStop;
-    if (restAngle < 160) // Limit rest Angle
+    if (restAngle < 160) /* Limit rest Angle. */
       restAngle = 160;
     else if (restAngle > 200)
       restAngle = 200;
@@ -143,7 +142,6 @@ void pid(double pitch, double restAngle, double offset, double turning) {
 }
 
 /**
- * @fn      pidParametersReset
  * @brief   Reset the PID parameters.
  */
 void pidParametersReset(void) {
