@@ -8,7 +8,7 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  08 December 2016
+ * @update  16 January 2017
  *
  */
 
@@ -34,10 +34,6 @@
 /* Functions prototypes.                                                     */
 /*===========================================================================*/
 
-/**
- * @fn     asserv
- * @brief  Asservissement routine of the robot.
- */
 void asserv(void);
 
 #endif
