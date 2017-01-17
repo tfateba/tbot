@@ -22,7 +22,6 @@
 /*===========================================================================*/
 
 /**
- * @fn      i2cReadRegisters
  * @brief   Read a register or a block of registers from the sensor.
  *
  * @param[in] i2cp    pointer to the i2c interface
@@ -45,7 +44,6 @@ msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
 }
 
 /**
- * @fn      i2cWriteRegisters
  * @brief   Write to a register or a block of registers on the sensor.
  *
  * @param[in] i2cp    pointer to the i2c interface
@@ -66,3 +64,4 @@ msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr,
 
   return msg;
 }
+
