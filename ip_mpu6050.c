@@ -8,21 +8,27 @@
  *
  * @date    26 June 2016
  *
- * @update  11 November 2016
- *
  */
 
 /*===========================================================================*/
 /* Include Libraries                                                         */
 /*===========================================================================*/
+
 #include "ip_mpu6050.h"
 
 /*===========================================================================*/
-/* Driver Functions                                                          */
+/* Application macros.                                                       */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Global variables.                                                         */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Functions.                                                                */
 /*===========================================================================*/
 
 /**
- * @fn      mpu6050_getIdentity
  * @brief   Get the identity of the MPU6050 device.
  *
  * @param[in] i2cp  pointer to the I2C driver interface
@@ -47,7 +53,6 @@ msg_t mpu6050_getIdentity(I2CDriver *i2cp, uint8_t *idp) {
 }
 
 /**
- * @fn      mpu6050_sleep
  * @brief   Put the MPU6050 in the Power Sleep Mode.
  *
  * @param[in] i2cp  pointer of the I2C driver interface
@@ -72,7 +77,6 @@ msg_t mpu6050_sleep(I2CDriver *i2cp) {
 }
 
 /**
- * @fn      mpu6050_wakeup
  * @brief   Remove the MPU6050 from the sleep mode.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -97,7 +101,6 @@ msg_t mpu6050_wakeup(I2CDriver *i2cp) {
 }
 
 /**
- * @fn      mpu6050_reset
  * @brief   Reset the MPU6050.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -122,7 +125,6 @@ msg_t mpu6050_reset(I2CDriver *i2cp) {
 }
 
 /**
- * @fn      mpu6050_gyroConfig
  * @brief   Configure the gyroscope full scale.
  *
  * @param[in] i2cp    pointer of the i2C interface
@@ -161,7 +163,6 @@ msg_t mpu6050_gyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
 }
 
 /**
- * @fn      mpu6050_accelConfig
  * @brief   Configure the accelerometer full scale.
  *
  * @param[in] i2cp    pointer of the i2C interface
@@ -200,7 +201,6 @@ msg_t mpu6050_accelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
 }
 
 /**
- * @fn      mpu6050_getXGyroOffset
  * @brief   Get the gyroscope x axis offset.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -221,7 +221,6 @@ msg_t mpu6050_getXGyroOffset(I2CDriver *i2cp, int16_t *gxop) {
 }
 
 /**
- * @fn      mpu6050_setXGyroOffset
  * @brief   Set the gyroscope x axis offset.
  *
  * @param[in] i2cp    pointer of the i2C interface
@@ -242,7 +241,6 @@ msg_t mpu6050_setXGyroOffset(I2CDriver *i2cp, int16_t offset) {
 }
 
 /**
- * @fn      mpu6050_getYGyroOffset
  * @brief   Get the gyroscope Y axis offset.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -263,7 +261,6 @@ msg_t mpu6050_getYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
 }
 
 /**
- * @fn      mpu6050_setYGyroOffset
  * @brief   Set the gyroscope Y axis offset.
  *
  * @param[in] i2cp    pointer of the i2C interface
@@ -284,7 +281,6 @@ msg_t mpu6050_setYGyroOffset(I2CDriver *i2cp, int16_t offset) {
 }
 
 /**
- * @fn      mpu6050_getZGyroOffset
  * @brief   Get the gyroscope Z axis offset.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -306,7 +302,6 @@ msg_t mpu6050_getZGyroOffset(I2CDriver *i2cp, int16_t *gzop) {
 }
 
 /**
- * @fn      mpu6050_setZGyroOffset
  * @brief   Set the gyroscope Z axis offset.
  *
  * @param[in] i2cp    pointer of the i2C interface
@@ -328,7 +323,6 @@ msg_t mpu6050_setZGyroOffset(I2CDriver *i2cp, int16_t offset) {
 }
 
 /**
- * @fn      mpu6050_setZAccelOffset
  * @brief   Set accelerometer Z axis offset.
  *
  * @param[in] i2cp    pointer of the i2C interface.
@@ -350,7 +344,6 @@ msg_t mpu6050_setZAccelOffset(I2CDriver *i2cp, int16_t offset) {
 }
 
 /**
- * @fn      mpu6050_read
  * @brief   Configure the accelerometer full scale.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -394,7 +387,6 @@ msg_t mpu6050_readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
 }
 
 /**
- * @fn      mpu6050_getData
  * @brief   Read data from the IMU sensors.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -443,7 +435,6 @@ msg_t mpu6050_getData(I2CDriver *i2cp, mpu6050_t *mpup) {
 }
 
 /**
- * @fn      mpu6050_calibration
  * @brief   Calibrate the MPU6050 accelerometer and gyroscope sensors.
  *
  * @param[in] i2cp  pointer of the i2C interface
@@ -493,7 +484,6 @@ msg_t mpu6050_calibration(I2CDriver *i2cp, mpu6050_t *mpup) {
 }
 
 /**
- * @fn      mpu6050_init
  * @brief   Initialize the MPU6050 sensor.
  *
  * @param[in] i2cp  pointer of the i2C interface

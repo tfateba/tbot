@@ -8,8 +8,6 @@
  *
  * @date    22 June 2016
  *
- * @update  17 November 2016
- *
  */
 
 #ifndef _IP_MPU6050_H_
@@ -18,6 +16,7 @@
 /*===========================================================================*/
 /* Include file.                                                             */
 /*===========================================================================*/
+
 #include "ip_i2c.h"
 #include "ip_motor.h"
 
@@ -142,41 +141,41 @@ typedef struct{
 
 /* MPU6050 Registers List */
 #define MPU6050_XG_OFFSET_TC        0x00 /**< TODO:.                         */
-#define MPU6050_YG_OFFSET_TC        0x01
-#define MPU6050_ZG_OFFSET_TC        0x02
-#define MPU6050_X_FINE_GAIN         0x03
-#define MPU6050_Y_FINE_GAIN         0x04
-#define MPU6050_Z_FINE_GAIN         0x05
-#define MPU6050_X_ACCEL_OFFSET_H    0x06
-#define MPU6050_X_ACCEL_OFFSET_L    0x07
-#define MPU6050_Y_ACCEL_OFFSET_H    0x08
-#define MPU6050_Y_ACCEL_OFFSET_L    0x09
-#define MPU6050_Z_ACCEL_OFFSET_H    0x0A
-#define MPU6050_Z_ACCEL_OFFSET_L    0x0B
+#define MPU6050_YG_OFFSET_TC        0x01 /**< TODO:.                         */
+#define MPU6050_ZG_OFFSET_TC        0x02 /**< TODO:.                         */
+#define MPU6050_X_FINE_GAIN         0x03 /**< TODO:.                         */
+#define MPU6050_Y_FINE_GAIN         0x04 /**< TODO:.                         */
+#define MPU6050_Z_FINE_GAIN         0x05 /**< TODO:.                         */
+#define MPU6050_X_ACCEL_OFFSET_H    0x06 /**< TODO:.                         */
+#define MPU6050_X_ACCEL_OFFSET_L    0x07 /**< TODO:.                         */
+#define MPU6050_Y_ACCEL_OFFSET_H    0x08 /**< TODO:.                         */
+#define MPU6050_Y_ACCEL_OFFSET_L    0x09 /**< TODO:.                         */
+#define MPU6050_Z_ACCEL_OFFSET_H    0x0A /**< TODO:.                         */
+#define MPU6050_Z_ACCEL_OFFSET_L    0x0B /**< TODO:.                         */
 
 #define MPU6050_SELF_TEST_X         0x0D /**< Self Test Register.            */
 #define MPU6050_SELF_TEST_Y         0x0E /**< Self Test Register.            */
 #define MPU6050_SELF_TEST_Z         0x0F /**< Self Test Register.            */
 #define MPU6050_SELF_TEST_A         0x10 /**< Self Test Register.            */
 
-#define MPU6050_X_GYRO_OFFSET_USRH  0x13
-#define MPU6050_X_GYRO_OFFSET_USRL  0x14
-#define MPU6050_Y_GYRO_OFFSET_USRH  0x15
-#define MPU6050_Y_GYRO_OFFSET_USRL  0x16
-#define MPU6050_Z_GYRO_OFFSET_USRH  0x17
-#define MPU6050_Z_GYRO_OFFSET_USRL  0x18
+#define MPU6050_X_GYRO_OFFSET_USRH  0x13 /**< TODO:.                         */
+#define MPU6050_X_GYRO_OFFSET_USRL  0x14 /**< TODO:.                         */
+#define MPU6050_Y_GYRO_OFFSET_USRH  0x15 /**< TODO:.                         */
+#define MPU6050_Y_GYRO_OFFSET_USRL  0x16 /**< TODO:.                         */
+#define MPU6050_Z_GYRO_OFFSET_USRH  0x17 /**< TODO:.                         */
+#define MPU6050_Z_GYRO_OFFSET_USRL  0x18 /**< TODO:.                         */
 
 #define MPU6050_SMPLRT_DIV          0x19 /**< Sample Rate Divider.           */
 #define MPU6050_CONFIG              0x1A /**< Configuration.                 */
 #define MPU6050_GYRO_CONFIG         0x1B /**< Gyroscope Config.              */
 #define MPU6050_ACCEL_CONFIG        0x1C /**< Accelerometer Config.          */
 
-#define MPU6050_FF_THR              0x1D
-#define MPU6050_FF8DUR              0x1E
+#define MPU6050_FF_THR              0x1D /**< TODO:.                         */
+#define MPU6050_FF8DUR              0x1E /**< TODO:.                         */
 #define MPU6050_MOT_THR             0x1F /**< Motion Det Threshold.          */
-#define MPU6050_MOT_DUR             0x20
-#define MPU6050_ZRMOT               0x21
-#define MPU6050_ZRDUR               0x22
+#define MPU6050_MOT_DUR             0x20 /**< TODO:.                         */
+#define MPU6050_ZRMOT               0x21 /**< TODO:.                         */
+#define MPU6050_ZRDUR               0x22 /**< TODO:.                         */
 
 #define MPU6050_FIFO_EN             0x23 /**< Fifo Enable.                   */
 #define MPU6050_I2C_MST_CTRL        0x24 /**< I2C Master Control.            */
@@ -251,19 +250,20 @@ typedef struct{
 #define MPU6050_USER_CTRL           0x6A /**< User Control.                  */
 #define MPU6050_PWR_MGMT_1          0x6B /**< Power Management 1.            */
 #define MPU6050_PWR_MGMT_2          0x6C /**< Power Management 2.            */
-#define MPU6050_BANK_SEL            0x6D
-#define MPU6050_MEM_START_ADDR      0x6E
-#define MPU6050_MEM_R_W             0x6F
-#define MPU6050_DMP_CONFIG_1        0x70
-#define MPU6050_DMP_CONFIG_2        0x71
+#define MPU6050_BANK_SEL            0x6D /**< TODO:.                         */
+#define MPU6050_MEM_START_ADDR      0x6E /**< TODO:.                         */
+#define MPU6050_MEM_R_W             0x6F /**< TODO:.                         */
+#define MPU6050_DMP_CONFIG_1        0x70 /**< TODO:.                         */
+#define MPU6050_DMP_CONFIG_2        0x71 /**< TODO:.                         */
 #define MPU6050_FIFO_COUNTH         0x72 /**< Fifo Count Register.           */
 #define MPU6050_FIFO_COUNTL         0x73 /**< Fifo Count Register.           */
 #define MPU6050_FIFO_R_W            0x74 /**< Fifo Read Write.               */
 #define MPU6050_WHO_AM_I            0x75 /**< Who Am I.                      */
 
 /*===========================================================================*/
-/* Functions.                                                                */
+/* Functions prototypes.                                                     */
 /*===========================================================================*/
+
 msg_t mpu6050_getIdentity(I2CDriver *i2cp, uint8_t *idp);
 msg_t mpu6050_sleep(I2CDriver *i2cp);
 msg_t mpu6050_wakeup(I2CDriver *i2cp);
