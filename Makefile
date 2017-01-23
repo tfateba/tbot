@@ -57,7 +57,7 @@ TARGET = ip
 OBJDIR = .
 
 # Imported source files
-CHIBIOS = ../../ChibiOS_16.1.5
+CHIBIOS = ../../ChibiOS_16.1.6
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/boards/ARDUINO_MEGA/board.mk
 include $(CHIBIOS)/os/hal/ports/AVR/platform.mk
@@ -67,21 +67,21 @@ include $(CHIBIOS)/os/rt/ports/AVR/compilers/GCC/mk/port.mk
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(KERNSRC) \
-      $(PORTSRC) \
-      $(OSALSRC) \
-      $(HALSRC) \
-      $(PLATFORMSRC) \
-      $(BOARDSRC) \
-      $(STREAMSSRC) \
-      $(CHIBIOS)/os/various/evtimer.c \
-      ip_asserv.c \
-      ip_i2c.c \
-      ip_kalman.c \
-      ip_motor.c \
-      ip_mpu6050.c \
-      ip_pid.c \
-      ip_pwm.c \
+SRC = $(KERNSRC)                        \
+      $(PORTSRC)                        \
+      $(OSALSRC)                        \
+      $(HALSRC)                         \
+      $(PLATFORMSRC)                    \
+      $(BOARDSRC)                       \
+      $(STREAMSSRC)                     \
+      $(CHIBIOS)/os/various/evtimer.c   \
+      ip_asserv.c                       \
+      ip_i2c.c                          \
+      ip_kalman.c                       \
+      ip_motor.c                        \
+      ip_mpu6050.c                      \
+      ip_pid.c                          \
+      ip_pwm.c                          \
       main.c
 
 # List C++ source files here. (C dependencies are automatically generated.)
