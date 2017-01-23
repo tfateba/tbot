@@ -8,8 +8,6 @@
  *
  * @date    08 December 2016
  *
- * @update  08 December 2016
- *
  */
 
 #ifndef _IP_CONF_H_
@@ -22,6 +20,7 @@
 /*===========================================================================*/
 /* Enumerations, Structures and macros.                                      */
 /*===========================================================================*/
-#define DEBUG   FALSE       /* Debug message activation.                     */
+
+#define DEBUG   FALSE /* Debug message activation.                           */
 
 #endif /* _IP_CONF_H_ */
