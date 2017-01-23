@@ -8,13 +8,12 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  16 January 2017
- *
  */
 
 /*===========================================================================*/
 /* Includes files.                                                           */
 /*===========================================================================*/
+
 #include "ip_asserv.h"
 
 /*===========================================================================*/
@@ -29,8 +28,9 @@
 #define RAD_TO_DEG  180/PI         /**< Constant for Radian to degre.        */
 
 /*===========================================================================*/
-/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations    */
+/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.   */
 /*===========================================================================*/
+
 const double   dt = 0.01;      /**< Asservissement period.                   */
 
 bool    layingDown    = true;  /**< See if the robot is down.                */
@@ -92,6 +92,5 @@ void asserv(void) {
   }
 
   /* Update the robot wheel velocity every 100ms. */
-  //motorGetWheelVelocity();
+  /*motorGetWheelVelocity();*/
 }
-

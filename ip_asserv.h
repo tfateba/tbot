@@ -8,8 +8,6 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  16 January 2017
- *
  */
 
 #ifndef _IP_ASSERV_H_
