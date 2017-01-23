@@ -1,4 +1,16 @@
-/* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+/**
+ *
+ * @file    ip_kalman.h
+ *
+ * @brief   I2C driver header file.
+ *
+ * @author  Theodore Ateba, tf.ateba@gmail.com
+ *
+ * @date    05 Jully 2016
+ *
+ */
+
+ /* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
 
  This software may be distributed and modified under the terms of the GNU
  General Public License version 2 (GPL2) as published by the Free Software
@@ -11,15 +23,22 @@
  -------------------
 
  Kristian Lauszus, TKJ Electronics
- Web      :  http://www.tkjelectronics.com
- e-mail   :  kristianl@tkjelectronics.com
+ Web      : http://www.tkjelectronics.com
+ e-mail   : kristianl@tkjelectronics.com
 
- Modify by:
- Theodore Ateba, tf.ateba@gmail.com
+ Modify by: Theodore Ateba, tf.ateba@gmail.com
  */
 
-#ifndef __SAM_KALMAN_H_
-#define __SAM_KALMAN_H_
+#ifndef __IP_KALMAN_H_
+#define __IP_KALMAN_H_
+
+/*===========================================================================*/
+/* Include Libraries.                                                        */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Functions prototypes.                                                     */
+/*===========================================================================*/
 
 void kalman_init(void);
 double kalman_getAngle(double newAngle, double newRate, double dt);
@@ -31,4 +50,5 @@ void kalman_setRmeasure(double newR_measure);
 double kalman_getQangle(void);
 double kalman_getQbias(void);
 double kalman_getRmeasure(void);
-#endif
+
+#endif /* __IP_KALMAN_H_ */
