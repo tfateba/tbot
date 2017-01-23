@@ -8,8 +8,6 @@
  *
  * @date          07 Septembre 2015
  *
- * @update        16 January 2017
- *
  * @description   Motor control and Encoder Read
  *                Description:
  *                Get the PWM control value from the I2C.
@@ -25,6 +23,7 @@
 /*===========================================================================*/
 /* Includes files.                                                           */
 /*===========================================================================*/
+
 #include "ip_motor.h"
 
 /*===========================================================================*/
@@ -34,6 +33,7 @@
 /*===========================================================================*/
 /* Global variables.                                                         */
 /*===========================================================================*/
+
 #if (DEBUG == TRUE)
 extern BaseSequentialStream* chp; /* Variable for debug message.             */
 #endif
@@ -193,7 +193,8 @@ void moveMotor(uint8_t motor, uint8_t direction, double speedRaw) {
   if (speedRaw > maxValue)
     speedRaw = maxValue;
 
-  speed = speedRaw*((double)PWMVALUE)/maxValue; /* Scale from 100 to PWM_VALUE. */
+  /* Scale from 100 to PWM_VALUE. */
+  speed = speedRaw*((double)PWMVALUE)/maxValue;
   setPWM(motor, direction, speed);
 }
 
@@ -250,32 +251,55 @@ void disableRightMotor(void) {
  */
 void motorInit(void) {
 
-  /* Set left Motors Encoders. */
-  palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT); /* D18 [Pxx] */
-  palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT); /* D4  [Pxx] */
+  /*
+   * Set left Motors Encoders:
+   * D18 [Pxx] TODO
+   * D4  [Pxx] TODO
+   */
+  palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT);
+  palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT);
 
-  /* Set Rigth motor encoders */
-  palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT); /* D19 [Pxx] */
-  palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT); /* D5  [Pxx] */
+  /*
+   * Set Rigth motor encoders:
+   * D19 [Pxx] TODO
+   * D5  [Pxx] TODO
+   */
+  palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT);
+  palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT);
 
-  /* Setup Left Motor Driver ( LMD ) */
-  palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); /* D2  [Pxx] */
-  palSetPadMode(LMD_LPWM_PORT,  LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); /* D3  [Pxx] */
-  palSetPadMode(LMD_EN_PORT,    LMD_EN,   PAL_MODE_OUTPUT_PUSHPULL); /* D11 [Pxx] */
+  /*
+   * Setup Left Motor Driver ( LMD ):
+   * D2  [Pxx] TODO
+   * D3  [Pxx] TODO
+   * D11 [Pxx] TODO
+   */
+  palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(LMD_LPWM_PORT,  LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(LMD_EN_PORT,    LMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
 
-  /* Setup Rigth Motor Driver ( RMD ) */
-  palSetPadMode(RMD_RPWM_PORT,  RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL); /* D8  [Pxx] */
-  palSetPadMode(RMD_LPWM_PORT,  RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL); /* D6  [Pxx] */
-  palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL); /* D7  [Pxx] */
+  /*
+   * Setup Rigth Motor Driver ( RMD ):
+   * D8  [Pxx] TODO
+   * D6  [Pxx] TODO
+   * D7  [Pxx] TODO
+   */
+  palSetPadMode(RMD_RPWM_PORT,  RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(RMD_LPWM_PORT,  RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
 
   /* Eneble Motors. */
   enableRightMotor();
   enableLeftMotor();
 
-  /* Configure the EXT Driver and Validate the Externals interrupts for encoders: */
+  /*
+   * Configure the EXT Driver and Validate the Externals interrupts
+   * for encoders:
+   * D19 [PD2]
+   * D18 [PD3]
+   */
   extStart(&EXTD1, &extcfg);
-  extChannelEnable(&EXTD1, INT2); /* D19 [PD2] */
-  extChannelEnable(&EXTD1, INT3); /* D18 [PD3] */
+  extChannelEnable(&EXTD1, INT2);
+  extChannelEnable(&EXTD1, INT3);
 }
 
 /**
@@ -297,4 +321,3 @@ void motorGetWheelVelocity(void) {
     }
   }
 }
-

@@ -8,8 +8,6 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  16 January 2017
- *
  * @note
  *          Motor Wires, connexion to the Motor Drivers
  *          Motor + is the Yellow wire.
@@ -23,6 +21,7 @@
 /*===========================================================================*/
 /* Includes files.                                                           */
 /*===========================================================================*/
+
 /* Standard libraries. */
 #include <stdio.h>
 #include <stdlib.h>
@@ -105,6 +104,7 @@
 /*===========================================================================*/
 /* Functions prototypes.                                                     */
 /*===========================================================================*/
+
 void stopMotor(uint8_t motor);
 void setPWM(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
 void motorsStopAndReset(void);
@@ -117,4 +117,5 @@ void disableLeftMotor(void);
 void disableRightMotor(void);
 void motorInit(void);
 void motorGetWheelVelocity(void);
+
 #endif /* _IP_MOTOR_H_ */
