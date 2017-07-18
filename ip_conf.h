@@ -8,20 +8,15 @@
  *
  * @date    08 December 2016
  *
- * @update  08 December 2016
- *
  */
 
-#ifndef _IP_CONF_H_
-#define _IP_CONF_H_
+#ifndef IP_CONF_H
+#define IP_CONF_H
 
-/*===========================================================================*/
-/* Includes files.                                                           */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
+/*==========================================================================*/
 
-/*===========================================================================*/
-/* Enumerations, Structures and macros.                                      */
-/*===========================================================================*/
-#define DEBUG   FALSE       /* Debug message activation.                     */
+#define DEBUG   FALSE       /* Debug message activation.                    */
 
-#endif /* _IP_CONF_H_ */
+#endif /* IP_CONF_H */

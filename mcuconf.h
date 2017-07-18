@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef _MCUCONF_H_
-#define _MCUCONF_H_
+#ifndef MCUCONF_H
+#define MCUCONF_H
 
 /*
  * AVR drivers configuration.
@@ -31,7 +31,7 @@
 #define AVR_ADC_USE_ADC1                   TRUE
 
 /*
- * EXT driver system settings.
+ * EXT drivers system settings.
  */
 #define AVR_EXT_USE_INT0                   FALSE
 #define AVR_EXT_USE_INT1                   FALSE
@@ -39,6 +39,21 @@
 #define AVR_EXT_USE_INT3                   TRUE
 #define AVR_EXT_USE_INT4                   FALSE
 #define AVR_EXT_USE_INT5                   FALSE
+
+/*
+ * PCINT driver system settings.
+ */
+#define AVR_EXT_USE_PCINT0                 FALSE
+#define AVR_EXT_USE_PCINT1                 FALSE
+#define AVR_EXT_USE_PCINT2                 FALSE
+#define AVR_EXT_USE_PCINT3                 FALSE
+#define AVR_EXT_USE_PCINT4                 FALSE
+#define AVR_EXT_USE_PCINT5                 FALSE
+#define AVR_EXT_USE_PCINT6                 FALSE
+#define AVR_EXT_USE_PCINT7                 FALSE
+#define AVR_EXT_USE_PCINT8                 FALSE
+#define AVR_EXT_USE_PCINT9                 FALSE
+#define AVR_EXT_USE_PCINT10                FALSE
 
 /*
  * CAN driver system settings.
@@ -91,4 +106,10 @@
 #define AVR_SPI_USE_SPI1                   FALSE
 #define AVR_SPI_USE_16BIT_POLLED_EXCHANGE  FALSE
 
-#endif /* _MCUCONF_H_ */
+/*
+ * USB driver system settings.
+ */
+#define AVR_USB_USE_USB1                   FALSE
+#define AVR_USB_USE_NAMED_ADDRESS_SPACES   FALSE
+
+#endif /* MCUCONF_H */

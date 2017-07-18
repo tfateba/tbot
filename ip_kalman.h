@@ -1,3 +1,16 @@
+
+/**
+ *
+ * @file    ip_kalman.h
+ *
+ * @brief   Kalman filter header file.
+ *
+ * @author  Theodore Ateba, tf.ateba@gmail.com
+ *
+ * @date    05 Jully 2016
+ *
+ */
+
 /* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
 
  This software may be distributed and modified under the terms of the GNU
@@ -18,17 +31,23 @@
  Theodore Ateba, tf.ateba@gmail.com
  */
 
-#ifndef __SAM_KALMAN_H_
-#define __SAM_KALMAN_H_
+#ifndef IP_KALMAN_H
+#define IP_KALMAN_H
 
-void kalman_init(void);
-double kalman_getAngle(double newAngle, double newRate, double dt);
-void kalman_setAngle(double newAngle);
-double kalman_getRate(void);
-void kalman_setQangle(double newQ_angle);
-void kalman_setQbias(double newQ_bias);
-void kalman_setRmeasure(double newR_measure);
-double kalman_getQangle(void);
-double kalman_getQbias(void);
-double kalman_getRmeasure(void);
-#endif
+/*===========================================================================*/
+/* Functions prototypes.                                                     */
+/*===========================================================================*/
+
+void    kalmanInit(void);
+double  kalmanGetAngle(double newAngle, double newRate, double dt);
+void    kalmanSetAngle(double newAngle);
+double  kalmanGetRate(void);
+void    kalmanSetQangle(double newQ_angle);
+void    kalmanSetQbias(double newQ_bias);
+void    kalmanSetRmeasure(double newR_measure);
+double  kalmanGetQangle(void);
+double  kalmanGetQbias(void);
+double  kalmanGetRmeasure(void);
+
+#endif  /* IP_KALMAN_H */
+

@@ -2,27 +2,26 @@
  *
  * @file    ip_i2c.c
  *
- * @brief   I2C driver
+ * @brief   I2C driver source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
  * @date    05 Jully 2016
  *
- * @update  17 November 2016
- *
  */
 
-/*===========================================================================*/
-/* Include Libraries                                                         */
-/*===========================================================================*/
-#include "ip_i2c.h"
+/*==========================================================================*/
+/* Include Libraries                                                        */
+/*==========================================================================*/
 
-/*===========================================================================*/
-/* Driver Functions                                                          */
-/*===========================================================================*/
+/* ChibiOS file.  */
+#include "hal.h"
+
+/*==========================================================================*/
+/* Driver Functions                                                         */
+/*==========================================================================*/
 
 /**
- * @fn      i2cReadRegisters
  * @brief   Read a register or a block of registers from the sensor.
  *
  * @param[in] i2cp    pointer to the i2c interface
@@ -35,6 +34,7 @@
  */
 msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
     uint8_t *reg, uint8_t *rxbuf, uint8_t lenght) {
+
   msg_t msg;
 
   i2cAcquireBus(i2cp);
@@ -45,7 +45,6 @@ msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
 }
 
 /**
- * @fn      i2cWriteRegisters
  * @brief   Write to a register or a block of registers on the sensor.
  *
  * @param[in] i2cp    pointer to the i2c interface
@@ -54,10 +53,11 @@ msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
  *                    txbuf[0] is the first register to write
  * @param[in] lenght  size of data to write to the sensor
  *
- * @return    msg     the result of the reading operation
+ * @return    msg     the result of the writing operation
  */
 msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr,
     uint8_t *txbuf, uint8_t lenght) {
+
   msg_t msg;
 
   i2cAcquireBus(i2cp);
@@ -66,3 +66,4 @@ msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr,
 
   return msg;
 }
+

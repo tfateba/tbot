@@ -8,8 +8,6 @@
  *
  * @date    07 Septembre 2015
  *
- * @update  08 December 2016
- *
  */
 
 /*
@@ -28,39 +26,51 @@
     limitations under the License.
 */
 
-/*===========================================================================*/
-/* Includes Files.                                                           */
-/*===========================================================================*/
-#include "ip_asserv.h"
+/*==========================================================================*/
+/* Includes Files.                                                          */
+/*==========================================================================*/
+
+/* ChibiOS files.           */
+#include "hal.h"
+#include "chprintf.h"
+
+/* Project local files.     */
+#include "ip_i2c.h"
+#include "ip_pwm.h"
 #include "ip_conf.h"
+#include "ip_motor.h"
+#include "ip_asserv.h"
+#include "ip_kalman.h"
+#include "ip_mpu6050.h"
 
-/*===========================================================================*/
-/* Application macros.                                                       */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
+/*==========================================================================*/
 
-/*===========================================================================*/
-/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.   */
-/*===========================================================================*/
 #if (DEBUG == TRUE)
-BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /*                 */
+BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
+                                                                the serial
+                                                                stream to
+                                                                output the
+                                                                data on the
+                                                                USB connector
+                                                                of the arduino
+                                                                board.      */
 #endif
 
-mpu6050_t       imu;        /**< MPU6050 instance.                           */
-msg_t           msg;        /**< Message error.                              */
+mpu6050_t       imu;        /**< MPU6050 instance.                          */
+msg_t           msg;        /**< Message error.                             */
 
-/*===========================================================================*/
-/* Local functions.                                                          */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Threads and main function.                                               */
+/*==========================================================================*/
 
-/*===========================================================================*/
-/* Threads and main function.                                                */
-/*===========================================================================*/
-
-/*
+/**
  * @brief   Onboard led Blink thread.
  */
 static THD_WORKING_AREA(waBlink, 32);
 static THD_FUNCTION(blinkThd, arg) {
+
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
   uint16_t init_time = 0;
@@ -80,11 +90,12 @@ static THD_FUNCTION(blinkThd, arg) {
   }
 }
 
-/*
+/**
  * @brief   Robot asservissement thread.
  */
 static THD_WORKING_AREA(waAsser, 64);
 static THD_FUNCTION(asserThd, arg) {
+
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
 
@@ -97,10 +108,11 @@ static THD_FUNCTION(asserThd, arg) {
   }
 }
 
-/*
+/**
  * Application entry point.
  */
 int main(void) {
+
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
@@ -147,14 +159,14 @@ int main(void) {
 #endif
 
   /* Init Kalman filter. */
-  kalman_init();
+  kalmanInit();
 #if (DEBUG == TRUE)
   chprintf(chp, "\n\r Kalman filter initialization ended.");
   chThdSleepMilliseconds(10);
 #endif
 
   /* Init MPU module. */
-  msg = mpu6050_init(&I2CD1, &imu, MPU6050_ADDR);
+  msg = mpu6050Init(&I2CD1, &imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE)
@@ -169,21 +181,21 @@ int main(void) {
 #endif
 
   /* Start MPU calibration process. */
-  mpu6050_calibration(&I2CD1, &imu);
+  mpu6050Calibration(&I2CD1, &imu);
 #if (DEBUG == TRUE)
   chprintf(chp, "\n\r IMU sensor calibration ended.");
   chThdSleepMilliseconds(10);
 #endif
 
   /* Init Motors. */
-  motorInit();
+  motorsInit();
 #if (DEBUG == TRUE)
   chprintf(chp, "\n\r Motors initialization ended.");
   chThdSleepMilliseconds(10);
 #endif
 
   /* Init PWM modules. */
-  pwm_init();
+  pwmPinsInit();
 #if (DEBUG == TRUE)
   chprintf(chp, "\n\r PWM initialization ended.");
   chThdSleepMilliseconds(10);
