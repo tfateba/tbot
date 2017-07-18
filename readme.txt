@@ -16,13 +16,10 @@ The goal is to stabilize the robot, to do that, there are several steps:
 - Control the robot according the offset between the mesured angle and
 the target angle.
 
-The Sofware is based on ChibiOS stable version (16.1.5) with small
-modifications on the PWM low device driver to control the motors.
+The Sofware is based on ChibiOS trunk.
 
 ** Build Procedure **
+Just run make on the robot's program directory.
 
 The demo was built using the GCC AVR toolchain.
 It should build with WinAVR too!
-
-** Notes **
-
