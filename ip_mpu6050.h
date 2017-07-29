@@ -1,3 +1,4 @@
+
 /**
  *
  * @file    ip_mpu6050.h
@@ -17,18 +18,18 @@
 /* Include file.                                                            */
 /*==========================================================================*/
 
-/* ChibiOS files.     */
+/* ChibiOS files. */
 #include "hal.h"
 
 /*==========================================================================*/
-/* Driver data structures and types.                                        */
+/* Structures and enumerations.                                             */
 /*==========================================================================*/
 
 /**
  * @brief   MPU6050 Slave I2C adress enumeration type.
  */
 typedef enum {
-  MPU6050_ADDR = 0x68  /**< I2C address of the temperature sensor.          */
+  MPU6050_ADDR = 0x68  /**< I2C adress of the mpu6050 module.               */
 }mpu6050_sad_e;
 
 /**
@@ -39,11 +40,11 @@ typedef enum {
   MPU6050_TEMP_OUT_L      = 0x01, /**< External Frame Synchronization 1.    */
   MPU6050_GYRO_XOUT_L     = 0x02, /**< External Frame Synchronization 2.    */
   MPU6050_GYRO_YOUT_L     = 0x03, /**< External Frame Synchronization 3.    */
-  MPU6050_GYRO_ZOUT_L     = 0x04, /**< External Frame Synchronization 4     */
+  MPU6050_GYRO_ZOUT_L     = 0x04, /**< External Frame Synchronization 4.    */
   MPU6050_ACCEL_XOUT_L    = 0x05, /**< External Frame Synchronization 5.    */
   MPU6050_ACCEL_YOUT_L    = 0x06, /**< External Frame Synchronization 6.    */
   MPU6050_ACCEL_ZOUT_L    = 0x07  /**< External Frame Synchronization 7.    */
-}mpu6050_ext_sync_set_e;          /**< External Frame Synchronization type  */
+}mpu6050_ext_sync_set_e;          /**< External Frame Synchronization type. */
 
 /**
  * @brief   Digital Low Pass Filter setting for Accelerator and the Gyroscope.
@@ -138,8 +139,6 @@ typedef struct {
 /*==========================================================================*/
 /* Driver macros.                                                           */
 /*==========================================================================*/
-
-// TODO: Comment the uncommented macro.
 
 /* MPU6050 Registers List */
 #define MPU6050_XG_OFFSET_TC        0x00 /**< TODO:.                        */
@@ -263,7 +262,7 @@ typedef struct {
 #define MPU6050_WHO_AM_I            0x75 /**< Who Am I.                     */
 
 /*==========================================================================*/
-/* Functions.                                                               */
+/* Functions prototypes.                                                    */
 /*==========================================================================*/
 
 msg_t mpu6050GetIdentity(I2CDriver *i2cp, uint8_t *idp);

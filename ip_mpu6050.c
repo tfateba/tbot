@@ -1,3 +1,4 @@
+
 /**
  *
  * @file    ip_mpu6050.c
@@ -10,20 +11,18 @@
  *
  */
 
-/*===========================================================================*/
-/* Include Libraries                                                         */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Include files.                                                           */
+/*==========================================================================*/
 
-/* Standard files.  */
-#include "stdint.h"
-
-/* Local files.     */
+/* Project local files. */
 #include "ip_i2c.h"
+#include "ip_motor.h"
 #include "ip_mpu6050.h"
 
-/*===========================================================================*/
-/* Driver Functions                                                          */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Functions.                                                               */
+/*==========================================================================*/
 
 /**
  * @brief   Get the identity of the MPU6050 device.
@@ -131,7 +130,7 @@ msg_t mpu6050Reset(I2CDriver *i2cp) {
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] scale   scale to set the MPU6050(250, 500, 1000 or 2000)
  *
- * @return    msg     result of the wakeup operation
+ * @return    msg   result of the wakeup operation
  */
 msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
 
@@ -170,7 +169,7 @@ msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] scale   scale to set the MPU6050(2, 4, 8 or 16)
  *
- * @return    msg     result of the wakeup operation
+ * @return    msg   result of the wakeup operation
  */
 msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
 
@@ -254,7 +253,7 @@ msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset) {
  * @return    msg   result of the offset reading operation
  */
 msg_t mpu6050GetYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
- 
+
   msg_t   msg;
   uint8_t txbuf;
   uint8_t rxbuf[2];
@@ -383,7 +382,7 @@ msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp) {
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] rxbuf   reception buffer for the i2c data readed
  *
- * @return    msg     result of the reading operation
+ * @return    msg   result of the reading operation
  */
 msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
 
@@ -407,7 +406,6 @@ msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
  */
 msg_t mpu6050GetData(I2CDriver *i2cp, mpu6050_t *mpup) {
 
-  uint8_t mpuData[14];
   int16_t temp    = 0;
   int16_t x_accel = 0;
   int16_t y_accel = 0;
@@ -415,15 +413,16 @@ msg_t mpu6050GetData(I2CDriver *i2cp, mpu6050_t *mpup) {
   int16_t x_gyro  = 0;
   int16_t y_gyro  = 0;
   int16_t z_gyro  = 0;
-  msg_t msg;
+  uint8_t mpuData[14];
+  msg_t   msg;
 
   msg = mpu6050ReadAllSensors(i2cp, mpuData);
 
   if (msg != MSG_OK)
     return MSG_RESET;
   else {
-    x_accel |= (((int16_t)mpuData[0]) << 8) | mpuData[1]; // TODO: 0 ==> MPU_X_ACCEL_LSB 1 ==> MPU_X_ACCEL_MSB
-    y_accel |= (((int16_t)mpuData[2]) << 8) | mpuData[3]; // TODO: Do the same for the rest of the MPU data bellow.
+    x_accel |= (((int16_t)mpuData[0]) << 8) | mpuData[1];
+    y_accel |= (((int16_t)mpuData[2]) << 8) | mpuData[3];
     z_accel |= (((int16_t)mpuData[4]) << 8) | mpuData[5];
 
     temp |= (((int16_t)mpuData[6]) << 8)   | mpuData[7];
