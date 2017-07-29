@@ -1,3 +1,4 @@
+
 /**
  *
  * @file    ip_pid.h
@@ -18,7 +19,7 @@
 /*==========================================================================*/
 
 void pid(double pitch, double restAngle, double offset, double turning);
-void pidParametersReset(void);
+void pidResetParameters(void);
 
 #endif /* IP_PID_H */
 
