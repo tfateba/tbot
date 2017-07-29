@@ -1,8 +1,9 @@
+
 /**
  *
  * @file    ip_pwm.c
  *
- * @brief   Configuration, management of PWM signal source file.
+ * @brief   PWM configuration and management source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -11,37 +12,37 @@
  */
 
 /*==========================================================================*/
-/* Includes Files                                                           */
+/* Includes files.                                                          */
 /*==========================================================================*/
 
-/* Standard include files.  */
-#include <stdint.h>
-
-/* ChibiOS files.           */
+/* ChibiOS libraries. */
 #include "hal.h"
 
-/*==========================================================================*/
-/* Application macros.                                                      */
-/*==========================================================================*/
-
-#define PWM_FREQUENCY 512 /**< Frequency of the PWM driver. */
-#define PWM_PERIOD    512 /**< Period of the PWM driver.    */
+/* Project local files. */
+#include "ip_conf.h"
+#include "ip_motor.h"
 
 /*==========================================================================*/
-/* Globals variable and configurations                                      */
+/* Global variables.                                                        */
 /*==========================================================================*/
 
-/**
+const   uint16_t  maxValue      = 512;    /**< Maximum value.               */
+
+/*==========================================================================*/
+/* Configurations structure.                                                */
+/*==========================================================================*/
+
+/*
  * @brief   PWM3 configuration structure.
  */
 static PWMConfig pwm3cfg = {
-  PWM_FREQUENCY,                      /* Not real clock.                */
-  PWM_PERIOD,                         /* Maximum PWM count.             */
-  NULL,                               /* No call back for the pwm pin.  */
+  512,                              /* Period, Not real clock.        */
+  512,                              /* Frequence, Maximum PWM count.  */
+  NULL,                             /* pwm channel callback.          */
   {
-    {PWM_OUTPUT_DISABLED,     NULL},  /* PE3 use as PWM, OC3A.          */
-    {PWM_OUTPUT_ACTIVE_HIGH,  NULL},  /* PE4 Not use as PWM.            */
-    {PWM_OUTPUT_ACTIVE_HIGH,  NULL},  /* PE5 use as PWM, 0C3C.          */
+    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A.          */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM.            */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C.          */
   },
 };
 
@@ -49,13 +50,13 @@ static PWMConfig pwm3cfg = {
  * @brief   PWM4 configuration structure.
  */
 static PWMConfig pwm4cfg = {
-  PWM_FREQUENCY,                      /* Not real clock.                */
-  PWM_PERIOD,                         /* Maximum PWM count.             */
-  NULL,                               /* No call back for the pwm pin.  */
+  512,                              /* Period, Not real clock.        */
+  512,                              /* Frequency, Maximum PWM count.  */
+  NULL,                             /* pwm channel callback.          */
   {
-    {PWM_OUTPUT_ACTIVE_HIGH,  NULL},  /* PH3 use as PWM, OC4A.          */
-    {PWM_OUTPUT_DISABLED,     NULL},  /* PH4 Not use as PWM.            */
-    {PWM_OUTPUT_ACTIVE_HIGH,  NULL},  /* PH5 use as PWM, 0C4C.          */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A.          */
+    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM.            */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C.          */
   },
 };
 
@@ -66,15 +67,15 @@ static PWMConfig pwm4cfg = {
 /**
  * @brief   Initialize the PWM output.
  */
-void pwmPinsInit(void) {
+void pwmInits(void) {
 
-  /* PH3 and PH5 are timer 4 pwm channels outputs. */
-  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL); /* left motor PWM forward.   */
-  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL); /* left motor PWM backward.  */
+  /* PH3 and PH5 are timer 4 pwm channels outputs */
+  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL);
 
-  /* PE4 and PE5 are timer 3 pwm channels outputs. */
-  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL); /* rigth motor PWM forward.  */
-  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL); /* rigth motor PWM backward. */
+  /* PE4 and PE5 are timer 3 pwm channels outputs */
+  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL);
 
   /* Start PWM3 and PWM4. */
   pwmStart(&PWMD4, &pwm4cfg);
@@ -114,5 +115,44 @@ void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
 void pwmDisable(PWMDriver *pwmp) {
 
   pwmStop(pwmp);
+}
+
+/**
+ * @brief   Generate the corresponding PWM for speed control.
+ *
+ * @param[in] motor       the motor to pilot, rigth or left.
+ * @param[in] direction   the direction of the motor, backward or forward.
+ * @param[in] dutyCycle   the duty cycle to set the pwm.
+ */
+void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
+
+#if (DEBUG == TRUE)
+  chprintf(chp, "pwm: %d\t", dutyCycle);
+#endif
+
+  if (motor == MOTOR_L) {
+    palSetPad(LMD_EN_PORT, LMD_EN);
+
+    if (direction == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD4, 0, maxValue);
+      pwmSetPulseWidth(&PWMD4, 2, dutyCycle);
+    }
+    else if (direction == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD4, 0, dutyCycle);
+      pwmSetPulseWidth(&PWMD4, 2, maxValue);
+    }
+  }
+  else if (motor == MOTOR_R) {
+    palSetPad(RMD_EN_PORT, RMD_EN);
+
+    if (direction == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD3, 1, maxValue);
+      pwmSetPulseWidth(&PWMD3, 2, dutyCycle);
+    }
+    else if (direction == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD3, 1, dutyCycle);
+      pwmSetPulseWidth(&PWMD3, 2, maxValue);
+    }
+  }
 }
 
