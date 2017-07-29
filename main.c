@@ -1,8 +1,9 @@
+
 /**
  *
  * @file    main.c
  *
- * @brief   main file of inverted pendulum Robot.
+ * @brief   Inverted pendulum Robot main source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -27,27 +28,28 @@
 */
 
 /*==========================================================================*/
-/* Includes Files.                                                          */
+/* Includes files.                                                          */
 /*==========================================================================*/
 
-/* ChibiOS files.           */
+/* ChibiOS files. */
 #include "hal.h"
+#include "ch.h"
 #include "chprintf.h"
 
-/* Project local files.     */
-#include "ip_i2c.h"
-#include "ip_pwm.h"
-#include "ip_conf.h"
-#include "ip_motor.h"
+/* Project local files. */
 #include "ip_asserv.h"
+#include "ip_conf.h"
+#include "ip_i2c.h"
 #include "ip_kalman.h"
+#include "ip_motor.h"
 #include "ip_mpu6050.h"
+#include "ip_pwm.h"
 
 /*==========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
 /*==========================================================================*/
 
-#if (DEBUG == TRUE)
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
 BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
                                                                 the serial
                                                                 stream to
@@ -65,8 +67,8 @@ msg_t           msg;        /**< Message error.                             */
 /* Threads and main function.                                               */
 /*==========================================================================*/
 
-/**
- * @brief   Onboard led Blink thread.
+/*
+ * @brief   Onboard led blink thread.
  */
 static THD_WORKING_AREA(waBlink, 32);
 static THD_FUNCTION(blinkThd, arg) {
@@ -90,7 +92,7 @@ static THD_FUNCTION(blinkThd, arg) {
   }
 }
 
-/**
+/*
  * @brief   Robot asservissement thread.
  */
 static THD_WORKING_AREA(waAsser, 64);
@@ -125,43 +127,45 @@ int main(void) {
 
   /* Start the serial. */
   sdStart(&SD1, NULL);
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r");
-  chprintf(chp, "\n\r/*==============================================*/");
-  chprintf(chp, "\n\r/*                                              */");
-  chprintf(chp, "\n\r/*   Self  balancing robot.                     */");
-  chprintf(chp, "\n\r/*                                              */");
-  chprintf(chp, "\n\r/*    - Made by:   Theodore Ateba.              */");
-  chprintf(chp, "\n\r/*    - RTOS:      ChibiOS v16.1.5              */");
-  chprintf(chp, "\n\r/*    - Target:    Arduino Mega2560.            */");
-  chprintf(chp, "\n\r/*    - Version:   1.2                          */");
-  chprintf(chp, "\n\r/*    - Copyrigth: 2016.                        */");
-  chprintf(chp, "\n\r/*                                              */");
-  chprintf(chp, "\n\r/*==============================================*/");
-  chprintf(chp, "\n\r");
-  chprintf(chp, "\n\r Start Robot initialization:");
-  chprintf(chp, "\n\r Serial driver initialization ended.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r\n\r/*===========================================*/");
+  chprintf(chp, "\n\r/*                                           */");
+  chprintf(chp, "\n\r/* Self  balancing robot.                    */");
+  chprintf(chp, "\n\r/*                                           */");
+  chprintf(chp, "\n\r/* - Made by:   Theodore Ateba(tfateba).     */");
+  chprintf(chp, "\n\r/* - RTOS:      ChibiOS trunk.               */");
+  chprintf(chp, "\n\r/* - Target:    Arduino Mega2560.            */");
+  chprintf(chp, "\n\r/* - Version:   1.2                          */");
+  chprintf(chp, "\n\r/* - Copyrigth: 2015...2017                  */");
+  chprintf(chp, "\n\r/*                                           */");
+  chprintf(chp, "\n\r/*===========================================*/\n\r");
+  chprintf(chp, "\n\r %s: Initialisation of the robot is starting:", __func__);
+  chprintf(chp, "\n\r %s: Initialisation of Serial driver is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Turn off the debug LED. */
   palClearPad(IOPORT2, PORTB_LED1);
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r On-board LED initialization ended.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of onbaord LED is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Start I2C interface. */
   i2cStart(&I2CD1, &i2cConfig);
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r I2C bus interface initialization ended.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of I2C interface is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Init Kalman filter. */
   kalmanInit();
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r Kalman filter initialization ended.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of Kalman filter is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -169,54 +173,62 @@ int main(void) {
   msg = mpu6050Init(&I2CD1, &imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
-#if (DEBUG == TRUE)
-    chprintf(chp, "\n\r Error while initialising the mpu sensor.");
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+    chprintf(chp, "\n\r %s: Initialisation of MPU6050 failed.", __func__);
 #endif
     return -1;
   }
 
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r IMU sensor initialization ended.");
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of MPU6050 is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Start MPU calibration process. */
   mpu6050Calibration(&I2CD1, &imu);
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r IMU sensor calibration ended.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Calibration of IMU sensor is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Init Motors. */
-  motorsInit();
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r Motors initialization ended.");
+  motorInit();
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of Motors is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Init PWM modules. */
-  pwmPinsInit();
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r PWM initialization ended.");
+  pwmInits();
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of PWM module is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r Robot initialization end.");
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Initialisation of the robot is done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Create and starts the LED blinker thread. */
   chThdCreateStatic(waBlink, sizeof(waBlink), NORMALPRIO + 4, blinkThd, NULL);
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r Create Blink thread.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Creation of the Blink thread.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
   /* Create and starts asservissement thread. */
   chThdCreateStatic(waAsser, sizeof(waAsser), NORMALPRIO + 8, asserThd, NULL);
-#if (DEBUG == TRUE)
-  chprintf(chp, "\n\r Create Asservissement thread.");
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r %s: Creation of the Asservissement thread.", __func__);
+  chprintf(chp, "\n\r\n\r/*=============================================*/");
+  chprintf(chp, "\n\r/* Robot application is started.               */");
+  chprintf(chp, "\n\r/*=============================================*/");
   chThdSleepMilliseconds(10);
 #endif
 
