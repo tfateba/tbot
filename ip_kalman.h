@@ -34,9 +34,9 @@
 #ifndef IP_KALMAN_H
 #define IP_KALMAN_H
 
-/*===========================================================================*/
-/* Functions prototypes.                                                     */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Functions prototypes.                                                    */
+/*==========================================================================*/
 
 void    kalmanInit(void);
 double  kalmanGetAngle(double newAngle, double newRate, double dt);
@@ -49,5 +49,5 @@ double  kalmanGetQangle(void);
 double  kalmanGetQbias(void);
 double  kalmanGetRmeasure(void);
 
-#endif  /* IP_KALMAN_H */
+#endif /* IP_KALMAN_H */
 

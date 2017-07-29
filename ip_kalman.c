@@ -1,3 +1,4 @@
+
 /**
  *
  * @file    ip_kalman.c
@@ -12,7 +13,7 @@
 
 // TODO: Use float instead of double.
 
- /* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+/* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
 
  This software may be distributed and modified under the terms of the GNU
  General Public License version 2 (GPL2) as published by the Free Software
@@ -27,15 +28,12 @@
  Kristian Lauszus, TKJ Electronics
  Web      :  http://www.tkjelectronics.com
  e-mail   :  kristianl@tkjelectronics.com
-
-  Modify by: Theodore Ateba, tf.ateba@gmail.com
  */
 
 /*===========================================================================*/
 /* Global variables.                                                         */
 /*===========================================================================*/
 
-/* Kalman filter variables */
 double Q_angle;   /**< Process noise variance for the accelerometer.         */
 double Q_bias;    /**< Process noise variance for the gyro bias.             */
 double R_measure; /**< The variance of the measurement noise.                */
@@ -87,8 +85,9 @@ void kalmanInit(void) {
  *
  * @param[in] newAngle  current angle mesured by the IMU
  * @param[in] newRate   current angle rate mesured by the IMU
+ * @param[in] dt        time between tow angles measurement
  *
- * @return    angle     the result of the kalman computing
+ * @return    angle     the result of the kalman filter computing
  */
 double kalmanGetAngle(double newAngle, double newRate, double dt) {
 
@@ -121,7 +120,8 @@ double kalmanGetAngle(double newAngle, double newRate, double dt) {
   K[0] = P[0][0] / S;
   K[1] = P[1][0] / S;
 
-  /* Calculate angle and bias - Update estimate with measurement zk (newAngle)*/
+  /* Calculate angle and bias. */
+  /* Update estimate with measurement zk (newAngle) */
   /* Step 3 */
   y = newAngle - angle;
 
@@ -140,7 +140,7 @@ double kalmanGetAngle(double newAngle, double newRate, double dt) {
 }
 
 /**
- * @brief   Used to set angle, this should be set as the starting angle
+ * @brief   Set the angle, this should be set as the starting angle.
  *
  * @param[in] newAngle  Set kalman filter starting angle
  */
@@ -152,15 +152,14 @@ void setAngle(double newAngle) {
 /**
  * @brief   Read the rate of the angle.
  *
- * @return  rate  the angle rate
+ * @return  rate  the unbiased angle rate
  */
 double kalmanGetRate(void) {
 
   return rate;
 }
-
 /**
- * @brief   Tune the kalman filter.
+ * @brief   Tune the kalman filter by setting the angle.
  *
  * @param[in] newQ_angle  angle used to tune the Kalman filter
  */
@@ -170,7 +169,7 @@ void kalmanSetQangle(double newQ_angle) {
 }
 
 /**
- * @brief   Tune the kalman filter.
+ * @brief   Tune the kalman filter by setting the bias.
  *
  * @param[in] newQ_bias   bias angle used to set the Kalman filter
  */
@@ -180,9 +179,9 @@ void kalmanSetQbias(double newQ_bias) {
 }
 
 /**
- * @brief   set the variance of the measurement noise.
+ * @brief   set the variance of the measured noise.
  *
- * @param[in] newR_measure  variance of the measurement noise value.
+ * @param[in] newR_measure  variance of the measurement noise value
  */
 void kalmanSetRmeasure(double newR_measure) {
 
@@ -212,7 +211,7 @@ double kalmanGetQbias(void) {
 /**
  * @brief   Read the process noise variance for the gyro bias.
  *
- * @return  R_measure   process noise variance for the gyro bias.
+ * @return  R_measure   process noise variance for the gyro bias
  */
 double kalmanGetRmeasure(void) {
 
