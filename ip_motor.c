@@ -302,7 +302,7 @@ void motorGetWheelVelocity(void) {
 
   if (loopCounter == 10) {
     loopCounter = 0;
-    wheelPosition = motorGetEncoderValue(ENCODER_L); + motorGetEncoderGetValue(ENCODER_R);
+    wheelPosition = motorGetEncoderValue(ENCODER_L); + motorGetEncoderValue(ENCODER_R);
     wheelVelocity = wheelPosition - lastWheelPosition;
     lastWheelPosition = wheelPosition;
 
