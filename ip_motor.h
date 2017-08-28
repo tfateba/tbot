@@ -45,19 +45,6 @@ typedef enum {
   ENCODER_R_STATE_B   /**< State B of the right encoder.  */
 }encoder_e;
 
-/*
- * The motor driver can handle a pwm frequency up to 20kHz
- */
-#define PWM_FREQUENCY 20000
-
-/*
- * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
- * prescaling so:
- * frequency is given by F_CPU/(2*ICR) - ICR = F_CPU/PWM_FREQUENCY/2
- */
-#define PWMVALUE F_CPU/PWM_FREQUENCY/2
-
-
 #define LMD_LPWM_PORT     IOPORT5 /**< Left motor driver forward pwm port.  */
 #define LMD_RPWM_PORT     IOPORT5 /**< Left motor driver backwad pwm port.  */
 #define LMD_EN_PORT       IOPORT2 /**< Left motor enable port.              */
