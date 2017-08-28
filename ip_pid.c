@@ -137,7 +137,8 @@ void pid(double pitch, double restAngle, double offset, double turning) {
     pidRight  = pidValue;
   }
 
-  // TODO: Remove the call to the motor here, it must be in a thread eg: in the asserv thread.
+  // TODO: Remove the call to the motor here,
+  //       it must be in a thread eg: in the asserv thread.
 
   /* Set the left motor PWM value. */
   if (pidLeft >= 0)
