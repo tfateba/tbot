@@ -3,7 +3,7 @@
  *
  * @file    ip_pwm.h
  *
- * @brief  PWM configuration and management header file.
+ * @brief   PWM configuration and management header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
