@@ -61,8 +61,8 @@ void kalmanInit(void) {
   Q_angle   = 0.001;
   Q_bias    = 0.003;
   R_measure = 100;
-  angle     = 0;      // Reset the angle
-  bias      = 0;      // Reset bias
+  angle     = 0;      /* Reset the angle. */
+  bias      = 0;      /* Reset bias.      */
 
   /*
    * Since we assume that the bias is 0 and we know the starting
