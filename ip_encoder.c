@@ -54,7 +54,7 @@ static  uint8_t   loopCounter   = 0;      /**< Update wheel velocity.       */
  * @brief   This is the External interrupt callback for the Left motor
  *          encoder.
  */
-static void cbLeftEncoder(EXTDriver *extp, expchannel_t channel) {
+static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
 
   (void)extp;
   (void)channel;
@@ -76,7 +76,8 @@ static void cbLeftEncoder(EXTDriver *extp, expchannel_t channel) {
  * @brief   This is the External interrupt callback for the Rigth motor
  *          encoder.
  */
-static void cbRightEncoder(EXTDriver *extp, expchannel_t channel) {
+static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
+
   (void)extp;
   (void)channel;
 
@@ -98,12 +99,12 @@ static void cbRightEncoder(EXTDriver *extp, expchannel_t channel) {
  */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_DISABLED, NULL},               /***< INT0 Config */
-    {EXT_CH_MODE_DISABLED, NULL},               /***< INT1 Config */
-    {EXT_CH_MODE_RISING_EDGE, cbRightEncoder},  /***< INT2 Config */
-    {EXT_CH_MODE_RISING_EDGE, cbLeftEncoder},   /***< INT3 Config */
-    {EXT_CH_MODE_DISABLED, NULL},               /***< INT4 Config */
-    {EXT_CH_MODE_DISABLED, NULL},               /***< INT5 Config */
+    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT0 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT1 Config. */
+    {EXT_CH_MODE_RISING_EDGE, encoderRightCallback},  /***< INT2 Config. */
+    {EXT_CH_MODE_RISING_EDGE, encoderLeftCallback},   /***< INT3 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT4 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT5 Config. */
   }
 };
 
@@ -117,7 +118,7 @@ static const EXTConfig extcfg = {
  *
  * @return  leftCounter   the value of the left encoder
  */
-long readLeftEncoder(void) {
+long encoderReadLeftCounter(void) {
 
   return leftCounter;
 }
@@ -128,17 +129,17 @@ long readLeftEncoder(void) {
  *
  * @return  rightCounter  the value of the right encoder
  */
-long readRightEncoder(void) {
+long encoderReadRightCounter(void) {
 
   return rightCounter;
 }
 
 /**
- * @brief   return the state of the left encder A.
+ * @brief   Get the state of the left encoder A.
  *
- * @return  ret the value of the left encoder
+ * @return  ret the value of the left encoder A
  */
-long readLeftEncoderStateA(void) {
+long encoderReadLeftStateA(void) {
 
   long ret;
 
@@ -151,11 +152,11 @@ long readLeftEncoderStateA(void) {
 }
 
 /**
- * @brief   return the state of the left encder B.
+ * @brief   Get the state of the left encoder B.
  *
  * @return  ret the value of the left encoder B
  */
-long readLeftEncoderStateB(void) {
+long encoderReadLeftEncoderStateB(void) {
 
   long ret;
 
@@ -168,11 +169,11 @@ long readLeftEncoderStateB(void) {
 }
 
 /**
- * @brief   return the state of the rigth encder A.
+ * @brief   Get the state of the right encoder A.
  *
  * @return  ret  the value of the right encoder A
  */
-long readRightEncoderStateA(void) {
+long encoderReadRightStateA(void) {
 
   long ret;
 
@@ -185,11 +186,11 @@ long readRightEncoderStateA(void) {
 }
 
 /**
- * @brief   return the state of the rigth encder B.
+ * @brief   Get the state of the right encoder B.
  *
  * @return  ret  the value of the right encoder B
  */
-long readRightEncoderStateB(void) {
+long encoderReadRightStateB(void) {
 
   long ret;
 
@@ -225,7 +226,7 @@ void encoderInit(void) {
 /**
  * @brief   Get the wheel velocity for asservissement routine.
  */
-void motorGetWheelVelocity(void) {
+void encoderGetWheelVelocity(void) {
 
   loopCounter++;
 
