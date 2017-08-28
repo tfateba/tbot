@@ -35,14 +35,14 @@
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-long readLeftEncoder(void);
-long readRightEncoder(void);
-long readLeftEncoderStateA(void);
-long readLeftEncoderStateB(void);
-long readRightEncoderStateA(void);
-long readRightEncoderStateB(void);
+long encoderReadLeftCounter(void);
+long encoderReadRightCounter(void);
+long encoderReadLeftStateA(void);
+long encoderReadLeftStateB(void);
+long encoderReadRightStateA(void);
+long encoderReadRightStateB(void);
 void encoderInit(void);
-void motorGetWheelVelocity(void);
+void encoderGetWheelVelocity(void);
 
 #endif /* IP_ENCODER_H */
 
