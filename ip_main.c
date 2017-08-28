@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    main.c
+ * @file    ip_main.c
  *
  * @brief   main file of inverted pendulum Robot.
  *
@@ -63,11 +63,7 @@ mpu6050_t       imu;        /**< MPU6050 instance.                          */
 msg_t           msg;        /**< Message error.                             */
 
 /*==========================================================================*/
-/* Local functions.                                                         */
-/*==========================================================================*/
-
-/*==========================================================================*/
-/* Threads and main function.                                               */
+/* Threads function and main function.                                      */
 /*==========================================================================*/
 
 /*
@@ -75,6 +71,7 @@ msg_t           msg;        /**< Message error.                             */
  */
 static THD_WORKING_AREA(waBlink, 32);
 static THD_FUNCTION(blinkThd, arg) {
+
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
   uint16_t init_time = 0;
@@ -99,6 +96,7 @@ static THD_FUNCTION(blinkThd, arg) {
  */
 static THD_WORKING_AREA(waAsser, 64);
 static THD_FUNCTION(asserThd, arg) {
+
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
 
@@ -115,6 +113,7 @@ static THD_FUNCTION(asserThd, arg) {
  * Application entry point.
  */
 int main(void) {
+
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
