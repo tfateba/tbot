@@ -1,25 +1,43 @@
+
 /**
  *
  * @file    ip_pwm.c
  *
- * @brief   Configuration, management of PWM signal.
+ * @brief   PWM configuration and management source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
  * @date    30 June 2016
  *
- * @update  17 November 2016
- *
  */
+
 
 /*===========================================================================*/
 /* Includes Files                                                            */
 /*===========================================================================*/
-#include "ip_pwm.h"
 
-/*===========================================================================*/
-/* Globals variable and configurations                                       */
-/*===========================================================================*/
+/* ChibiOS files. */
+#include "hal.h"
+#include "chprintf.h"
+
+/* Project local files. */
+#include "ip_conf.h"
+#include "ip_motor.h"
+
+/*==========================================================================*/
+/* Global variables.                                                        */
+/*==========================================================================*/
+
+const uint16_t maxPwmValue = 512;
+
+/* Extern variables. */
+#if (DEBUG == TRUE || DEBUG_PWM == TRUE)
+extern BaseSequentialStream*  chp;
+#endif
+
+/*==========================================================================*/
+/* Configurations structure.                                                */
+/*==========================================================================*/
 
 /*
  * @brief   PWM3 configuration structure.
@@ -54,17 +72,17 @@ static PWMConfig pwm4cfg = {
 /*===========================================================================*/
 
 /**
- * @fn      pwm_init
  * @brief   Initialize the PWM output.
  */
-void pwm_init(void) {
-  /* PH3 and PH5 are timer 4 pwm channels outputs */
-  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL); // left motor PWM forward
-  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL); // left motor PWM backward
+void pwmInits(void) {
 
-  /* PE4 and PE5 are timer 3 pwm channels outputs */
-  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor PWM forward
-  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL); // rigth motor PWM backward
+  /* PH3 and PH5 are timer 4 pwm channels outputs. */
+  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL);
+
+  /* PE4 and PE5 are timer 3 pwm channels outputs. */
+  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL);
 
   /* Start PWM3 and PWM4. */
   pwmStart(&PWMD4, &pwm4cfg);
@@ -72,37 +90,76 @@ void pwm_init(void) {
 }
 
 /**
- * @fn      pwm_setPulseWidth
  * @brief   Set the pulse width on the specify channel of a PWM driver.
  *
  * @param[in] pwmp      pointer to the pwm driver
  * @param[in] channel   channel to control
  * @param[in] width     pwm width to generate
  */
-void pwm_setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
+void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
+
   pwmEnableChannel(pwmp, channel, width);
 }
 
 /**
- * @fn      pwm_enable
  * @brief   Enable PWM channel.
  *
  * @param[in] pwmp      pointer to the pwm driver
  * @param[in] pwmcfg    configuration of the pwm driver
  * @param[in] channel   channel to enable
  */
-void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
+void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
+
   pwmStart(pwmp, pwmcfg);
-  pwm_setPulseWidth(pwmp, channel, 0);
+  pwmSetPulseWidth(pwmp, channel, 0);
 }
 
 /**
- * @fn      pwm_disable
  * @brief   Disable PWM channel.
  *
  * @param[in] pwmp  pointer of the pwm driver to disable
  */
-void pwm_disable(PWMDriver *pwmp) {
+void pwmDisable(PWMDriver *pwmp) {
+
   pwmStop(pwmp);
+}
+
+/**
+ * @brief   Generate the corresponding PWM for speed control.
+ *
+ * @param[in] motor       the motor to pilot, rigth or left.
+ * @param[in] direction   the direction of the motor, backward or forward.
+ * @param[in] dutyCycle   the duty cycle to set the pwm.
+ */
+void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
+
+#if (DEBUG == TRUE || DEBUG_PWM == TRUE)
+  chprintf(chp, "pwm: %d\t", dutyCycle);
+#endif
+
+  if (motor == MOTOR_L) {
+    palSetPad(LMD_EN_PORT, LMD_EN);
+
+    if (direction == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD4, 0, maxPwmValue);
+      pwmSetPulseWidth(&PWMD4, 2, dutyCycle);
+    }
+    else if (direction == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD4, 0, dutyCycle);
+      pwmSetPulseWidth(&PWMD4, 2, maxPwmValue);
+    }
+  }
+  else if (motor == MOTOR_R) {
+    palSetPad(RMD_EN_PORT, RMD_EN);
+
+    if (direction == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD3, 1, maxPwmValue);
+      pwmSetPulseWidth(&PWMD3, 2, dutyCycle);
+    }
+    else if (direction == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD3, 1, dutyCycle);
+      pwmSetPulseWidth(&PWMD3, 2, maxPwmValue);
+    }
+  }
 }
 
