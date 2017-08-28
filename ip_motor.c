@@ -3,13 +3,22 @@
  *
  * @file          ip_motor.c
  *
+<<<<<<< HEAD
  * @brief         Motor driver source file.
+=======
+ * @brief         motor driver source file.
+>>>>>>> 16.1.5
  *
  * @author        Theodore Ateba, tf.ateba@gmail.com
  *
  * @date          07 Septembre 2015
  *
+<<<<<<< HEAD
  * @description   Motor control and Encoder Read:
+=======
+ * @description   Motor control and Encoder Read
+ *                Description:
+>>>>>>> 16.1.5
  *                Get the PWM control value from the I2C.
  *                Send the Encoder value to the I2C master when required.
  *                Motor Power:  white
@@ -20,6 +29,7 @@
  *                Encoder B:    Red
  */
 
+<<<<<<< HEAD
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
@@ -119,6 +129,37 @@ static const EXTConfig extcfg = {
     {EXT_CH_MODE_RISING_EDGE, motorLeftEncoderCallback},  /**< INT3 Config. */
   }
 };
+=======
+/*===========================================================================*/
+/* Includes files.                                                           */
+/*===========================================================================*/
+
+/* Standard libraries. */
+#include <math.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+/* ChibiOS libraries. */
+#include "hal.h"
+#include "chprintf.h"
+
+/* Local files. */
+#include "ip_conf.h"
+#include "ip_encoder.h"
+#include "ip_motor.h"
+#include "ip_pid.h"
+#include "ip_pwm.h"
+
+/*===========================================================================*/
+/* Global variables.                                                         */
+/*===========================================================================*/
+
+const uint16_t  maxSpeedValue = 512;
+
+#if (DEBUG == TRUE || DEBUG_MOT == TRUE)
+extern BaseSequentialStream* chp;
+#endif
+>>>>>>> 16.1.5
 
 /*==========================================================================*/
 /* Functions.                                                               */
@@ -160,6 +201,7 @@ void motorsStopAndReset(void) {
  * @param[in] speedRaw    the speed to set the motor
  */
 void motorMove(uint8_t motor, uint8_t direction, double speedRaw) {
+<<<<<<< HEAD
 
   int speed;
 
@@ -230,6 +272,16 @@ long motorGetEncoderState(encoder_e encoder, encoder_e state) {
         return 0;
     }
   }
+=======
+
+  int speed;
+
+  if (speedRaw > maxSpeedValue)
+    speedRaw = maxSpeedValue;
+
+  speed = speedRaw*((double)PWMVALUE)/maxSpeedValue;
+  pwmSetDutyCycle(motor, direction, speed);
+>>>>>>> 16.1.5
 }
 
 /**
@@ -263,6 +315,7 @@ void motorDisable(motor_e motor) {
  */
 void motorInit(void) {
 
+<<<<<<< HEAD
   /* Set left Motors Encoders. */
   palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT);
   palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT);
@@ -312,5 +365,20 @@ void motorGetWheelVelocity(void) {
       stopped = true;
     }
   }
+=======
+  // Setup Left Motor Driver ( LMD )
+  palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(LMD_LPWM_PORT,  LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(LMD_EN_PORT,    LMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
+
+  // Setup Rigth Motor Driver ( RMD )
+  palSetPadMode(RMD_RPWM_PORT,  RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(RMD_LPWM_PORT,  RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
+
+  // Eneble Right and Left Motors.
+  motorEnable(MOTOR_R);
+  motorEnable(MOTOR_L);
+>>>>>>> 16.1.5
 }
 

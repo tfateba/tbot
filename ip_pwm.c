@@ -11,6 +11,7 @@
  *
  */
 
+<<<<<<< HEAD
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
@@ -27,6 +28,30 @@
 /*==========================================================================*/
 
 const   uint16_t  maxValue      = 512;    /**< Maximum value.               */
+=======
+/*===========================================================================*/
+/* Includes Files                                                            */
+/*===========================================================================*/
+
+/* ChibiOS files. */
+#include "hal.h"
+#include "chprintf.h"
+
+/* Project local files. */
+#include "ip_conf.h"
+#include "ip_motor.h"
+
+/*==========================================================================*/
+/* Global variables.                                                        */
+/*==========================================================================*/
+
+const uint16_t maxPwmValue = 512;
+
+/* Extern variables. */
+#if (DEBUG == TRUE || DEBUG_PWM == TRUE)
+extern BaseSequentialStream*  chp;
+#endif
+>>>>>>> 16.1.5
 
 /*==========================================================================*/
 /* Configurations structure.                                                */
@@ -68,12 +93,21 @@ static PWMConfig pwm4cfg = {
  * @brief   Initialize the PWM output.
  */
 void pwmInits(void) {
+<<<<<<< HEAD
 
   /* PH3 and PH5 are timer 4 pwm channels outputs */
   palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL);
 
   /* PE4 and PE5 are timer 3 pwm channels outputs */
+=======
+
+  /* PH3 and PH5 are timer 4 pwm channels outputs. */
+  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL);
+
+  /* PE4 and PE5 are timer 3 pwm channels outputs. */
+>>>>>>> 16.1.5
   palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL);
 
@@ -126,7 +160,11 @@ void pwmDisable(PWMDriver *pwmp) {
  */
 void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
 
+<<<<<<< HEAD
 #if (DEBUG == TRUE)
+=======
+#if (DEBUG == TRUE || DEBUG_PWM == TRUE)
+>>>>>>> 16.1.5
   chprintf(chp, "pwm: %d\t", dutyCycle);
 #endif
 
@@ -134,24 +172,40 @@ void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
     palSetPad(LMD_EN_PORT, LMD_EN);
 
     if (direction == MOTOR_DIR_F) {
+<<<<<<< HEAD
       pwmSetPulseWidth(&PWMD4, 0, maxValue);
+=======
+      pwmSetPulseWidth(&PWMD4, 0, maxPwmValue);
+>>>>>>> 16.1.5
       pwmSetPulseWidth(&PWMD4, 2, dutyCycle);
     }
     else if (direction == MOTOR_DIR_B) {
       pwmSetPulseWidth(&PWMD4, 0, dutyCycle);
+<<<<<<< HEAD
       pwmSetPulseWidth(&PWMD4, 2, maxValue);
+=======
+      pwmSetPulseWidth(&PWMD4, 2, maxPwmValue);
+>>>>>>> 16.1.5
     }
   }
   else if (motor == MOTOR_R) {
     palSetPad(RMD_EN_PORT, RMD_EN);
 
     if (direction == MOTOR_DIR_F) {
+<<<<<<< HEAD
       pwmSetPulseWidth(&PWMD3, 1, maxValue);
+=======
+      pwmSetPulseWidth(&PWMD3, 1, maxPwmValue);
+>>>>>>> 16.1.5
       pwmSetPulseWidth(&PWMD3, 2, dutyCycle);
     }
     else if (direction == MOTOR_DIR_B) {
       pwmSetPulseWidth(&PWMD3, 1, dutyCycle);
+<<<<<<< HEAD
       pwmSetPulseWidth(&PWMD3, 2, maxValue);
+=======
+      pwmSetPulseWidth(&PWMD3, 2, maxPwmValue);
+>>>>>>> 16.1.5
     }
   }
 }

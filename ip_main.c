@@ -1,9 +1,9 @@
 
 /**
  *
- * @file    main.c
+ * @file    ip_main.c
  *
- * @brief   Inverted pendulum Robot main source file.
+ * @brief   main file of inverted pendulum Robot.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -27,9 +27,9 @@
     limitations under the License.
 */
 
-/*==========================================================================*/
-/* Includes files.                                                          */
-/*==========================================================================*/
+/*===========================================================================*/
+/* Includes Files.                                                           */
+/*===========================================================================*/
 
 /* ChibiOS files. */
 #include "hal.h"
@@ -38,6 +38,7 @@
 
 /* Project local files. */
 #include "ip_asserv.h"
+#include "ip_encoder.h"
 #include "ip_conf.h"
 #include "ip_i2c.h"
 #include "ip_kalman.h"
@@ -49,7 +50,6 @@
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
 /*==========================================================================*/
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
 BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
                                                                 the serial
                                                                 stream to
@@ -58,17 +58,16 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
                                                                 USB connector
                                                                 of the arduino
                                                                 board.      */
-#endif
 
 mpu6050_t       imu;        /**< MPU6050 instance.                          */
 msg_t           msg;        /**< Message error.                             */
 
 /*==========================================================================*/
-/* Threads and main function.                                               */
+/* Threads function and main function.                                      */
 /*==========================================================================*/
 
 /*
- * @brief   Onboard led blink thread.
+ * @brief   Onboard led Blink thread.
  */
 static THD_WORKING_AREA(waBlink, 32);
 static THD_FUNCTION(blinkThd, arg) {
@@ -93,7 +92,7 @@ static THD_FUNCTION(blinkThd, arg) {
 }
 
 /*
- * @brief   Robot asservissement thread.
+ * @brief   ip-robot asservissement thread.
  */
 static THD_WORKING_AREA(waAsser, 64);
 static THD_FUNCTION(asserThd, arg) {
@@ -110,7 +109,7 @@ static THD_FUNCTION(asserThd, arg) {
   }
 }
 
-/**
+/*
  * Application entry point.
  */
 int main(void) {
@@ -129,19 +128,31 @@ int main(void) {
   sdStart(&SD1, NULL);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r\n\r/*===========================================*/");
-  chprintf(chp, "\n\r/*                                           */");
-  chprintf(chp, "\n\r/* Self  balancing robot.                    */");
-  chprintf(chp, "\n\r/*                                           */");
-  chprintf(chp, "\n\r/* - Made by:   Theodore Ateba(tfateba).     */");
-  chprintf(chp, "\n\r/* - RTOS:      ChibiOS trunk.               */");
-  chprintf(chp, "\n\r/* - Target:    Arduino Mega2560.            */");
-  chprintf(chp, "\n\r/* - Version:   1.2                          */");
-  chprintf(chp, "\n\r/* - Copyrigth: 2015...2017                  */");
-  chprintf(chp, "\n\r/*                                           */");
-  chprintf(chp, "\n\r/*===========================================*/\n\r");
-  chprintf(chp, "\n\r %s: Initialisation of the robot is starting:", __func__);
-  chprintf(chp, "\n\r %s: Initialisation of Serial driver is done.", __func__);
+  chprintf(chp, "\n\r");
+  chprintf_g(chp, "\n\r   IP-Robot logo.");
+  chprintf_c(chp, "\n\r    _                    _           _");
+  chprintf_c(chp, "\n\r   (_)                  | |         | |");
+  chprintf_c(chp, "\n\r    _ _ __     _ __ ___ | |__   ___ | |_");
+  chprintf_c(chp, "\n\r   | | '_ \\   | '__/ _ \\| '_ \\ / _ \\| __|");
+  chprintf_c(chp, "\n\r   | | |_) |  | | | (_) | |_) | (_) | |_");
+  chprintf_c(chp, "\n\r   |_| .__/   |_|  \\___/|_.__/ \\___/ \\__|");
+  chprintf_c(chp, "\n\r     | |");
+  chprintf_c(chp, "\n\r     |_|");
+
+  chprintf(chp, "\n\r");
+  chprintf_g(chp, "\n\r   General informations.");
+  chprintf(chp, "\n\r ip-robot is Inverted Pendulum Robot.");
+  chprintf(chp, "\n\r Made by Theodore Ateba (tfateba), tf.ateba@gmail.com");
+  chprintf(chp, "\n\r The robot is controlled with ChibiOS/RT v16.1.5");
+  chprintf(chp, "\n\r The target board is an Arduino Mega.");
+  chprintf(chp, "\n\r The microcontroller is an ATMEGA2560.");
+  chprintf(chp, "\n\r Copyrigth: 2015...2017");
+
+  chprintf(chp, "\n\r");
+  chprintf_g(chp, "\n\r   IP-Robot initialization.");
+  chprintf(chp, "\n\r%s: Initialization of Inverted pendulum Robot started:",
+  __func__);
+  chprintf(chp, "\n\r%s: Serial driver initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -149,7 +160,7 @@ int main(void) {
   palClearPad(IOPORT2, PORTB_LED1);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of onbaord LED is done.", __func__);
+  chprintf(chp, "\n\r%s: On-board LED initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -157,7 +168,7 @@ int main(void) {
   i2cStart(&I2CD1, &i2cConfig);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of I2C interface is done.", __func__);
+  chprintf(chp, "\n\r%s: I2C bus interface initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -165,7 +176,7 @@ int main(void) {
   kalmanInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of Kalman filter is done.", __func__);
+  chprintf(chp, "\n\r%s: Kalman filter initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -174,13 +185,14 @@ int main(void) {
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-    chprintf(chp, "\n\r %s: Initialisation of MPU6050 failed.", __func__);
+    chprintf_r(chp, "\n\r Error while initialising the IMU.");
 #endif
     return -1;
   }
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of MPU6050 is done.", __func__);
+  chprintf(chp, "\n\r%s: IMU sensor initialization started, please wait...",
+  __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -188,7 +200,7 @@ int main(void) {
   mpu6050Calibration(&I2CD1, &imu);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Calibration of IMU sensor is done.", __func__);
+  chprintf(chp, "\n\r%s: IMU sensor calibration done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -196,7 +208,15 @@ int main(void) {
   motorInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of Motors is done.", __func__);
+  chprintf(chp, "\n\r%s: Motors initialization done.", __func__);
+  chThdSleepMilliseconds(10);
+#endif
+
+  /* Init Encoders. */
+  encoderInit();
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r%s: Encoder initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -204,12 +224,13 @@ int main(void) {
   pwmInits();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of PWM module is done.", __func__);
+  chprintf(chp, "\n\r%s: PWM initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Initialisation of the robot is done.", __func__);
+  chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialization done.",
+  __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -217,7 +238,9 @@ int main(void) {
   chThdCreateStatic(waBlink, sizeof(waBlink), NORMALPRIO + 4, blinkThd, NULL);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Creation of the Blink thread.", __func__);
+  chprintf(chp, "\n\r");
+  chprintf_g(chp, "\n\r   Threads creation.");
+  chprintf(chp, "\n\r%s: Create Blink thread.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -225,11 +248,10 @@ int main(void) {
   chThdCreateStatic(waAsser, sizeof(waAsser), NORMALPRIO + 8, asserThd, NULL);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r %s: Creation of the Asservissement thread.", __func__);
-  chprintf(chp, "\n\r\n\r/*=============================================*/");
-  chprintf(chp, "\n\r/* Robot application is started.               */");
-  chprintf(chp, "\n\r/*=============================================*/");
+  chprintf(chp, "\n\r%s: Create Asservissement thread.", __func__);
   chThdSleepMilliseconds(10);
+  chprintf(chp, "\n\r");
+  chprintf_g(chp, "\n\r   Application is started.");
 #endif
 
   while (TRUE) {

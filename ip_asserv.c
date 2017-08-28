@@ -34,6 +34,7 @@
 /*==========================================================================*/
 /* Application macros.                                                      */
 /*==========================================================================*/
+<<<<<<< HEAD
 
 #define PI          3.14159265359 /**< Mathematical PI constant.            */
 #define RAD_TO_DEG  180/PI        /**< Constant for Radian to degre.        */
@@ -57,6 +58,32 @@ extern BaseSequentialStream*  chp;
 extern mpu6050_t              imu;
 extern msg_t                  msg;
 
+=======
+
+#define PI          3.14159265359
+#define RAD_TO_DEG  180/PI
+
+/*==========================================================================*/
+/* Global variables, I2C TX and RX buffers, I2C and Serial Configurations   */
+/*==========================================================================*/
+
+/* Local variables. */
+bool    layingDown    = true;     /**< Robot position, down or not.         */
+double  targetAngle   = 180;      /**< The angle we want the robot to reach.*/
+double  targetOffset  = 0;        /**< Offset for going forward and backwrd.*/
+double  turningOffset = 0;        /**< Offset for turning left and right.   */
+
+const double   dt = 0.01;         /**< Asservissement period.               */
+
+/* Extern variables. */
+#if (DEBUG == TRUE || DEBUG_ASS == TRUE)
+extern BaseSequentialStream* chp; /*                                        */
+#endif
+
+extern mpu6050_t       imu;       /**< MPU6050 instance.                    */
+extern msg_t           msg;       /**< Message error.                       */
+
+>>>>>>> 16.1.5
 /*==========================================================================*/
 /* Functions.                                                               */
 /*==========================================================================*/
@@ -105,9 +132,14 @@ void asserv(void) {
     layingDown = false;
     pid(imu.pitch_k, targetAngle, targetOffset, turningOffset);
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
+<<<<<<< HEAD
   //chprintf(chp, "asserv: pitch = %.3f\r\n", (int8_t) imu.pitch_k);
   chprintf(chp, "%s: kalman pitch angle = %i\r\n",
   __func__, (uint8_t) imu.pitch_k);
+=======
+    chprintf(chp, "%s: pitch:%i\r\n", __func__, (uint8_t)imu.pitch_k);
+    //chprintf(chp, " pitch:%.3f\r\n", imu.pitch_k);
+>>>>>>> 16.1.5
 #endif
   }
 
