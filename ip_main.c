@@ -207,11 +207,16 @@ int main(void) {
   /* Init Motors. */
   motorInit();
 
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r%s: Motors initialization done.", __func__);
+  chThdSleepMilliseconds(10);
+#endif
+
   /* Init Encoders. */
   encoderInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Motors initialization done.", __func__);
+  chprintf(chp, "\n\r%s: Encoder initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
