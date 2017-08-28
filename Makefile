@@ -57,7 +57,7 @@ TARGET = ip
 OBJDIR = .
 
 # Imported source files
-CHIBIOS = ../../ChibiOS_16.1.5
+CHIBIOS = ../ChibiOS_16.1.5
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/boards/ARDUINO_MEGA/board.mk
 include $(CHIBIOS)/os/hal/ports/AVR/platform.mk
@@ -67,22 +67,23 @@ include $(CHIBIOS)/os/rt/ports/AVR/compilers/GCC/mk/port.mk
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(KERNSRC) \
-      $(PORTSRC) \
-      $(OSALSRC) \
-      $(HALSRC) \
-      $(PLATFORMSRC) \
-      $(BOARDSRC) \
-      $(STREAMSSRC) \
+SRC = $(KERNSRC)                      \
+      $(PORTSRC)                      \
+      $(OSALSRC)                      \
+      $(HALSRC)                       \
+      $(PLATFORMSRC)                  \
+      $(BOARDSRC)                     \
+      $(STREAMSSRC)                   \
       $(CHIBIOS)/os/various/evtimer.c \
-      ip_asserv.c \
-      ip_i2c.c \
-      ip_kalman.c \
-      ip_motor.c \
-      ip_mpu6050.c \
-      ip_pid.c \
-      ip_pwm.c \
-      main.c
+      ip_asserv.c                     \
+      ip_encoder.c                    \
+      ip_i2c.c                        \
+      ip_kalman.c                     \
+      ip_motor.c                      \
+      ip_mpu6050.c                    \
+      ip_pid.c                        \
+      ip_pwm.c                        \
+      ip_main.c
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC =
@@ -111,8 +112,8 @@ DEBUG = dwarf-2
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = $(PORTINC) $(KERNINC) $(TESTINC) \
-               $(HALINC) $(OSALINC) $(PLATFORMINC) \
+EXTRAINCDIRS = $(PORTINC) $(KERNINC) $(TESTINC)                 \
+               $(HALINC) $(OSALINC) $(PLATFORMINC)              \
 							 $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various
 
 # Compiler flag to set the C Standard level.
@@ -262,20 +263,17 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 # Type: avrdude -c ?
 # to get a full listing.
 #
-#AVRDUDE_PROGRAMMER = arduino
 AVRDUDE_PROGRAMMER = wiring
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-#AVRDUDE_PORT = /dev/ttyUSB1
 AVRDUDE_PORT = /dev/ttyACM0
 
 AVRDUDE_WRITE_FLASH = -D -U flash:w:$(TARGET).hex
-#AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
 
 # Uncomment the following if you want avrdude's erase cycle counter.
 # Note that this counter needs to be initialized first using -Yn,
 # see avrdude manual.
-AVRDUDE_ERASE_COUNTER = -y
+#AVRDUDE_ERASE_COUNTER = -y
 
 # Uncomment the following if you do /not/ wish a verification to be
 # performed after programming the device.
@@ -284,7 +282,7 @@ AVRDUDE_ERASE_COUNTER = -y
 # Increase verbosity level.  Please use this when submitting bug
 # reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude>
 # to submit bug reports.
-AVRDUDE_VERBOSE = -v -v
+#AVRDUDE_VERBOSE = -v -v
 
 AVRDUDE_FLAGS = -p $(MCU)
 AVRDUDE_FLAGS += -P $(AVRDUDE_PORT)
@@ -568,7 +566,7 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 
 # Listing of phony targets.
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
-build elf hex bin eep lss sym coff extcoff \
+build elf hex bin eep lss sym coff extcoff                    \
 clean clean_list program debug gdb-config
 
 include myrules.mk
