@@ -158,6 +158,7 @@ double kalmanGetRate(void) {
 
   return rate;
 }
+
 /**
  * @brief   Tune the kalman filter by setting the angle.
  *
@@ -165,16 +166,6 @@ double kalmanGetRate(void) {
  */
 void kalmanSetQangle(double newQ_angle) {
 
-<<<<<<< HEAD
-=======
-/**
- * @brief   Tune the kalman filter by setting the angle.
- *
- * @param[in] newQ_angle  angle used to tune the Kalman filter
- */
-void kalmanSetQangle(double newQ_angle) {
-
->>>>>>> 16.1.5
   Q_angle = newQ_angle;
 }
 

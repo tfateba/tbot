@@ -15,8 +15,6 @@
 #define IP_CONF_H
 
 /*==========================================================================*/
-<<<<<<< HEAD
-=======
 /* Color define for chprintf.                                               */
 /*==========================================================================*/
 
@@ -29,17 +27,13 @@
 #define chprintf_w(x, y)  chprintf(x, "\x1b[0m" y "\x1b[0m")  /* White.     */
 
 /*==========================================================================*/
->>>>>>> 16.1.5
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
 #define DEBUG     FALSE   /**< Debug activation in all source files.        */
 #define DEBUG_MAI FALSE   /**< Debug activation in main file.               */
 #define DEBUG_ASS FALSE   /**< Debug activation in asserv file              */
-<<<<<<< HEAD
-=======
 #define DEBUG_ENC FALSE   /**< Debug activation in asserv file              */
->>>>>>> 16.1.5
 #define DEBUG_PID FALSE   /**< Debug activation in pid file.                */
 #define DEBUG_MOT FALSE   /**< Debug activation in Motor file.              */
 #define DEBUG_KAL FALSE   /**< Debug activation in Kalman filter file.      */

@@ -79,21 +79,14 @@ SRC = $(KERNSRC)                      \
       $(STREAMSSRC)                   \
       $(CHIBIOS)/os/various/evtimer.c \
       ip_asserv.c                     \
-<<<<<<< HEAD
-=======
       ip_encoder.c                    \
->>>>>>> 16.1.5
       ip_i2c.c                        \
       ip_kalman.c                     \
       ip_motor.c                      \
       ip_mpu6050.c                    \
       ip_pid.c                        \
       ip_pwm.c                        \
-<<<<<<< HEAD
-      main.c
-=======
-      ip_main.c
->>>>>>> 16.1.5
+      ip_main.c                       
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC =

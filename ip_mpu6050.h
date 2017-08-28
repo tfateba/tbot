@@ -13,16 +13,6 @@
 
 #ifndef IP_MPU6050_H
 #define IP_MPU6050_H
-<<<<<<< HEAD
-
-/*==========================================================================*/
-/* Include file.                                                            */
-/*==========================================================================*/
-
-/* ChibiOS files. */
-#include "hal.h"
-=======
->>>>>>> 16.1.5
 
 /*==========================================================================*/
 /* Structures and enumerations.                                             */
@@ -144,11 +134,7 @@ typedef struct {
 /*==========================================================================*/
 
 /* MPU6050 Registers List */
-<<<<<<< HEAD
-#define MPU6050_XG_OFFSET_TC        0x00 /**< TODO:.                        */
-=======
 #define MPU6050_XG_OFFSET_TC        0x00 /**< TODO: Add register comment.   */
->>>>>>> 16.1.5
 #define MPU6050_YG_OFFSET_TC        0x01
 #define MPU6050_ZG_OFFSET_TC        0x02
 #define MPU6050_X_FINE_GAIN         0x03

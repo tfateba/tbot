@@ -484,11 +484,7 @@ msg_t mpu6050Calibration(I2CDriver *i2cp, mpu6050_t *mpup) {
   mpup->y_gyro_offset   = mpup->y_gyro_offset/sampleNumber;
   mpup->z_gyro_offset   = mpup->z_gyro_offset/sampleNumber;
 
-<<<<<<< HEAD
-  msg = mpu6050SetXGyroOffset(&I2CD1, -(mpup->x_gyro_offset/4));
-=======
   msg = mpu6050SetXGyroOffset(&I2CD1, -(mpup->x_gyro_offset/4)); // TODO: Utiliser un decalage de deux ici pour faire la division.
->>>>>>> 16.1.5
   msg = mpu6050SetYGyroOffset(&I2CD1, -(mpup->y_gyro_offset/4));
   msg = mpu6050SetZGyroOffset(&I2CD1, -(mpup->z_gyro_offset/4));
 
