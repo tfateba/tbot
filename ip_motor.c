@@ -3,7 +3,7 @@
  *
  * @file          ip_motor.c
  *
- * @brief         motor driver.
+ * @brief         motor driver source file.
  *
  * @author        Theodore Ateba, tf.ateba@gmail.com
  *
@@ -13,12 +13,12 @@
  *                Description:
  *                Get the PWM control value from the I2C.
  *                Send the Encoder value to the I2C master when required.
- *                Motor Power:	white
- *                Motor Power:	yellow
- *                Encoder GND:	blue
- *                Encoder VCC:	green
- *                Encoder A:		black
- *                Encoder B:		Red
+ *                Motor Power:  white
+ *                Motor Power:  yellow
+ *                Encoder GND:  blue
+ *                Encoder VCC:  green
+ *                Encoder A:    black
+ *                Encoder B:    Red
  */
 
 /*===========================================================================*/
@@ -94,7 +94,7 @@ void motorMove(uint8_t motor, uint8_t direction, double speedRaw) {
 
   int speed;
 
-  if(speedRaw > maxSpeedValue)
+  if (speedRaw > maxSpeedValue)
     speedRaw = maxSpeedValue;
 
   speed = speedRaw*((double)PWMVALUE)/maxSpeedValue;
