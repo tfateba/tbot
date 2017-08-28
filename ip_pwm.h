@@ -15,6 +15,22 @@
 #define IP_PWM_H
 
 /*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
+/*==========================================================================*/
+
+/*
+ * The motor driver can handle a pwm frequency up to 20kHz
+ */
+#define PWM_FREQUENCY 20000
+
+/*
+ * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
+ * prescaling so:
+ * frequency is given by F_CPU/(2*ICR) - ICR = F_CPU/PWM_FREQUENCY/2
+ */
+#define PWMVALUE F_CPU/PWM_FREQUENCY/2
+
+/*==========================================================================*/
 /* Functions.                                                               */
 /*==========================================================================*/
 
