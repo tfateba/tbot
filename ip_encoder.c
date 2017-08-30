@@ -232,7 +232,7 @@ void encoderGetWheelVelocity(void) {
 
   if (loopCounter == 10) {
     loopCounter = 0;
-    wheelPosition = readLeftEncoder() + readRightEncoder();
+    wheelPosition = encoderReadLeftCounter() + encoderReadRightCounter();
     wheelVelocity = wheelPosition - lastWheelPosition;
     lastWheelPosition = wheelPosition;
 
