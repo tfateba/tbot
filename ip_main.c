@@ -38,6 +38,7 @@
 
 /* Project local files. */
 #include "ip_asserv.h"
+#include "ip_buzzer.h"
 #include "ip_encoder.h"
 #include "ip_conf.h"
 #include "ip_i2c.h"
@@ -227,6 +228,21 @@ int main(void) {
   chprintf(chp, "\n\r%s: PWM initialization done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
+
+  /* Initialisation of the Buzzer. */
+  buzzerInit();
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r%s: Buzzer initialization done.",
+  __func__);
+  chThdSleepMilliseconds(10);
+#endif
+
+  /* Start to play a sound to tell that the init of the Robot is done. */
+  buzzerSound2();
+
+  /* Stop playing the sound. */
+  buzzerStopSound();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialization done.",
