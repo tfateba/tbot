@@ -106,8 +106,7 @@ void asserv(void) {
     layingDown = false;
     pid(imu.pitch_k, targetAngle, targetOffset, turningOffset);
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
-    chprintf(chp, "%s: pitch:%i\r\n", __func__, (uint8_t)imu.pitch_k);
-    //chprintf(chp, " pitch:%.3f\r\n", imu.pitch_k);
+    chprintf(chp, "%s: filtered pitch = %.3f\r\n", __func__, imu.pitch_k);
 #endif
   }
 
