@@ -79,6 +79,7 @@ SRC = $(KERNSRC)                      \
       $(STREAMSSRC)                   \
       $(CHIBIOS)/os/various/evtimer.c \
       ip_asserv.c                     \
+      ip_buzzer.c                     \
       ip_encoder.c                    \
       ip_i2c.c                        \
       ip_kalman.c                     \
@@ -115,8 +116,8 @@ DEBUG = dwarf-2
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = $(CHIBIOS)/os/license $(PORTINC) $(KERNINC) \
-               $(HALINC) $(OSALINC) $(PLATFORMINC) \
+EXTRAINCDIRS = $(CHIBIOS)/os/license $(PORTINC) $(KERNINC)    \
+               $(HALINC) $(OSALINC) $(PLATFORMINC)            \
                $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various
 
 # Compiler flag to set the C Standard level.
@@ -213,9 +214,9 @@ PRINTF_LIB_MIN = -Wl,-u,vfprintf -lprintf_min
 PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt
 
 # If this is left blank, then it will use the Standard printf version.
-PRINTF_LIB = $(PRINTF_LIB_MIN)
 #PRINTF_LIB = $(PRINTF_LIB_MIN)
-#PRINTF_LIB = $(PRINTF_LIB_FLOAT)
+#PRINTF_LIB = $(PRINTF_LIB_MIN)
+PRINTF_LIB = $(PRINTF_LIB_FLOAT)
 
 # Minimalistic scanf version
 SCANF_LIB_MIN = -Wl,-u,vfscanf -lscanf_min
