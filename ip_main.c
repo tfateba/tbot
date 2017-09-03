@@ -70,12 +70,13 @@ msg_t           msg;        /**< Message error.                             */
 /*
  * @brief   Onboard led Blink thread.
  */
-static THD_WORKING_AREA(waBlink, 32);
+static THD_WORKING_AREA(waBlink, 64);
 static THD_FUNCTION(blinkThd, arg) {
 
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
-  uint16_t init_time = 0;
+  uint16_t  init_time = 0;
+  bool      spf = false; // Sonf played flag
 
   chRegSetThreadName("Blinker");
 
@@ -85,6 +86,11 @@ static THD_FUNCTION(blinkThd, arg) {
       init_time++;
     }
     else {
+      if (spf == false) {
+        buzzerSound();
+        buzzerStopSound();
+        spf = true;
+      }
       palTogglePad(IOPORT2, PORTB_LED1);
     }
 
@@ -95,7 +101,7 @@ static THD_FUNCTION(blinkThd, arg) {
 /*
  * @brief   ip-robot asservissement thread.
  */
-static THD_WORKING_AREA(waAsser, 64);
+static THD_WORKING_AREA(waAsser, 128);
 static THD_FUNCTION(asserThd, arg) {
 
   (void)arg;
@@ -127,6 +133,11 @@ int main(void) {
 
   /* Start the serial. */
   sdStart(&SD1, NULL);
+
+  buzzerInit();
+
+  buzzerSound();
+  buzzerStopSound();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r");
@@ -230,7 +241,7 @@ int main(void) {
 #endif
 
   /* Initialisation of the Buzzer. */
-  buzzerInit();
+  //buzzerInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Buzzer initialization done.",
@@ -239,10 +250,10 @@ int main(void) {
 #endif
 
   /* Start to play a sound to tell that the init of the Robot is done. */
-  buzzerSound2();
+  //buzzerSound();
 
   /* Stop playing the sound. */
-  buzzerStopSound();
+  //buzzerStopSound();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialization done.",
