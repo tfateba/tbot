@@ -19,17 +19,15 @@
 /*==========================================================================*/
 
 /* Pin used to control the buzzer. */
-#define BUZZER_PIN_PORT   IOPORT11
-#define BUZZER_PIN        46
-
+//#define BUZZER_PIN_PORT   IOPORT11
+//#define BUZZER_PIN        46
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
 void buzzerInit(void);
-void buzzerSound1(void);
-void buzzerSound2(void);
+void buzzerSound(void);
 void buzzerStopSound(void);
 
 #endif /* IP_BUZZER_H */
