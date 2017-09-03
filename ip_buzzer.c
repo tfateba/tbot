@@ -15,13 +15,9 @@
 /* Includes files.                                                          */
 /*==========================================================================*/
 
-/* Standard files. */
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-/* ChibiOS files. */
-#include "hal.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
 
 /**
  * @brief   Buzzer initialization function.
@@ -35,44 +31,40 @@ void buzzerInit(void)  {
   // initialize counter
   TCNT5 = 0;
   // initialize compare value
-  OCR5A = 29;
+  OCR5A = 0;
   // enable compare interrupt
-  TIMSK1 |= (1 << OCIE5A);
+  TIMSK5 |= (1 << OCIE5A);
   // enable global interrupts
-  sei();
+  //sei();
+
+  // Initialize buzzer Pin
+  // connect buzzer to pin PL3
+  DDRL |= (1 << 3);
 }
 
 /**
  * @brief   Buzzer function to stop all playing sound.
  */
 void buzzerStopSound(void) {
+
   OCR5A = 0;
-}
-
-/**
- * @brief   Buzzer function to play the first a sound.
- */
-void buzzerSound1(void) {
-
-  chThdSleepMilliseconds(100);
-  OCR5A += 1;
-  if ( OCR5A >= 200) {
-    OCR5A = 15;
-  }
 }
 
 /**
  * @brief   Buzzer function to play the second sound.
  */
-void buzzerSound2(void) {
+void buzzerSound(void) {
 
   OCR5A = 29;
-  chThdSleepMilliseconds(200);
-  OCR5A = 15;
-  chThdSleepMilliseconds(200);
+  _delay_ms(100);
+  OCR5A = 100;
+  _delay_ms(100);
   OCR5A = 29;
-  chThdSleepMilliseconds(200);
-  OCR5A = 0;
-  chThdSleepMilliseconds(3000);
+  _delay_ms(100);
+  OCR5A = 100;
+  _delay_ms(100);
 }
 
+ISR (TIMER5_COMPA_vect) {
+
+}
