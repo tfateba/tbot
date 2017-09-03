@@ -573,3 +573,5 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
 build elf hex bin eep lss sym coff extcoff \
 clean clean_list program debug gdb-config
+
+include myrules.mk
