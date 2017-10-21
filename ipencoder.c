@@ -1,7 +1,7 @@
 
 /**
  * 
- * @file    ip_encoder.c
+ * @file    ipencoder.c
  *
  * @brief   Encoder source file.
  *
@@ -25,7 +25,7 @@
 #include "chprintf.h"
 
 /* Project local files. */
-#include "ip_encoder.h"
+#include "ipencoder.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

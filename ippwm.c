@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_pwm.c
+ * @file    ippwm.c
  *
  * @brief   PWM configuration and management source file.
  *
@@ -20,8 +20,8 @@
 #include "chprintf.h"
 
 /* Project local files. */
-#include "ip_conf.h"
-#include "ip_motor.h"
+#include "ipconf.h"
+#include "ipmotor.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

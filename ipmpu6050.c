@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_mpu6050.c
+ * @file    ipmpu6050.c
  *
  * @brief   Motion interface driver source file.
  *
@@ -16,9 +16,9 @@
 /*==========================================================================*/
 
 /* Project local files. */
-#include "ip_i2c.h"
-#include "ip_motor.h"
-#include "ip_mpu6050.h"
+#include "ipi2c.h"
+#include "ipmotor.h"
+#include "ipmpu6050.h"
 
 /*==========================================================================*/
 /* Functions.                                                               */

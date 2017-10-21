@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_motor.h
+ * @file    ipmotor.h
  *
  * @brief   motor driver header file.
  *
@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef IP_MOTOR_H
-#define IP_MOTOR_H
+#ifndef IPMOTOR_H
+#define IPMOTOR_H
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
@@ -72,5 +72,5 @@ void motorInit(void);
 void motorEnable(motor_e motor);
 void motorDisable(motor_e motor);
 
-#endif /* IP_MOTOR_H */
+#endif /* IPMOTOR_H */
 

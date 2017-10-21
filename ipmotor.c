@@ -1,7 +1,7 @@
 
 /**
  *
- * @file          ip_motor.c
+ * @file          ipmotor.c
  *
  * @brief         motor driver source file.
  *
@@ -35,11 +35,11 @@
 #include "chprintf.h"
 
 /* Local files. */
-#include "ip_conf.h"
-#include "ip_encoder.h"
-#include "ip_motor.h"
-#include "ip_pid.h"
-#include "ip_pwm.h"
+#include "ipconf.h"
+#include "ipencoder.h"
+#include "ipmotor.h"
+#include "ippid.h"
+#include "ippwm.h"
 
 /*===========================================================================*/
 /* Global variables.                                                         */

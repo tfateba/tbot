@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_encoder.h
+ * @file    ipencoder.h
  *
  * @brief   Encoder header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IP_ENCODER_H
-#define IP_ENCODER_H
+#ifndef IPENCODER_H
+#define IPENCODER_H
 
 /* Arduino Interruption */
 #define INT2 2      /**< D19 [PD2], BLACK wire motor Right                  */
@@ -44,5 +44,5 @@ long encoderReadRightStateB(void);
 void encoderInit(void);
 void encoderGetWheelVelocity(void);
 
-#endif /* IP_ENCODER_H */
+#endif /* IPENCODER_H */
 

@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_i2c.c
+ * @file    ipi2c.c
  *
  * @brief   I2C driver source file.
  *

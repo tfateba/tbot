@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_pwm.h
+ * @file    ippwm.h
  *
  * @brief   PWM configuration and management header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IP_PWM_H
-#define IP_PWM_H
+#ifndef IPPWM_H
+#define IPPWM_H
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
@@ -40,5 +40,5 @@ void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
 void pwmDisable(PWMDriver *pwmp);
 void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
 
-#endif /* IP_PWM_H */
+#endif /* IPPWM_H */
 

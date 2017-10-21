@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_buzzer.c
+ * @file    ipbuzzer.c
  *
  * @brief   Buzzer source file.
  *
@@ -15,6 +15,7 @@
 /* Includes files.                                                          */
 /*==========================================================================*/
 
+/* Standard files. */
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>

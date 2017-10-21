@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_pid.h
+ * @file    ippid.h
  *
  * @brief   PID corrector header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IP_PID_H
-#define IP_PID_H
+#ifndef IPPID_H
+#define IPPID_H
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
@@ -21,5 +21,5 @@
 void pid(double pitch, double restAngle, double offset, double turning);
 void pidResetParameters(void);
 
-#endif /* IP_PID_H */
+#endif /* IPPID_H */
 

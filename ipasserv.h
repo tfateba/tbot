@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_asserv.h
+ * @file    ipasserv.h
  *
  * @brief   Robot asservissement header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IP_ASSERV_H
-#define IP_ASSERV_H
+#ifndef IPASSERV_H
+#define IPASSERV_H
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
@@ -20,5 +20,5 @@
 
 void asserv(void);
 
-#endif /* IP_ASSERV_H */
+#endif /* IPASSERV_H */
 

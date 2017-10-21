@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_kalman.h
+ * @file    ipkalman.h
  *
  * @brief   Kalman filter header file.
  *
@@ -31,8 +31,8 @@
  Theodore Ateba, tf.ateba@gmail.com
  */
 
-#ifndef IP_KALMAN_H
-#define IP_KALMAN_H
+#ifndef IPKALMAN_H
+#define IPKALMAN_H
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
@@ -49,5 +49,5 @@ double  kalmanGetQangle(void);
 double  kalmanGetQbias(void);
 double  kalmanGetRmeasure(void);
 
-#endif /* IP_KALMAN_H */
+#endif /* IPKALMAN_H */
 

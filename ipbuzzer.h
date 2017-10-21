@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_buzzer.h
+ * @file    ipbuzzer.h
  *
  * @brief   Buzzer header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IP_BUZZER_H
-#define IP_BUZZER_H
+#ifndef IPBUZZER_H
+#define IPBUZZER_H
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
@@ -30,5 +30,5 @@ void buzzerInit(void);
 void buzzerSound(void);
 void buzzerStopSound(void);
 
-#endif /* IP_BUZZER_H */
+#endif /* IPBUZZER_H */
 

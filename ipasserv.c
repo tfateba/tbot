@@ -1,9 +1,9 @@
 
 /**
  *
- * @file    ip_asserv.c
+ * @file    ipasserv.c
  *
- * @brief   Asservissement of inverted pendulum Robot.
+ * @brief   Robot asservissement source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -24,12 +24,12 @@
 #include "chprintf.h"
 
 /* Project local files. */
-#include "ip_conf.h"
-#include "ip_kalman.h"
-#include "ip_motor.h"
-#include "ip_mpu6050.h"
-#include "ip_pid.h"
-#include "ip_pwm.h"
+#include "ipconf.h"
+#include "ipkalman.h"
+#include "ipmotor.h"
+#include "ipmpu6050.h"
+#include "ippid.h"
+#include "ippwm.h"
 
 /*==========================================================================*/
 /* Application macros.                                                      */

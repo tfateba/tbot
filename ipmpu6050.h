@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_mpu6050.h
+ * @file    ipmpu6050.h
  *
  * @brief   Motion interface driver header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IP_MPU6050_H
-#define IP_MPU6050_H
+#ifndef IPMPU6050_H
+#define IPMPU6050_H
 
 /*==========================================================================*/
 /* Structures and enumerations.                                             */
@@ -274,5 +274,5 @@ msg_t mpu6050GetData(I2CDriver *i2cp, mpu6050_t *mpu);
 msg_t mpu6050Calibration(I2CDriver *i2cp, mpu6050_t *mpu);
 msg_t mpu6050Init(I2CDriver *i2cp, mpu6050_t *mpu, mpu6050_sad_e sad);
 
-#endif /* IP_MPU6050_H */
+#endif /* IPMPU6050_H */
 

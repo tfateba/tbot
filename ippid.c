@@ -1,7 +1,7 @@
 
 /**
  * 
- * @file    ip_pid.c
+ * @file    ippid.c
  *
  * @brief   PID corrector source file.
  *
@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 /* Project local files. */
-#include "ip_motor.h"
+#include "ipmotor.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

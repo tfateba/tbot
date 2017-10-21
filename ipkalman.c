@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_kalman.c
+ * @file    ipkalman.c
  *
  * @brief   Kalman filter source file.
  *

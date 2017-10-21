@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ip_main.c
+ * @file    ipmain.c
  *
  * @brief   main file of inverted pendulum Robot.
  *
@@ -37,15 +37,15 @@
 #include "chprintf.h"
 
 /* Project local files. */
-#include "ip_asserv.h"
-#include "ip_buzzer.h"
-#include "ip_encoder.h"
-#include "ip_conf.h"
-#include "ip_i2c.h"
-#include "ip_kalman.h"
-#include "ip_motor.h"
-#include "ip_mpu6050.h"
-#include "ip_pwm.h"
+#include "ipasserv.h"
+#include "ipbuzzer.h"
+#include "ipencoder.h"
+#include "ipconf.h"
+#include "ipi2c.h"
+#include "ipkalman.h"
+#include "ipmotor.h"
+#include "ipmpu6050.h"
+#include "ippwm.h"
 
 /*==========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
