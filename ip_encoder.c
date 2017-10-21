@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-/* ChibiOS libraries. */
+/* ChibiOS files. */
 #include "hal.h"
 #include "chprintf.h"
 
@@ -51,8 +51,7 @@ static  uint8_t   loopCounter   = 0;      /**< Update wheel velocity.       */
 /*==========================================================================*/
 
 /**
- * @brief   This is the External interrupt callback for the Left motor
- *          encoder.
+ * @brief   Left motor encoder external interrupt callback.
  */
 static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
 
@@ -73,8 +72,7 @@ static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
 }
 
 /**
- * @brief   This is the External interrupt callback for the Rigth motor
- *          encoder.
+ * @brief   Rigth motor encoder external interrupt callback.
  */
 static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
 
@@ -95,7 +93,7 @@ static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
 }
 
 /**
- * @brief EXT Driver configurations.
+ * @brief   EXT Driver configurations.
  */
 static const EXTConfig extcfg = {
   {
@@ -113,10 +111,9 @@ static const EXTConfig extcfg = {
 /*==========================================================================*/
 
 /**
- * @brief   The encoders decrease when motor is traveling forward and increase
- *          when traveling backward.
+ * @brief   Get left encoder counter.
  *
- * @return  leftCounter   the value of the left encoder
+ * @return  leftCounter   the value of the left encoder counter
  */
 long encoderReadLeftCounter(void) {
 
@@ -124,10 +121,9 @@ long encoderReadLeftCounter(void) {
 }
 
 /**
- * @brief   The encoders decrease when motor is traveling forward and increase
- *          when traveling backward.
+ * @brief   Get right encoder counter.
  *
- * @return  rightCounter  the value of the right encoder
+ * @return  rightCounter  the value of the right encoder counter
  */
 long encoderReadRightCounter(void) {
 
@@ -137,7 +133,7 @@ long encoderReadRightCounter(void) {
 /**
  * @brief   Get the state of the left encoder A.
  *
- * @return  ret the value of the left encoder A
+ * @return  ret   the value of the left encoder A
  */
 long encoderReadLeftStateA(void) {
 
@@ -154,7 +150,7 @@ long encoderReadLeftStateA(void) {
 /**
  * @brief   Get the state of the left encoder B.
  *
- * @return  ret the value of the left encoder B
+ * @return  ret   the value of the left encoder B
  */
 long encoderReadLeftEncoderStateB(void) {
 
