@@ -18,10 +18,10 @@
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
-/*
- * The motor driver can handle a pwm frequency up to 20kHz
+/**
+ * @brief  The motor driver can handle a pwm frequency up to 20kHz.
  */
-#define PWM_FREQUENCY 20000
+#define PWM_FREQUENCY 20000 /**< PWM frequency value. */
 
 /*
  * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
@@ -31,7 +31,7 @@
 #define PWMVALUE F_CPU/PWM_FREQUENCY/2
 
 /*==========================================================================*/
-/* Functions.                                                               */
+/* Functions prototypes.                                                    */
 /*==========================================================================*/
 
 void pwmInits(void);
