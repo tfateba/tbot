@@ -21,39 +21,39 @@
  *                Encoder B:    Red
  */
 
-/*===========================================================================*/
-/* Includes files.                                                           */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Includes files.                                                          */
+/*==========================================================================*/
 
-/* Standard libraries. */
+/* Standard files. */
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-/* ChibiOS libraries. */
+/* ChibiOS files. */
 #include "hal.h"
 #include "chprintf.h"
 
-/* Local files. */
+/* Project files. */
 #include "ipconf.h"
 #include "ipencoder.h"
 #include "ipmotor.h"
 #include "ippid.h"
 #include "ippwm.h"
 
-/*===========================================================================*/
-/* Global variables.                                                         */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Global variables.                                                        */
+/*==========================================================================*/
 
-const uint16_t  maxSpeedValue = 512;
+const uint16_t  maxSpeedValue = 512;  /**< Robot maximum speed value.       */
 
 #if (DEBUG == TRUE || DEBUG_MOT == TRUE)
 extern BaseSequentialStream* chp;
 #endif
 
-/*===========================================================================*/
-/* Functions.                                                                */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Driver functions.                                                        */
+/*==========================================================================*/
 
 /**
  * @brief   Stop the corresponding motor.
@@ -84,7 +84,7 @@ void motorsStopAndReset(void) {
 }
 
 /**
- * @brief   Driving the motor to set to the given speed.
+ * @brief   Driving the motor to the given speed.
  *
  * @param[in] motor       the motor to pilot, rigth or left
  * @param[in] direction   the direction of the motor, backward or forward

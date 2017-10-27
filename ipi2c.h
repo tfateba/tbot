@@ -22,7 +22,7 @@
 #include "hal.h"
 
 /*==========================================================================*/
-/* Application macros.                                                      */
+/* Driver macros.                                                           */
 /*==========================================================================*/
 
 #define I2C_CLOCK_SPEED 400000
@@ -42,10 +42,10 @@ static const I2CConfig i2cConfig = {
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
-    uint8_t *reg, uint8_t *rxbuf, uint8_t lenght);
-msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr,
-    uint8_t *txbuf, uint8_t lenght);
+msg_t i2cReadRegisters( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
+                        uint8_t *rxbuf, uint8_t lenght);
+msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
+                        uint8_t lenght);
 
 #endif /* IPI2C_H */
 

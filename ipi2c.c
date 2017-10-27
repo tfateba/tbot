@@ -12,14 +12,14 @@
  */
 
 /*==========================================================================*/
-/* Include Libraries                                                        */
+/* Include files.                                                           */
 /*==========================================================================*/
 
-/* ChibiOS file. */
+/* ChibiOS files. */
 #include "hal.h"
 
 /*==========================================================================*/
-/* Driver Functions                                                         */
+/* Driver functions.                                                        */
 /*==========================================================================*/
 
 /**
@@ -33,8 +33,8 @@
  *
  * @return    msg     the result of the reading operation
  */
-msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
-    uint8_t *reg, uint8_t *rxbuf, uint8_t lenght) {
+msg_t i2cReadRegisters( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
+                        uint8_t *rxbuf, uint8_t lenght) {
 
   msg_t msg;
 
@@ -56,8 +56,8 @@ msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr,
  *
  * @return    msg     the result of the writing operation
  */
-msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr,
-    uint8_t *txbuf, uint8_t lenght) {
+msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
+                        uint8_t lenght) {
 
   msg_t msg;
 

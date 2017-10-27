@@ -23,7 +23,7 @@
 #include "hal.h"
 #include "chprintf.h"
 
-/* Project local files. */
+/* Project files. */
 #include "ipconf.h"
 #include "ipkalman.h"
 #include "ipmotor.h"
@@ -59,7 +59,7 @@ extern mpu6050_t       imu;       /**< MPU6050 instance.                    */
 extern msg_t           msg;       /**< Message error.                       */
 
 /*==========================================================================*/
-/* Functions.                                                               */
+/* Driver functions.                                                        */
 /*==========================================================================*/
 
 /**
@@ -73,7 +73,7 @@ void asserv(void) {
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
     chprintf(chp, "\n\r %s: Error while reading the MPU6050 sensor data.",
-    __func__);
+              __func__);
 #endif
     return;
   }

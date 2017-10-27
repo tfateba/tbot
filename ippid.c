@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-/* Project local files. */
+/* Project files. */
 #include "ipmotor.h"
 
 /*==========================================================================*/
@@ -66,6 +66,10 @@ extern long targetPosition;
 /*==========================================================================*/
 /* Functions.                                                               */
 /*==========================================================================*/
+
+/* TODO: Create a structure to hold the left and rigth pid. This structure
+ * must be the return type for this fuunction.
+ */
 
 /**
  * @brief   Calcul the command to send to the motors according to last error.

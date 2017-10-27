@@ -27,16 +27,16 @@
     limitations under the License.
 */
 
-/*===========================================================================*/
-/* Includes Files.                                                           */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Includes Files.                                                          */
+/*==========================================================================*/
 
 /* ChibiOS files. */
 #include "hal.h"
 #include "ch.h"
 #include "chprintf.h"
 
-/* Project local files. */
+/* Project files. */
 #include "ipasserv.h"
 #include "ipbuzzer.h"
 #include "ipencoder.h"

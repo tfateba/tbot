@@ -30,27 +30,27 @@
  e-mail   :  kristianl@tkjelectronics.com
  */
 
-/*===========================================================================*/
-/* Global variables.                                                         */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Global variables.                                                        */
+/*==========================================================================*/
 
-double Q_angle;   /**< Process noise variance for the accelerometer.         */
-double Q_bias;    /**< Process noise variance for the gyro bias.             */
-double R_measure; /**< The variance of the measurement noise.                */
+double Q_angle;   /**< Process noise variance for the accelerometer.        */
+double Q_bias;    /**< Process noise variance for the gyro bias.            */
+double R_measure; /**< The variance of the measurement noise.               */
 
-double angle;     /**< The angle calculated by the Kalman filter.            */
-double bias;      /**< The gyro bias calculated by the Kalman filter.        */
+double angle;     /**< The angle calculated by the Kalman filter.           */
+double bias;      /**< The gyro bias calculated by the Kalman filter.       */
 double rate;      /**< Unbiased rate calculated from the rate and the
-                       calculated bias.                                      */
+                       calculated bias.                                     */
 
-double P[2][2];   /**< Error covariance matrix.                              */
-double K[2];      /**< Kalman gain.                                          */
-double y;         /**< Angle difference.                                     */
-double S;         /**< Estimate error.                                       */
+double P[2][2];   /**< Error covariance matrix.                             */
+double K[2];      /**< Kalman gain.                                         */
+double y;         /**< Angle difference.                                    */
+double S;         /**< Estimate error.                                      */
 
-/*===========================================================================*/
-/* Functions.                                                                */
-/*===========================================================================*/
+/*==========================================================================*/
+/* Functions.                                                               */
+/*==========================================================================*/
 
 /**
  * @brief  Initialize the Kalman filter.

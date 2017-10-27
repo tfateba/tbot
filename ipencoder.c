@@ -3,7 +3,7 @@
  * 
  * @file    ipencoder.c
  *
- * @brief   Encoder source file.
+ * @brief   Encoder driver source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -24,7 +24,7 @@
 #include "hal.h"
 #include "chprintf.h"
 
-/* Project local files. */
+/* Project files. */
 #include "ipencoder.h"
 
 /*==========================================================================*/
@@ -107,7 +107,7 @@ static const EXTConfig extcfg = {
 };
 
 /*==========================================================================*/
-/* Functions.                                                               */
+/* Driver Functions.                                                        */
 /*==========================================================================*/
 
 /**
@@ -199,7 +199,7 @@ long encoderReadRightStateB(void) {
 }
 
 /**
- * @brief   Initialize all pins needs for motor control
+ * @brief   Initialize all pins needs for motor control.
  */
 void encoderInit(void) {
 

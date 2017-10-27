@@ -3,7 +3,7 @@
  *
  * @file    ipbuzzer.h
  *
- * @brief   Buzzer header file.
+ * @brief   Buzzer driver header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -15,7 +15,7 @@
 #define IPBUZZER_H
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* Driver macros.                                                           */
 /*==========================================================================*/
 
 /* Pin used to control the buzzer. */

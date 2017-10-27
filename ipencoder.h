@@ -3,7 +3,7 @@
  *
  * @file    ipencoder.h
  *
- * @brief   Encoder header file.
+ * @brief   Encoder driver header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -15,8 +15,8 @@
 #define IPENCODER_H
 
 /* Arduino Interruption */
-#define INT2 2      /**< D19 [PD2], BLACK wire motor Right                  */
-#define INT3 3      /**< D18 [PD3], RED wire Motor Left                     */
+#define INT2 2      /**< D19 [PD2], BLACK wire motor Right.                 */
+#define INT3 3      /**< D18 [PD3], RED wire Motor Left.                    */
 
 #define L_ENCODER_A_PORT  IOPORT4 /**< Left encoder A port.                 */
 #define L_ENCODER_B_PORT  IOPORT7 /**< Left encoder B port.                 */

@@ -3,7 +3,7 @@
  *
  * @file    ipbuzzer.c
  *
- * @brief   Buzzer source file.
+ * @brief   Buzzer driver source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
@@ -20,8 +20,12 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+/*==========================================================================*/
+/* Driver functions.                                                        */
+/*==========================================================================*/
+
 /**
- * @brief   Buzzer initialization function.
+ * @brief   Initialization buffer.
  */
 void buzzerInit(void)  {
 
@@ -44,7 +48,7 @@ void buzzerInit(void)  {
 }
 
 /**
- * @brief   Buzzer function to stop all playing sound.
+ * @brief   Stop all playing sound.
  */
 void buzzerStopSound(void) {
 
@@ -52,7 +56,7 @@ void buzzerStopSound(void) {
 }
 
 /**
- * @brief   Buzzer function to play the second sound.
+ * @brief   Play soung with buzzer.
  */
 void buzzerSound(void) {
 
@@ -69,3 +73,4 @@ void buzzerSound(void) {
 ISR (TIMER5_COMPA_vect) {
 
 }
+
