@@ -187,7 +187,6 @@ ULIBS =
 # Start of programming Options (avrdude).
 #
 
-# TODO: Add the programmer for ATtiny, and for ATXmega.
 # AVR programmer.
 AVRDUDE_PROGRAMMER = wiring
 
