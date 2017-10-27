@@ -282,7 +282,6 @@ CLEAN_RULE_HOOK:
 #
 # Programming rules.
 #
-# TODO: Make this generic according tool used to program.(avr, bosac, etc...).
 program: $(BUILDDIR)/$(PROJECT).hex $(BUILDDIR)/$(PROJECT).eep
 	@echo
 	@echo Programming $(MCU) device.
