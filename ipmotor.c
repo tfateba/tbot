@@ -90,14 +90,14 @@ void motorsStopAndReset(void) {
  * @param[in] direction   the direction of the motor, backward or forward
  * @param[in] speedRaw    the speed to set the motor
  */
-void motorMove(uint8_t motor, uint8_t direction, double speedRaw) {
+void motorMove(uint8_t motor, uint8_t direction, float speedRaw) {
 
   int speed;
 
   if (speedRaw > maxSpeedValue)
     speedRaw = maxSpeedValue;
 
-  speed = speedRaw*((double)PWMVALUE)/maxSpeedValue;
+  speed = speedRaw*((float)PWMVALUE)/maxSpeedValue;
   pwmSetDutyCycle(motor, direction, speed);
 }
 

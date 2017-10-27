@@ -67,7 +67,7 @@ typedef enum {
 
 void motorStop(uint8_t motor);
 void motorsStopAndReset(void);
-void motorMove(uint8_t motor, uint8_t direction, double speedRaw);
+void motorMove(uint8_t motor, uint8_t direction, float speedRaw);
 void motorInit(void);
 void motorEnable(motor_e motor);
 void motorDisable(motor_e motor);

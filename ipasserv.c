@@ -43,12 +43,12 @@
 /*==========================================================================*/
 
 /* Local variables. */
-bool    layingDown    = true;     /**< Robot position, down or not.         */
-double  targetAngle   = 180;      /**< The angle we want the robot to reach.*/
-double  targetOffset  = 0;        /**< Offset for going forward and backwrd.*/
-double  turningOffset = 0;        /**< Offset for turning left and right.   */
+bool  layingDown    = true;     /**< Robot position, down or not.           */
+float targetAngle   = 180;      /**< The angle we want the robot to reach.  */
+float targetOffset  = 0;        /**< Offset for going forward and backwrd.  */
+float turningOffset = 0;        /**< Offset for turning left and right.     */
 
-const double   dt = 0.01;         /**< Asservissement period.               */
+const float   dt = 0.01;         /**< Asservissement period.                */
 
 /* Extern variables. */
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)

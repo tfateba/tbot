@@ -11,8 +11,6 @@
  *
  */
 
-// TODO: Use float instead of double.
-
 /* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
 
  This software may be distributed and modified under the terms of the GNU
@@ -34,19 +32,19 @@
 /* Global variables.                                                        */
 /*==========================================================================*/
 
-double Q_angle;   /**< Process noise variance for the accelerometer.        */
-double Q_bias;    /**< Process noise variance for the gyro bias.            */
-double R_measure; /**< The variance of the measurement noise.               */
+float Q_angle;   /**< Process noise variance for the accelerometer.         */
+float Q_bias;    /**< Process noise variance for the gyro bias.             */
+float R_measure; /**< The variance of the measurement noise.                */
 
-double angle;     /**< The angle calculated by the Kalman filter.           */
-double bias;      /**< The gyro bias calculated by the Kalman filter.       */
-double rate;      /**< Unbiased rate calculated from the rate and the
+float angle;     /**< The angle calculated by the Kalman filter.            */
+float bias;      /**< The gyro bias calculated by the Kalman filter.        */
+float rate;      /**< Unbiased rate calculated from the rate and the
                        calculated bias.                                     */
 
-double P[2][2];   /**< Error covariance matrix.                             */
-double K[2];      /**< Kalman gain.                                         */
-double y;         /**< Angle difference.                                    */
-double S;         /**< Estimate error.                                      */
+float P[2][2];   /**< Error covariance matrix.                              */
+float K[2];      /**< Kalman gain.                                          */
+float y;         /**< Angle difference.                                     */
+float S;         /**< Estimate error.                                       */
 
 /*==========================================================================*/
 /* Functions.                                                               */
@@ -89,7 +87,7 @@ void kalmanInit(void) {
  *
  * @return    angle     the result of the kalman filter computing
  */
-double kalmanGetAngle(double newAngle, double newRate, double dt) {
+float kalmanGetAngle(float newAngle, float newRate, float dt) {
 
   /*
    * KasBot V2  -  Kalman filter module - http://www.x-firm.com/?page_id=145
@@ -144,7 +142,7 @@ double kalmanGetAngle(double newAngle, double newRate, double dt) {
  *
  * @param[in] newAngle  Set kalman filter starting angle
  */
-void setAngle(double newAngle) {
+void setAngle(float newAngle) {
 
   angle = newAngle;
 }
@@ -154,7 +152,7 @@ void setAngle(double newAngle) {
  *
  * @return  rate  the unbiased angle rate
  */
-double kalmanGetRate(void) {
+float kalmanGetRate(void) {
 
   return rate;
 }
@@ -164,7 +162,7 @@ double kalmanGetRate(void) {
  *
  * @param[in] newQ_angle  angle used to tune the Kalman filter
  */
-void kalmanSetQangle(double newQ_angle) {
+void kalmanSetQangle(float newQ_angle) {
 
   Q_angle = newQ_angle;
 }
@@ -174,7 +172,7 @@ void kalmanSetQangle(double newQ_angle) {
  *
  * @param[in] newQ_bias   bias angle used to set the Kalman filter
  */
-void kalmanSetQbias(double newQ_bias) {
+void kalmanSetQbias(float newQ_bias) {
 
   Q_bias = newQ_bias;
 }
@@ -184,7 +182,7 @@ void kalmanSetQbias(double newQ_bias) {
  *
  * @param[in] newR_measure  variance of the measurement noise value
  */
-void kalmanSetRmeasure(double newR_measure) {
+void kalmanSetRmeasure(float newR_measure) {
 
   R_measure = newR_measure;
 }
@@ -194,7 +192,7 @@ void kalmanSetRmeasure(double newR_measure) {
  *
  * @return  Q_angle process noise variance for the gyro bias
  */
-double kalmanGetQangle(void) {
+float kalmanGetQangle(void) {
 
   return Q_angle;
 }
@@ -204,7 +202,7 @@ double kalmanGetQangle(void) {
  *
  * @return  Q_bias  process noise variance for the accelerometer
  */
-double kalmanGetQbias(void) {
+float kalmanGetQbias(void) {
 
   return Q_bias;
 }
@@ -214,7 +212,7 @@ double kalmanGetQbias(void) {
  *
  * @return  R_measure   process noise variance for the gyro bias
  */
-double kalmanGetRmeasure(void) {
+float kalmanGetRmeasure(void) {
 
   return R_measure;
 }

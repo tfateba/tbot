@@ -38,16 +38,16 @@
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void    kalmanInit(void);
-double  kalmanGetAngle(double newAngle, double newRate, double dt);
-void    kalmanSetAngle(double newAngle);
-double  kalmanGetRate(void);
-void    kalmanSetQangle(double newQ_angle);
-void    kalmanSetQbias(double newQ_bias);
-void    kalmanSetRmeasure(double newR_measure);
-double  kalmanGetQangle(void);
-double  kalmanGetQbias(void);
-double  kalmanGetRmeasure(void);
+void  kalmanInit(void);
+float kalmanGetAngle(float newAngle, float newRate, float dt);
+void  kalmanSetAngle(float newAngle);
+float kalmanGetRate(void);
+void  kalmanSetQangle(float newQ_angle);
+void  kalmanSetQbias(float newQ_bias);
+void  kalmanSetRmeasure(float newR_measure);
+float kalmanGetQangle(void);
+float kalmanGetQbias(void);
+float kalmanGetRmeasure(void);
 
 #endif /* IPKALMAN_H */
 

@@ -18,7 +18,7 @@
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void pid(double pitch, double restAngle, double offset, double turning);
+void pid(float pitch, float restAngle, float offset, float turning);
 void pidResetParameters(void);
 
 #endif /* IPPID_H */
