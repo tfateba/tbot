@@ -76,7 +76,7 @@ static THD_FUNCTION(blinkThd, arg) {
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
   uint16_t  init_time = 0;
-  bool      spf = false; // Sonf played flag
+  bool      spf = false; /* Song Played Flag. */
 
   chRegSetThreadName("Blinker");
 
