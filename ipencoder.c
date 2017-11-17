@@ -26,6 +26,7 @@
 
 /* Project files. */
 #include "ipencoder.h"
+#include "ipmain.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */
@@ -37,15 +38,7 @@ long wheelVelocity;     /**< Velocity fo the robot wheels.                  */
 long lastWheelPosition; /**< Backup of the robot wheel position.            */
 long targetPosition;    /**< The robot target angle  position.              */
 
-static  bool      stopped;                /**< Breaking target position.    */
-static  long      leftCounter   = 0;      /**< Left encoder counter.        */
-static  long      rightCounter  = 0;      /**< Rigth encoder counter.       */
-static  bool      lstateA       = false;  /**< Left motor encoder A.        */
-static  bool      lstateB       = false;  /**< Left motor encoder B.        */
-static  bool      rstateA       = false;  /**< Rigth motor encoder A.       */
-static  bool      rstateB       = false;  /**< Rigth motor encoder B.       */
-static  uint8_t   loopCounter   = 0;      /**< Update wheel velocity.       */
-
+extern ROBOTDriver iprobot;
 /*==========================================================================*/
 /* Encoders callback.                                                       */
 /*==========================================================================*/
@@ -61,12 +54,12 @@ static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(L_ENCODER_B_PORT, L_ENCODER_B))
-    leftCounter--;
+    iprobot.lencoder.counter--;
   else
-    leftCounter++;
+    iprobot.lencoder.counter++;
 
-  lstateA = palReadPad(L_ENCODER_A_PORT, L_ENCODER_A);
-  lstateB = palReadPad(L_ENCODER_B_PORT, L_ENCODER_B);
+  iprobot.lencoder.statea = palReadPad(L_ENCODER_A_PORT, L_ENCODER_A);
+  iprobot.lencoder.stateb = palReadPad(L_ENCODER_B_PORT, L_ENCODER_B);
 
   chSysUnlockFromISR();
 }
@@ -82,12 +75,12 @@ static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(R_ENCODER_A_PORT, R_ENCODER_A))
-    rightCounter--;
+    iprobot.rencoder.counter--;
   else
-    rightCounter++;
+    iprobot.rencoder.counter++;
 
-  rstateA = palReadPad(R_ENCODER_A_PORT, R_ENCODER_A);
-  rstateB = palReadPad(R_ENCODER_B_PORT, R_ENCODER_B);
+  iprobot.rencoder.statea = palReadPad(R_ENCODER_A_PORT, R_ENCODER_A);
+  iprobot.rencoder.stateb = palReadPad(R_ENCODER_B_PORT, R_ENCODER_B);
 
   chSysUnlockFromISR();
 }
@@ -111,35 +104,15 @@ static const EXTConfig extcfg = {
 /*==========================================================================*/
 
 /**
- * @brief   Get left encoder counter.
- *
- * @return  leftCounter   the value of the left encoder counter
- */
-long encoderReadLeftCounter(void) {
-
-  return leftCounter;
-}
-
-/**
- * @brief   Get right encoder counter.
- *
- * @return  rightCounter  the value of the right encoder counter
- */
-long encoderReadRightCounter(void) {
-
-  return rightCounter;
-}
-
-/**
  * @brief   Get the state of the left encoder A.
  *
  * @return  ret   the value of the left encoder A
  */
-long encoderReadLeftStateA(void) {
+bool encoderReadLeftStateA(void) {
 
-  long ret;
+  bool ret;
 
-  if (lstateA)
+  if (iprobot.lencoder.statea)
     ret = 1;
   else
     ret = 0;
@@ -152,11 +125,11 @@ long encoderReadLeftStateA(void) {
  *
  * @return  ret   the value of the left encoder B
  */
-long encoderReadLeftEncoderStateB(void) {
+bool encoderReadLeftEncoderStateB(void) {
 
-  long ret;
+  bool ret;
 
-  if (lstateB)
+  if (iprobot.lencoder.stateb)
     ret = 1;
   else
     ret = 0;
@@ -169,11 +142,11 @@ long encoderReadLeftEncoderStateB(void) {
  *
  * @return  ret  the value of the right encoder A
  */
-long encoderReadRightStateA(void) {
+bool encoderReadRightStateA(void) {
 
-  long ret;
+  bool ret;
 
-  if (rstateA)
+  if (iprobot.rencoder.statea)
     ret = 1;
   else
     ret = 0;
@@ -186,11 +159,11 @@ long encoderReadRightStateA(void) {
  *
  * @return  ret  the value of the right encoder B
  */
-long encoderReadRightStateB(void) {
+bool encoderReadRightStateB(void) {
 
-  long ret;
+  bool ret;
 
-  if (rstateB)
+  if (iprobot.rencoder.stateb)
     ret = 1;
   else
     ret = 0;
@@ -202,6 +175,28 @@ long encoderReadRightStateB(void) {
  * @brief   Initialize all pins needs for motor control.
  */
 void encoderInit(void) {
+
+  /* Initialise left encoder . */
+  iprobot.lencoder.id       = ENCODER_L;
+  iprobot.lencoder.eichan   = INT3;
+  iprobot.lencoder.porta    = IOPORT4;
+  iprobot.lencoder.pina     = PD3;
+  iprobot.lencoder.portb    = IOPORT7;
+  iprobot.lencoder.pinb     = PG5;
+  iprobot.lencoder.counter  = 0;
+  iprobot.lencoder.statea   = false;
+  iprobot.lencoder.stateb   = false;
+
+  /* Initialise rigth encoder . */
+  iprobot.rencoder.id       = ENCODER_R;
+  iprobot.rencoder.eichan   = INT2;
+  iprobot.rencoder.porta    = IOPORT4;
+  iprobot.rencoder.pina     = PD2;
+  iprobot.rencoder.portb    = IOPORT5;
+  iprobot.rencoder.pinb     = PE3;
+  iprobot.rencoder.counter  = 0;
+  iprobot.rencoder.statea   = false;
+  iprobot.rencoder.stateb   = false;
 
   /* Set left Motors Encoders. */
   palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT);
@@ -224,11 +219,14 @@ void encoderInit(void) {
  */
 void encoderGetWheelVelocity(void) {
 
+  static  bool    stopped       = true; /* Breaking target position.  */
+  static  uint8_t loopCounter   = 0;    /**< Update wheel velocity.   */
+
   loopCounter++;
 
   if (loopCounter == 10) {
     loopCounter = 0;
-    wheelPosition = encoderReadLeftCounter() + encoderReadRightCounter();
+    wheelPosition = iprobot.lencoder.counter + iprobot.rencoder.counter;
     wheelVelocity = wheelPosition - lastWheelPosition;
     lastWheelPosition = wheelPosition;
 

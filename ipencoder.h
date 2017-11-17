@@ -14,6 +14,18 @@
 #ifndef IPENCODER_H
 #define IPENCODER_H
 
+/**
+ * @brief Encoders enumerations
+ */
+typedef enum {
+  ENCODER_L,          /**< Left encoder.                  */
+  ENCODER_R,          /**< Right encoder.                 */
+  ENCODER_L_STATE_A,  /**< State A of the left encoder.   */
+  ENCODER_L_STATE_B,  /**< State B of the left encoder.   */
+  ENCODER_R_STATE_A,  /**< State A of the right encoder.  */
+  ENCODER_R_STATE_B   /**< State B of the right encoder.  */
+}encoder_e;
+
 /* Arduino Interruption */
 #define INT2 2      /**< D19 [PD2], BLACK wire motor Right.                 */
 #define INT3 3      /**< D18 [PD3], RED wire Motor Left.                    */
@@ -30,19 +42,32 @@
 #define R_ENCODER_A       PD2     /**< Right encoder A pin.                 */
 #define R_ENCODER_B       PE3     /**< Right encoder B pin.                 */
 
+struct ENCODERDriver {
+  uint8_t     id;       /**< Encoder identification name.           */
+  uint8_t     eichan;   /**< Encoder external interruption channel. */
+  ioportid_t  porta;    /**< Encoder port A.                        */
+  uint8_t     pina;     /**< Encoder pin A.                         */
+  ioportid_t  portb;    /**< Encoder port B.                        */
+  uint8_t     pinb;     /**< Encoder pin B.                         */
+  long        counter;  /**< Rigth encoder counter.       */
+  bool        statea;   /**< Left motor encoder A.        */
+  bool        stateb;   /**< Left motor encoder B.        */
+
+};
+
+typedef struct ENCODERDriver ENCODERDriver;
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-long encoderReadLeftCounter(void);
-long encoderReadRightCounter(void);
-long encoderReadLeftStateA(void);
-long encoderReadLeftStateB(void);
-long encoderReadRightStateA(void);
-long encoderReadRightStateB(void);
+bool encoderReadLeftStateA(void);
+bool encoderReadLeftStateB(void);
+bool encoderReadRightStateA(void);
+bool encoderReadRightStateB(void);
 void encoderInit(void);
 void encoderGetWheelVelocity(void);
+void encoderInit(void);
 
 #endif /* IPENCODER_H */
 
