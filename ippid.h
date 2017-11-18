@@ -14,11 +14,21 @@
 #ifndef IPPID_H
 #define IPPID_H
 
+struct PIDDriver {
+  uint8_t id;
+  float   kp;
+  float   ki;
+  float   kd;
+  float   result;
+};
+
+typedef struct PIDDriver PIDDriver;
+
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void pid(float pitch, float restAngle, float offset, float turning);
+float pid(float pitch, float restAngle, float offset, float turning);
 void pidResetParameters(void);
 
 #endif /* IPPID_H */
