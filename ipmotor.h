@@ -20,6 +20,13 @@
 #define IPMOTOR_H
 
 /*==========================================================================*/
+/* Includes Files.                                                          */
+/*==========================================================================*/
+
+/* ChibiOS files. */
+#include "hal.h"
+
+/*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
@@ -33,17 +40,20 @@ typedef enum {
   MOTOR_DIR_B,  /**< Motor backward direction.  */
 }motor_e;
 
-/**
- * @brief Encoders enumerations
- */
-typedef enum {
-  ENCODER_L,          /**< Left encoder.                  */
-  ENCODER_R,          /**< Right encoder.                 */
-  ENCODER_L_STATE_A,  /**< State A of the left encoder.   */
-  ENCODER_L_STATE_B,  /**< State B of the left encoder.   */
-  ENCODER_R_STATE_A,  /**< State A of the right encoder.  */
-  ENCODER_R_STATE_B   /**< State B of the right encoder.  */
-}encoder_e;
+struct MOTORDriver {
+  uint8_t     id;           /**< Motor identification name.       */
+  uint8_t     dir;          /**< Motor rotation directory.        */
+  float       speed;        /**< Motor speed.                     */
+  float       maxSpeed;     /**< Motor maximum speed.             */
+  ioportid_t  forwardPort;  /**< Motor driver forward pwm Port.   */
+  uint8_t     forwardPin;   /**< Motor driver forward pwm pin.    */
+  ioportid_t  backwardPort; /**< Motor driver backwad pwm Port.   */
+  uint8_t     backwardPin;  /**< Motor driver backwad pwm pin.    */
+  ioportid_t  enablePort;   /**< Motor driver enable Port.        */
+  uint8_t     enablePin;    /**< Motor driver enable pin.         */
+};
+
+typedef struct MOTORDriver MOTORDriver;
 
 #define LMD_LPWM_PORT     IOPORT5 /**< Left motor driver forward pwm port.  */
 #define LMD_RPWM_PORT     IOPORT5 /**< Left motor driver backwad pwm port.  */
