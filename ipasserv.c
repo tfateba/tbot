@@ -16,8 +16,10 @@
 /*==========================================================================*/
 
 /* Standard files. */
-#include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <math.h>
 
 /* ChibiOS files. */
 #include "hal.h"
@@ -26,6 +28,7 @@
 /* Project files. */
 #include "ipconf.h"
 #include "ipkalman.h"
+#include "ipmain.h"
 #include "ipmotor.h"
 #include "ipmpu6050.h"
 #include "ippid.h"
@@ -55,20 +58,23 @@ const float   dt = 0.01;         /**< Asservissement period.                */
 extern BaseSequentialStream* chp; /*                                        */
 #endif
 
-extern mpu6050_t       imu;       /**< MPU6050 instance.                    */
-extern msg_t           msg;       /**< Message error.                       */
-
 /*==========================================================================*/
 /* Driver functions.                                                        */
 /*==========================================================================*/
 
 /**
  * @brief  Asservissement routine of the robot.
+ *
+ * @param[in] rdp   the pointer to the robot driver
  */
-void asserv(void) {
+void asserv(ROBOTDriver *rdp) {
+
+  msg_t msg;
+  float pidlvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
+  float pidrvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
 
   /* Read the IMU data (x,y,z accel and gyroscope). */
-  msg = mpu6050GetData(&I2CD1, &imu);
+  msg = mpu6050GetData(&I2CD1, &rdp->imu);
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
@@ -79,13 +85,13 @@ void asserv(void) {
   }
 
   /* Calcul of the Pitch angle of the selbalancing robot. */
-  imu.pitch = (atan2(imu.y_accel, imu.z_accel) + PI)*(RAD_TO_DEG);
+  rdp->imu.pitch = (atan2(rdp->imu.y_accel, rdp->imu.z_accel) + PI)*(RAD_TO_DEG);
 
   /* Get the Kalman estimation of the angle. */
-  imu.pitch_k = kalmanGetAngle(imu.pitch, (imu.x_gyro / 131.0), dt);
+  rdp->imu.pitch_k = kalmanGetAngle(rdp->imu.pitch, (rdp->imu.x_gyro / 131.0), dt);
 
-  if ((layingDown && (imu.pitch_k < 170 || imu.pitch_k > 190)) ||
-    (!layingDown && (imu.pitch_k < 135 || imu.pitch_k > 225))) {
+  if ((layingDown && (rdp->imu.pitch_k < 170 || rdp->imu.pitch_k > 190)) ||
+    (!layingDown && (rdp->imu.pitch_k < 135 || rdp->imu.pitch_k > 225))) {
     /*
      * The robot is in a unsolvable position, so turn off both motors and
      * wait until it's vertical again.
@@ -104,9 +110,24 @@ void asserv(void) {
      * so we can try to stabilized the robot now.
      */
     layingDown = false;
-    pid(imu.pitch_k, targetAngle, targetOffset, turningOffset);
+
+    pidlvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
+    pidrvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
+
+    /* Set the left motor PWM value. */
+    if (pidlvalue >= 0)
+      motorMove(MOTOR_L, MOTOR_DIR_F, pidlvalue);
+    else
+      motorMove(MOTOR_L, MOTOR_DIR_B, abs(pidlvalue));
+
+    /* Set the rigth motor PWM value. */
+    if (pidrvalue >= 0)
+      motorMove(MOTOR_R, MOTOR_DIR_F, pidrvalue);
+    else
+      motorMove(MOTOR_R, MOTOR_DIR_B, abs(pidrvalue));
+
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
-    chprintf(chp, "%s: filtered pitch = %.3f\r\n", __func__, imu.pitch_k);
+    chprintf(chp, "%s: filtered pitch = %.3f\r\n", __func__, rdp->imu.pitch_k);
 #endif
   }
 
