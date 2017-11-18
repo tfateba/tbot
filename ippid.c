@@ -20,9 +20,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-/* Project files. */
-#include "ipmotor.h"
-
 /*==========================================================================*/
 /* Global variables.                                                        */
 /*==========================================================================*/
@@ -34,8 +31,6 @@ static float error;        /**< Error between two measurement.              */
 static float pTerm;        /**< Proportionnal error.                        */
 static float dTerm;        /**< Derivate error.                             */
 static float pidValue;     /**< PID value, sum of all the errors.           */
-static float pidLeft;      /**< PID result for Left motor.                  */
-static float pidRight;     /**< PID result for Right motor.                 */
 
 static float kp = 55.468;  /**< Proportional parameter of PID corrector.    */
 static float ki = 0.554;   /**< Integral parameter of PID corrector.        */
@@ -67,19 +62,18 @@ extern long targetPosition;
 /* Functions.                                                               */
 /*==========================================================================*/
 
-/* TODO: Create a structure to hold the left and rigth pid. This structure
- * must be the return type for this fuunction.
- */
-
 /**
  * @brief   Calcul the command to send to the motors according to last error.
  *
- * @param[in] pitch      mesured angle of the robot
- * @param[in] restAngle  target angle of the robot
- * @param[in] offset     angle we want to add to the target angle
- * @param[in] turning    value use to turn robot over rigth or left
+ * @param[in] pitch       mesured angle of the robot
+ * @param[in] restAngle   target angle of the robot
+ * @param[in] offset      angle we want to add to the target angle
+ * @param[in] turning     value use to turn robot over rigth or left
+ * @return    result      the result of the pid calcul
 */
-void pid(float pitch, float restAngle, float offset, float turning) {
+float pid(float pitch, float restAngle, float offset, float turning) {
+
+  float result;
 
   /* Steer robot forward. */
   if (steerForward) {
@@ -119,42 +113,27 @@ void pid(float pitch, float restAngle, float offset, float turning) {
   lastError =  error;
   pidValue  =  pTerm + iTerm + dTerm;
 
+
   /* Steer robot sideways. */
   if (steerLeft) {
     /* Scale down at high speed */
     turning -= abs((float)wheelVelocity/velocityScaleTurning);
     if (turning < 0)
       turning = 0;
-    pidLeft   = pidValue-turning;
-    pidRight  = pidValue+turning;
+    result   = pidValue-turning;
   }
   else if (steerRight) {
     /* Scale down at high speed */
     turning -= abs((float)wheelVelocity/velocityScaleTurning);
     if (turning < 0)
       turning = 0;
-    pidLeft   = pidValue+turning;
-    pidRight  = pidValue-turning;
+    result   = pidValue+turning;
   }
   else {
-    pidLeft   = pidValue;
-    pidRight  = pidValue;
+    result   = pidValue;
   }
 
-  // TODO: Remove the call to the motor here,
-  //       it must be in a thread eg: in the asserv thread.
-
-  /* Set the left motor PWM value. */
-  if (pidLeft >= 0)
-    motorMove(MOTOR_L, MOTOR_DIR_F, pidLeft);
-  else
-    motorMove(MOTOR_L, MOTOR_DIR_B, abs(pidLeft));
-
-  /* Set the rigth motor PWM value. */
-  if (pidRight >= 0)
-    motorMove(MOTOR_R, MOTOR_DIR_F, pidRight);
-  else
-    motorMove(MOTOR_R, MOTOR_DIR_B, abs(pidRight));
+  return result;
 }
 
 /**
