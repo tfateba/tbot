@@ -43,8 +43,10 @@
 #include "ipconf.h"
 #include "ipi2c.h"
 #include "ipkalman.h"
+#include "ipmain.h"
 #include "ipmotor.h"
 #include "ipmpu6050.h"
+#include "ippid.h"
 #include "ippwm.h"
 
 /*==========================================================================*/
@@ -60,8 +62,7 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
                                                                 of the arduino
                                                                 board.      */
 
-mpu6050_t       imu;        /**< MPU6050 instance.                          */
-msg_t           msg;        /**< Message error.                             */
+ROBOTDriver iprobot;
 
 /*==========================================================================*/
 /* Threads function and main function.                                      */
@@ -111,7 +112,7 @@ static THD_FUNCTION(asserThd, arg) {
 
   while (true) {
     time += MS2ST(10);
-    asserv();
+    asserv(&iprobot);
     chThdSleepUntil(time);
   }
 }
@@ -120,6 +121,8 @@ static THD_FUNCTION(asserThd, arg) {
  * Application entry point.
  */
 int main(void) {
+
+  static msg_t msg;
 
   /*
    * System initializations.
@@ -193,7 +196,7 @@ int main(void) {
 #endif
 
   /* Init MPU module. */
-  msg = mpu6050Init(&I2CD1, &imu, MPU6050_ADDR);
+   msg = mpu6050Init(&I2CD1, &iprobot.imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
@@ -209,7 +212,7 @@ int main(void) {
 #endif
 
   /* Start MPU calibration process. */
-  mpu6050Calibration(&I2CD1, &imu);
+  mpu6050Calibration(&I2CD1, &iprobot.imu);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: IMU sensor calibration done.", __func__);
@@ -240,20 +243,11 @@ int main(void) {
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Initialisation of the Buzzer. */
-  //buzzerInit();
-
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Buzzer initialization done.",
   __func__);
   chThdSleepMilliseconds(10);
 #endif
-
-  /* Start to play a sound to tell that the init of the Robot is done. */
-  //buzzerSound();
-
-  /* Stop playing the sound. */
-  //buzzerStopSound();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialization done.",
