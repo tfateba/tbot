@@ -103,7 +103,7 @@ typedef enum {
 /**
  * @brief   MPU6050 data structure
  */
-typedef struct {
+struct MPU6050Driver {
   mpu6050_sad_e sad;            /**< MPU6050 I2C slave address              */
   float         x_accel;        /**< Accelerometer x data.                  */
   float         y_accel;        /**< Accelerometer y data.                  */
@@ -127,7 +127,9 @@ typedef struct {
   float         roll_c;         /**< Roll angle by complementary filter.    */
   float         yaw_c;          /**< Yaw angle by complementary filter.     */
   float         temp;           /**< MPU Temperature.                       */
-}mpu6050_t;
+};
+
+typedef struct MPU6050Driver MPU6050Driver;
 
 /*==========================================================================*/
 /* Driver macros.                                                           */
@@ -270,9 +272,9 @@ msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset);
 msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset);
 msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset);
 msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050GetData(I2CDriver *i2cp, mpu6050_t *mpu);
-msg_t mpu6050Calibration(I2CDriver *i2cp, mpu6050_t *mpu);
-msg_t mpu6050Init(I2CDriver *i2cp, mpu6050_t *mpu, mpu6050_sad_e sad);
+msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpu);
+msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
+msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
 
 #endif /* IPMPU6050_H */
 
