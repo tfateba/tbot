@@ -404,7 +404,7 @@ msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
  *
  * @return    msg   result of the reading operation
  */
-msg_t mpu6050GetData(I2CDriver *i2cp, mpu6050_t *mpup) {
+msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpup) {
 
   int16_t temp    = 0;
   int16_t x_accel = 0;
@@ -453,7 +453,7 @@ msg_t mpu6050GetData(I2CDriver *i2cp, mpu6050_t *mpup) {
  *
  * @return    msg   result of the calibration operation
  */
-msg_t mpu6050Calibration(I2CDriver *i2cp, mpu6050_t *mpup) {
+msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
 
   msg_t msg;
   uint16_t i;
@@ -499,7 +499,7 @@ msg_t mpu6050Calibration(I2CDriver *i2cp, mpu6050_t *mpup) {
  *
  * @return    msg   result of the initialization operation
  */
-msg_t mpu6050Init(I2CDriver *i2cp, mpu6050_t *mpu, mpu6050_sad_e sad) {
+msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad) {
 
   msg_t msg;
 
