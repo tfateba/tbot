@@ -219,6 +219,24 @@ int main(void) {
   chThdSleepMilliseconds(10);
 #endif
 
+  /* Configure the left pid for the robot. */
+  iprobot.lpid.kp = 55.468;
+  iprobot.lpid.ki = 0.554;
+  iprobot.lpid.kd = 42.524;
+
+  /* Configure the rigth pid for the robot. */
+  iprobot.rpid.kp = 55.468;
+  iprobot.rpid.ki = 0.554;
+  iprobot.rpid.kd = 42.524;
+
+  /* Init PID controller. */
+  pidInit(iprobot.rpid.kp, iprobot.rpid.ki, iprobot.rpid.kd);
+
+#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+  chprintf(chp, "\n\r%s: PID initialization done.", __func__);
+  chThdSleepMilliseconds(10);
+#endif
+
   /* Init Motors. */
   motorInit();
 
