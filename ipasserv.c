@@ -70,8 +70,8 @@ extern BaseSequentialStream* chp; /*                                        */
 void asserv(ROBOTDriver *rdp) {
 
   msg_t msg;
-  float pidlvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
-  float pidrvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
+  float pidlvalue;
+  float pidrvalue;
 
   /* Read the IMU data (x,y,z accel and gyroscope). */
   msg = mpu6050GetData(&I2CD1, &rdp->imu);
