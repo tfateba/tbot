@@ -25,22 +25,22 @@
 /*==========================================================================*/
 
 /* Local variables. */
-static float lastError;    /**< Store position error.                       */
-static float iTerm;        /**< Store integral term.                        */
-static float error;        /**< Error between two measurement.              */
-static float pTerm;        /**< Proportionnal error.                        */
-static float dTerm;        /**< Derivate error.                             */
-static float pidValue;     /**< PID value, sum of all the errors.           */
+static float lastError;   /**< Store position error.                       */
+static float iTerm;       /**< Store integral term.                        */
+static float error;       /**< Error between two measurement.              */
+static float pTerm;       /**< Proportionnal error.                        */
+static float dTerm;       /**< Derivate error.                             */
+static float pidValue;    /**< PID value, sum of all the errors.           */
 
-static float kp = 55.468;  /**< Proportional parameter of PID corrector.    */
-static float ki = 0.554;   /**< Integral parameter of PID corrector.        */
-static float kd = 42.524;  /**< Derivate parameter of PID corrector.        */
+static float kp;          /**< Proportional parameter of PID corrector.    */
+static float ki;          /**< Integral parameter of PID corrector.        */
+static float kd;          /**< Derivate parameter of PID corrector.        */
 
 static float velocityScaleStop     = 30; /**< Max velocity of the robot.    */
 static float velocityScaleTurning  = 35; /**< Max turning velocity.         */
 
-static int16_t zoneA = 4000;          /**< Area to ajust robot PID.         */
-static int16_t zoneB = 2000;          /**< Area to ajust robot PID.         */
+static int16_t zoneA = 4000;         /**< Area to ajust robot PID.         */
+static int16_t zoneB = 2000;         /**< Area to ajust robot PID.         */
 static float positionScaleA = 250;   /**< One resolution is 464 pulses.     */
 static float positionScaleB = 500;   /**< Max position scale for control.   */
 static float positionScaleC = 1000;  /**< Max position scale for control.   */
@@ -63,6 +63,20 @@ extern long targetPosition;
 /*==========================================================================*/
 
 /**
+ * @brief   Initialise the Kp Ki and Kd pid term.
+ *
+ * @param[in] kpval   Kp value to be set
+ * @param[in] kival   Ki value to be set
+ * @param[in] kdval   Kd value to be set
+*/
+void pidInit(float kpval, float kival, float kdval) {
+
+  kp = kpval;
+  ki = kival;
+  kd = kdval;
+}
+
+/**
  * @brief   Calcul the command to send to the motors according to last error.
  *
  * @param[in] pitch       mesured angle of the robot
@@ -77,14 +91,14 @@ float pid(float pitch, float restAngle, float offset, float turning) {
 
   /* Steer robot forward. */
   if (steerForward) {
-    /* Scale down offset at high speed and scale up when reversing */
+    /* Scale down offset at high speed and scale up when reversing. */
     offset    += (float)wheelVelocity/velocityScaleMove;
     restAngle -= offset;
   }
 
   /* Steer robot backward. */
   else if (steerBackward) {
-    /* Scale down offset at high speed and scale up when reversing */
+    /* Scale down offset at high speed and scale up when reversing. */
     offset    -= (float)wheelVelocity/velocityScaleMove;
     restAngle += offset;
   }
@@ -92,14 +106,14 @@ float pid(float pitch, float restAngle, float offset, float turning) {
   /* Default steer. */
   else if (steerStop) {
     long positionError = wheelPosition - targetPosition;
-    if (abs(positionError) > zoneA)                       /* Inside zone A. */
+    if (abs(positionError) > zoneA)
       restAngle -= (float)positionError/positionScaleA;
-    else if (abs(positionError) > zoneB)                  /* Inside zone B. */
+    else if (abs(positionError) > zoneB)
       restAngle -= (float)positionError/positionScaleB;
-    else                                                  /* Inside zone C. */
+    else
       restAngle -= (float)positionError/positionScaleC;
     restAngle -= (float)wheelVelocity/velocityScaleStop;
-    if (restAngle < 160) // Limit rest Angle
+    if (restAngle < 160)
       restAngle = 160;
     else if (restAngle > 200)
       restAngle = 200;
@@ -113,17 +127,16 @@ float pid(float pitch, float restAngle, float offset, float turning) {
   lastError =  error;
   pidValue  =  pTerm + iTerm + dTerm;
 
-
   /* Steer robot sideways. */
   if (steerLeft) {
-    /* Scale down at high speed */
+    /* Scale down at high speed. */
     turning -= abs((float)wheelVelocity/velocityScaleTurning);
     if (turning < 0)
       turning = 0;
     result   = pidValue-turning;
   }
   else if (steerRight) {
-    /* Scale down at high speed */
+    /* Scale down at high speed. */
     turning -= abs((float)wheelVelocity/velocityScaleTurning);
     if (turning < 0)
       turning = 0;
