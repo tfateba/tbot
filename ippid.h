@@ -28,6 +28,7 @@ typedef struct PIDDriver PIDDriver;
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
+void pidInit(float kpval, float kival, float kdval);
 float pid(float pitch, float restAngle, float offset, float turning);
 void pidResetParameters(void);
 
