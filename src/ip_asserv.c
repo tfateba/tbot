@@ -26,13 +26,13 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ipconf.h"
-#include "ipkalman.h"
-#include "ipmain.h"
-#include "ipmotor.h"
-#include "ipmpu6050.h"
-#include "ippid.h"
-#include "ippwm.h"
+#include "ip_conf.h"
+#include "ip_kalman.h"
+#include "ip_main.h"
+#include "ip_motor.h"
+#include "ip_mpu6050.h"
+#include "ip_pid.h"
+#include "ip_pwm.h"
 
 /*==========================================================================*/
 /* Application macros.                                                      */

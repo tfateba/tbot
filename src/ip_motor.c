@@ -35,11 +35,11 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ipconf.h"
-#include "ipencoder.h"
-#include "ipmotor.h"
-#include "ippid.h"
-#include "ippwm.h"
+#include "ip_conf.h"
+#include "ip_encoder.h"
+#include "ip_motor.h"
+#include "ip_pid.h"
+#include "ip_pwm.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

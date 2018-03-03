@@ -25,8 +25,8 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ipencoder.h"
-#include "ipmain.h"
+#include "ip_encoder.h"
+#include "ip_main.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

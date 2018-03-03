@@ -83,7 +83,7 @@ include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 # IP-Robot root directory 
 IPROBOT = ../ip_robot
 # Application files
-include $(IPROBOT)/ip.mk
+include $(IPROBOT)/mk/ip.mk
 
 # List C source files here. (C dependencies are automatically generated.)
 CSRC =  $(KERNSRC)                      \
@@ -99,8 +99,8 @@ CSRC =  $(KERNSRC)                      \
 # List C++ sources file here.
 CPPSRC =
 
-INCDIR =  $(CHIBIOS)/os/license $(PORTINC) $(KERNINC) $(TESTINC)  \
-          $(HALINC) $(OSALINC) $(PLATFORMINC)                     \
+INCDIR =  $(CHIBIOS)/os/license $(PORTINC) $(KERNINC)  		\
+          $(HALINC) $(OSALINC) $(PLATFORMINC) $(IPINC)    \
           $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various
 
 #
@@ -224,9 +224,9 @@ AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 # Include file.
 #
 
-include rules-avr.mk
-include myrules.mk
-
+RULESPATH = $(CHIBIOS)/os/common/ports/AVR/compilers/GCC
+include $(RULESPATH)/rules.mk
+include $(IPROBOT)/mk/myrules.mk
 #
 # End of include file.
 ##############################################################################

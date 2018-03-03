@@ -20,8 +20,8 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ipconf.h"
-#include "ipmotor.h"
+#include "ip_conf.h"
+#include "ip_motor.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

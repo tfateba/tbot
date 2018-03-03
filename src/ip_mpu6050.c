@@ -16,9 +16,9 @@
 /*==========================================================================*/
 
 /* Project files. */
-#include "ipi2c.h"
-#include "ipmotor.h"
-#include "ipmpu6050.h"
+#include "ip_i2c.h"
+#include "ip_motor.h"
+#include "ip_mpu6050.h"
 
 /*==========================================================================*/
 /* Driver functions.                                                        */

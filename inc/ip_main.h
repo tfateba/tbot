@@ -15,10 +15,10 @@
 #define IPMAIN_H
 
 /* Project files. */
-#include "ipencoder.h"
-#include "ipmotor.h"
-#include "ipmpu6050.h"
-#include "ippid.h"
+#include "ip_encoder.h"
+#include "ip_motor.h"
+#include "ip_mpu6050.h"
+#include "ip_pid.h"
 
 
 struct ROBOTDriver {
