@@ -89,16 +89,16 @@ CSRC =  $(KERNSRC)                      \
         $(BOARDSRC)                     \
         $(STREAMSSRC)                   \
         $(CHIBIOS)/os/various/evtimer.c \
-        ipasserv.c                      \
-        ipbuzzer.c                      \
-        ipencoder.c                     \
-        ipi2c.c                         \
-        ipkalman.c                      \
-        ipmotor.c                       \
-        ipmpu6050.c                     \
-        ippid.c                         \
-        ippwm.c                         \
-        ipmain.c
+        ip_asserv.c                      \
+        ip_buzzer.c                      \
+        ip_encoder.c                     \
+        ip_i2c.c                         \
+        ip_kalman.c                      \
+        ip_motor.c                       \
+        ip_mpu6050.c                     \
+        ip_pid.c                         \
+        ip_pwm.c                         \
+        ip_main.c
 
 # List C++ sources file here.
 CPPSRC =
