@@ -14,6 +14,13 @@
 #ifndef IPPID_H
 #define IPPID_H
 
+/*==========================================================================*/
+/* Structures of the PID controler.                                         */
+/*==========================================================================*/
+
+/**
+ * @brief   PID driver data structure.
+ */
 struct PIDDriver {
   uint8_t id;
   float   kp;
@@ -22,6 +29,9 @@ struct PIDDriver {
   float   result;
 };
 
+/**
+ * @brief   PID driver type definition.
+ */
 typedef struct PIDDriver PIDDriver;
 
 /*==========================================================================*/
