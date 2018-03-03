@@ -80,6 +80,11 @@ include $(CHIBIOS)/os/common/ports/AVR/compilers/GCC/mk/port.mk
 # Other files.
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
+# IP-Robot root directory 
+IPROBOT = ../ip_robot
+# Application files
+include $(IPROBOT)/ip.mk
+
 # List C source files here. (C dependencies are automatically generated.)
 CSRC =  $(KERNSRC)                      \
         $(PORTSRC)                      \
@@ -89,16 +94,7 @@ CSRC =  $(KERNSRC)                      \
         $(BOARDSRC)                     \
         $(STREAMSSRC)                   \
         $(CHIBIOS)/os/various/evtimer.c \
-        ip_asserv.c                      \
-        ip_buzzer.c                      \
-        ip_encoder.c                     \
-        ip_i2c.c                         \
-        ip_kalman.c                      \
-        ip_motor.c                       \
-        ip_mpu6050.c                     \
-        ip_pid.c                         \
-        ip_pwm.c                         \
-        ip_main.c
+        $(IPSRC)
 
 # List C++ sources file here.
 CPPSRC =
