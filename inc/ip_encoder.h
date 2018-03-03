@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ipencoder.h
+ * @file    ip_encoder.h
  *
  * @brief   Encoder driver header file.
  *
@@ -11,11 +11,11 @@
  *
  */
 
-#ifndef IPENCODER_H
-#define IPENCODER_H
+#ifndef IP_ENCODER_H
+#define IP_ENCODER_H
 
 /**
- * @brief Encoders enumerations
+ * @brief Encoders enumerations.
  */
 typedef enum {
   ENCODER_L,          /**< Left encoder.                  */
@@ -37,22 +37,21 @@ typedef enum {
 #define L_ENCODER_B       PG5     /**< Left encoder B pin.                  */
 
 #define R_ENCODER_B_PORT  IOPORT5 /**< Right encoder B port.                */
-#define R_ENCODER_A_PORT  IOPORT4 /**< Rigth encoder A port.                */
+#define R_ENCODER_A_PORT  IOPORT4 /**< Right encoder A port.                */
 
 #define R_ENCODER_A       PD2     /**< Right encoder A pin.                 */
 #define R_ENCODER_B       PE3     /**< Right encoder B pin.                 */
 
 struct ENCODERDriver {
-  uint8_t     id;       /**< Encoder identification name.           */
-  uint8_t     eichan;   /**< Encoder external interruption channel. */
-  ioportid_t  porta;    /**< Encoder port A.                        */
-  uint8_t     pina;     /**< Encoder pin A.                         */
-  ioportid_t  portb;    /**< Encoder port B.                        */
-  uint8_t     pinb;     /**< Encoder pin B.                         */
-  long        counter;  /**< Rigth encoder counter.       */
-  bool        statea;   /**< Left motor encoder A.        */
-  bool        stateb;   /**< Left motor encoder B.        */
-
+  uint8_t     id;       /**< Encoder identification name.                   */
+  uint8_t     eichan;   /**< Encoder external interruption channel.         */
+  ioportid_t  porta;    /**< Encoder port A.                                */
+  uint8_t     pina;     /**< Encoder pin A.                                 */
+  ioportid_t  portb;    /**< Encoder port B.                                */
+  uint8_t     pinb;     /**< Encoder pin B.                                 */
+  long        counter;  /**< Right encoder counter.                         */
+  bool        statea;   /**< Left motor encoder A.                          */
+  bool        stateb;   /**< Left motor encoder B.                          */
 };
 
 typedef struct ENCODERDriver ENCODERDriver;
@@ -69,5 +68,5 @@ void encoderInit(void);
 void encoderGetWheelVelocity(void);
 void encoderInit(void);
 
-#endif /* IPENCODER_H */
+#endif /* IP_ENCODER_H */
 

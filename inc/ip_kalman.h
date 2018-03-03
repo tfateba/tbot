@@ -1,13 +1,13 @@
 
 /**
  *
- * @file    ipkalman.h
+ * @file    ip_kalman.h
  *
  * @brief   Kalman filter header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    05 Jully 2016
+ * @date    05 July 2016
  *
  */
 
@@ -24,15 +24,14 @@
  -------------------
 
  Kristian Lauszus, TKJ Electronics
- Web      :  http://www.tkjelectronics.com
- e-mail   :  kristianl@tkjelectronics.com
+ Web      :   http://www.tkjelectronics.com
+ e-mail   :   kristianl@tkjelectronics.com
 
- Modify by:
- Theodore Ateba, tf.ateba@gmail.com
+ Modify by:   Theodore Ateba, tf.ateba@gmail.com
  */
 
-#ifndef IPKALMAN_H
-#define IPKALMAN_H
+#ifndef IP_KALMAN_H
+#define IP_KALMAN_H
 
 /*==========================================================================*/
 /* Functions prototypes.                                                    */
@@ -49,5 +48,5 @@ float kalmanGetQangle(void);
 float kalmanGetQbias(void);
 float kalmanGetRmeasure(void);
 
-#endif /* IPKALMAN_H */
+#endif /* IP_KALMAN_H */
 

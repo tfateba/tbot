@@ -1,18 +1,18 @@
 
 /**
  *
- * @file    ipasserv.h
+ * @file    ip_asserv.h
  *
  * @brief   Robot asservissement header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    07 Septembre 2015
+ * @date    07 September 2015
  *
  */
 
-#ifndef IPASSERV_H
-#define IPASSERV_H
+#ifndef IP_ASSERV_H
+#define IP_ASSERV_H
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -27,5 +27,5 @@
 
 void asserv(ROBOTDriver *rdp);
 
-#endif /* IPASSERV_H */
+#endif /* IP_ASSERV_H */
 

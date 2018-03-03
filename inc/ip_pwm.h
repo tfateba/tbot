@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ippwm.h
+ * @file    ip_pwm.h
  *
  * @brief   PWM configuration and management header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IPPWM_H
-#define IPPWM_H
+#ifndef IP_PWM_H
+#define IP_PWM_H
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
@@ -24,8 +24,8 @@
 #define PWM_FREQUENCY 20000 /**< PWM frequency value. */
 
 /*
- * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
- * prescaling so:
+ * Frequency is given by F_CPU/(2*N*ICR) - where N is the pre-scaler,
+ * we use no pre-scaling so:
  * frequency is given by F_CPU/(2*ICR) - ICR = F_CPU/PWM_FREQUENCY/2
  */
 #define PWMVALUE F_CPU/PWM_FREQUENCY/2
@@ -40,5 +40,5 @@ void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
 void pwmDisable(PWMDriver *pwmp);
 void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
 
-#endif /* IPPWM_H */
+#endif /* IP_PWM_H */
 

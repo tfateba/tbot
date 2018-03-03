@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ipmpu6050.h
+ * @file    ip_mpu6050.h
  *
  * @brief   Motion interface driver header file.
  *
@@ -11,33 +11,33 @@
  *
  */
 
-#ifndef IPMPU6050_H
-#define IPMPU6050_H
+#ifndef IP_MPU6050_H
+#define IP_MPU6050_H
 
 /*==========================================================================*/
 /* Structures and enumerations.                                             */
 /*==========================================================================*/
 
 /**
- * @brief   MPU6050 Slave I2C adress enumeration type.
+ * @brief   MPU6050 Slave I2C address enumeration type.
  */
 typedef enum {
-  MPU6050_ADDR = 0x68  /**< I2C adress of the mpu6050 module.               */
+  MPU6050_ADDR = 0x68  /**< I2C address of the mpu6050 module.              */
 }mpu6050_sad_e;
 
 /**
- * @brief   External Frame Synchronisation values
+ * @brief   External Frame Synchronisation values.
  */
 typedef enum {
-  MPU6050_INPUT_DISABLED  = 0x00, /**< External Frame Synchronization 0.    */
-  MPU6050_TEMP_OUT_L      = 0x01, /**< External Frame Synchronization 1.    */
-  MPU6050_GYRO_XOUT_L     = 0x02, /**< External Frame Synchronization 2.    */
-  MPU6050_GYRO_YOUT_L     = 0x03, /**< External Frame Synchronization 3.    */
-  MPU6050_GYRO_ZOUT_L     = 0x04, /**< External Frame Synchronization 4.    */
-  MPU6050_ACCEL_XOUT_L    = 0x05, /**< External Frame Synchronization 5.    */
-  MPU6050_ACCEL_YOUT_L    = 0x06, /**< External Frame Synchronization 6.    */
-  MPU6050_ACCEL_ZOUT_L    = 0x07  /**< External Frame Synchronization 7.    */
-}mpu6050_ext_sync_set_e;          /**< External Frame Synchronization type. */
+  MPU6050_INPUT_DISABLED  = 0x00, /**< External Frame Synchronisation 0.    */
+  MPU6050_TEMP_OUT_L      = 0x01, /**< External Frame Synchronisation 1.    */
+  MPU6050_GYRO_XOUT_L     = 0x02, /**< External Frame Synchronisation 2.    */
+  MPU6050_GYRO_YOUT_L     = 0x03, /**< External Frame Synchronisation 3.    */
+  MPU6050_GYRO_ZOUT_L     = 0x04, /**< External Frame Synchronisation 4.    */
+  MPU6050_ACCEL_XOUT_L    = 0x05, /**< External Frame Synchronisation 5.    */
+  MPU6050_ACCEL_YOUT_L    = 0x06, /**< External Frame Synchronisation 6.    */
+  MPU6050_ACCEL_ZOUT_L    = 0x07  /**< External Frame Synchronisation 7.    */
+}mpu6050_ext_sync_set_e;          /**< External Frame Synchronisation type. */
 
 /**
  * @brief   Digital Low Pass Filter setting for Accelerator and the Gyroscope.
@@ -48,7 +48,7 @@ typedef enum {
   MPU6050_GLPF_CFG_2  = 0x02, /**< DIgital Low Pass Filter value 2.         */
   MPU6050_DLPF_CFG_3  = 0x03, /**< Digital Low Pass Filter value 3.         */
   MPU6050_DLPF_CFG_4  = 0x04, /**< Digital Low Pass Filter value 4.         */
-  MPU6050_DLPF_CFG_5  = 0x05, /**< Digital Low Pass Filetr value 5.         */
+  MPU6050_DLPF_CFG_5  = 0x05, /**< Digital Low Pass Filter value 5.         */
   MPU6050_DLPF_CFG_6  = 0x06, /**< Digital Low Pass Filter value 6.         */
   MPU6050_DLPF_CFG_7  = 0x07  /**< Digital Low Pass Filter value 7.         */
 }mpu6050_dlpf_cfg_e;          /**< Digital Low Pass Filter type             */
@@ -217,7 +217,7 @@ typedef struct MPU6050Driver MPU6050Driver;
 #define MPU6050_EXT_SENS_DATA_03    0x4C /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_04    0x4D /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_05    0x4E /**< External Sensor Data.         */
-#define MPU6050_EXT_SENS_DATA_06    0x4F /**< Ecternal Sensor Data.         */
+#define MPU6050_EXT_SENS_DATA_06    0x4F /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_07    0x50 /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_08    0x51 /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_09    0x52 /**< External Sensor Data.         */
@@ -276,5 +276,5 @@ msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpu);
 msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
 msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
 
-#endif /* IPMPU6050_H */
+#endif /* IP_MPU6050_H */
 

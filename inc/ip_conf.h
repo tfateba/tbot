@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ipconf.h
+ * @file    ip_conf.h
  *
  * @brief   Robot configuration header file.
  *
@@ -11,11 +11,11 @@
  *
  */
 
-#ifndef IPCONF_H
-#define IPCONF_H
+#ifndef IP_CONF_H
+#define IP_CONF_H
 
 /*==========================================================================*/
-/* Color define for chprintf.                                               */
+/* Colour define for chprintf.                                              */
 /*==========================================================================*/
 
 #define chprintf_r(x, y)  chprintf(x, "\x1b[31m" y "\x1b[0m") /**< Red.     */
@@ -41,5 +41,5 @@
 #define DEBUG_I2C FALSE   /**< Debug activation in I2C file.                */
 #define DABUG_MPU FALSE   /**< Debug activation in MPU6050 file.            */
 
-#endif /* IPCONF_H */
+#endif /* IP_CONF_H */
 

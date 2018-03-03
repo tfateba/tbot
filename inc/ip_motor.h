@@ -1,23 +1,23 @@
 
 /**
  *
- * @file    ipmotor.h
+ * @file    ip_motor.h
  *
  * @brief   motor driver header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    07 Septembre 2015
+ * @date    07 September 2015
  *
  * @note
- *          Motor Wires, connexion to the Motor Drivers
+ *          Motor Wires, connection to the Motor Drivers:
  *          Motor + is the Yellow wire.
  *          Motor - is the White wire.
  *
  */
 
-#ifndef IPMOTOR_H
-#define IPMOTOR_H
+#ifndef IP_MOTOR_H
+#define IP_MOTOR_H
 
 /*==========================================================================*/
 /* Includes Files.                                                          */
@@ -45,22 +45,22 @@ struct MOTORDriver {
   uint8_t     dir;          /**< Motor rotation directory.        */
   float       speed;        /**< Motor speed.                     */
   float       maxSpeed;     /**< Motor maximum speed.             */
-  ioportid_t  forwardPort;  /**< Motor driver forward pwm Port.   */
+  ioportid_t  forwardPort;  /**< Motor driver forward pwm port.   */
   uint8_t     forwardPin;   /**< Motor driver forward pwm pin.    */
-  ioportid_t  backwardPort; /**< Motor driver backwad pwm Port.   */
-  uint8_t     backwardPin;  /**< Motor driver backwad pwm pin.    */
-  ioportid_t  enablePort;   /**< Motor driver enable Port.        */
+  ioportid_t  backwardPort; /**< Motor driver backward pwm port.  */
+  uint8_t     backwardPin;  /**< Motor driver backward pwm pin.   */
+  ioportid_t  enablePort;   /**< Motor driver enable port.        */
   uint8_t     enablePin;    /**< Motor driver enable pin.         */
 };
 
 typedef struct MOTORDriver MOTORDriver;
 
 #define LMD_LPWM_PORT     IOPORT5 /**< Left motor driver forward pwm port.  */
-#define LMD_RPWM_PORT     IOPORT5 /**< Left motor driver backwad pwm port.  */
+#define LMD_RPWM_PORT     IOPORT5 /**< Left motor driver backward pwm port. */
 #define LMD_EN_PORT       IOPORT2 /**< Left motor enable port.              */
 
 #define LMD_LPWM          PE5     /**< Left motor driver forward pwm pin.   */
-#define LMD_RPWM          PE4     /**< Left motor driver backwad pwm pin.   */
+#define LMD_RPWM          PE4     /**< Left motor driver backward pwm pin.  */
 #define LMD_EN            PB5     /**< Left motor enable pin.               */
 
 #define RMD_LPWM_PORT     IOPORT8 /**< Right motor driver forward port.     */
@@ -82,5 +82,5 @@ void motorInit(void);
 void motorEnable(motor_e motor);
 void motorDisable(motor_e motor);
 
-#endif /* IPMOTOR_H */
+#endif /* IP_MOTOR_H */
 

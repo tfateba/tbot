@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ipmain.h
+ * @file    ip_main.h
  *
  * @brief   main application header file.
  *
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef IPMAIN_H
-#define IPMAIN_H
+#ifndef IP_MAIN_H
+#define IP_MAIN_H
 
 /* Project files. */
 #include "ip_encoder.h"
@@ -36,4 +36,4 @@ struct ROBOTDriver {
 
 typedef struct ROBOTDriver ROBOTDriver;
 
-#endif /* IPMAIN_H */
+#endif /* IP_MAIN_H */

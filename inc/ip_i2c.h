@@ -1,18 +1,18 @@
 
 /**
  *
- * @file    ipi2c.h
+ * @file    ip_i2c.h
  *
  * @brief   I2C driver header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    05 Jully 2016
+ * @date    05 July 2016
  *
  */
 
-#ifndef IPI2C_H
-#define IPI2C_H
+#ifndef IP_I2C_H
+#define IP_I2C_H
 
 /*==========================================================================*/
 /* Include Libraries.                                                       */
@@ -47,5 +47,5 @@ msg_t i2cReadRegisters( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
 msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
                         uint8_t lenght);
 
-#endif /* IPI2C_H */
+#endif /* IP_I2C_H */
 

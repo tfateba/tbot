@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ippid.h
+ * @file    ip_pid.h
  *
  * @brief   PID corrector header file.
  *
@@ -11,11 +11,11 @@
  *
  */
 
-#ifndef IPPID_H
-#define IPPID_H
+#ifndef IP_PID_H
+#define IP_PID_H
 
 /*==========================================================================*/
-/* Structures of the PID controler.                                         */
+/* Structures of the PID controller.                                        */
 /*==========================================================================*/
 
 /**
@@ -42,5 +42,5 @@ void pidInit(float kpval, float kival, float kdval);
 float pid(float pitch, float restAngle, float offset, float turning);
 void pidResetParameters(void);
 
-#endif /* IPPID_H */
+#endif /* IP_PID_H */
 
