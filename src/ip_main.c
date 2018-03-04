@@ -1,18 +1,18 @@
 
 /**
  *
- * @file    ipmain.c
+ * @file    ip_main.c
  *
  * @brief   main file of inverted pendulum Robot.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    07 Septembre 2015
+ * @date    07 September 2015
  *
  */
 
 /*
-    IP - Copyright (C) 2016 Theodore Ateba
+    IP - Copyright (C) 2015..2018 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -77,20 +77,20 @@ static THD_FUNCTION(blinkThd, arg) {
   (void)arg;
   systime_t time = chVTGetSystemTimeX();
   uint16_t  init_time = 0;
-  bool      spf = false; /* Song Played Flag. */
+  bool      spf = FALSE; /* Song Played Flag. */
 
   chRegSetThreadName("Blinker");
 
-  while (true) {
+  while (TRUE) {
     time += MS2ST(100);
     if (init_time <= 200) {
       init_time++;
     }
     else {
-      if (spf == false) {
+      if (spf == FALSE) {
         buzzerSound();
         buzzerStopSound();
-        spf = true;
+        spf = TRUE;
       }
       palTogglePad(IOPORT2, PORTB_LED1);
     }
@@ -110,7 +110,7 @@ static THD_FUNCTION(asserThd, arg) {
 
   chRegSetThreadName("Asservissement");
 
-  while (true) {
+  while (TRUE) {
     time += MS2ST(10);
     asserv(&iprobot);
     chThdSleepUntil(time);
@@ -125,10 +125,10 @@ int main(void) {
   static msg_t msg;
 
   /*
-   * System initializations.
-   * - HAL initialization, this also initializes the configured device drivers
-   *   and performs the board-specific initializations.
-   * - Kernel initialization, the main() function becomes a thread and the
+   * System initialisations.
+   * - HAL initialisation, this also initialises the configured device drivers
+   *   and performs the board-specific initialisations.
+   * - Kernel initialisation, the main() function becomes a thread and the
    *   RTOS is active.
    */
   halInit();
@@ -160,14 +160,14 @@ int main(void) {
   chprintf(chp, "\n\r Made by Theodore Ateba (tfateba), tf.ateba@gmail.com");
   chprintf(chp, "\n\r The robot is controlled with ChibiOS/RT v16.1.5");
   chprintf(chp, "\n\r The target board is an Arduino Mega.");
-  chprintf(chp, "\n\r The microcontroller is an ATMEGA2560.");
-  chprintf(chp, "\n\r Copyrigth: 2015...2017");
+  chprintf(chp, "\n\r The micro controller is an ATMEGA2560.");
+  chprintf(chp, "\n\r Copyright: 2015...2018");
 
   chprintf(chp, "\n\r");
-  chprintf_g(chp, "\n\r   IP-Robot initialization.");
-  chprintf(chp, "\n\r%s: Initialization of Inverted pendulum Robot started:",
+  chprintf_g(chp, "\n\r   IP-Robot initialisation.");
+  chprintf(chp, "\n\r%s: Initialisation of Inverted pendulum Robot started:",
   __func__);
-  chprintf(chp, "\n\r%s: Serial driver initialization done.", __func__);
+  chprintf(chp, "\n\r%s: Serial driver initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -175,7 +175,7 @@ int main(void) {
   palClearPad(IOPORT2, PORTB_LED1);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: On-board LED initialization done.", __func__);
+  chprintf(chp, "\n\r%s: On-board LED initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -183,7 +183,7 @@ int main(void) {
   i2cStart(&I2CD1, &i2cConfig);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: I2C bus interface initialization done.", __func__);
+  chprintf(chp, "\n\r%s: I2C bus interface initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -191,7 +191,7 @@ int main(void) {
   kalmanInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Kalman filter initialization done.", __func__);
+  chprintf(chp, "\n\r%s: Kalman filter initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -206,7 +206,7 @@ int main(void) {
   }
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: IMU sensor initialization started, please wait...",
+  chprintf(chp, "\n\r%s: IMU sensor initialisation started, please wait...",
   __func__);
   chThdSleepMilliseconds(10);
 #endif
@@ -224,7 +224,7 @@ int main(void) {
   iprobot.lpid.ki = 0.554;
   iprobot.lpid.kd = 42.524;
 
-  /* Configure the rigth pid for the robot. */
+  /* Configure the right pid for the robot. */
   iprobot.rpid.kp = 55.468;
   iprobot.rpid.ki = 0.554;
   iprobot.rpid.kd = 42.524;
@@ -233,7 +233,7 @@ int main(void) {
   pidInit(iprobot.rpid.kp, iprobot.rpid.ki, iprobot.rpid.kd);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: PID initialization done.", __func__);
+  chprintf(chp, "\n\r%s: PID initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -241,7 +241,7 @@ int main(void) {
   motorInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Motors initialization done.", __func__);
+  chprintf(chp, "\n\r%s: Motors initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -249,7 +249,7 @@ int main(void) {
   encoderInit();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Encoder initialization done.", __func__);
+  chprintf(chp, "\n\r%s: Encoder initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
@@ -257,18 +257,18 @@ int main(void) {
   pwmInits();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: PWM initialization done.", __func__);
+  chprintf(chp, "\n\r%s: PWM initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Buzzer initialization done.",
+  chprintf(chp, "\n\r%s: Buzzer initialisation done.",
   __func__);
   chThdSleepMilliseconds(10);
 #endif
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialization done.",
+  chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialisation done.",
   __func__);
   chThdSleepMilliseconds(10);
 #endif

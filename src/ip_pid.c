@@ -28,7 +28,7 @@
 static float lastError;   /**< Store position error.                       */
 static float iTerm;       /**< Store integral term.                        */
 static float error;       /**< Error between two measurement.              */
-static float pTerm;       /**< Proportionnal error.                        */
+static float pTerm;       /**< Proportional error.                        */
 static float dTerm;       /**< Derivate error.                             */
 static float pidValue;    /**< PID value, sum of all the errors.           */
 
@@ -46,15 +46,15 @@ static float positionScaleB = 500;   /**< Max position scale for control.   */
 static float positionScaleC = 1000;  /**< Max position scale for control.   */
 static float velocityScaleMove = 35; /**< Velocity scale use to move.       */
 
-bool steerForward;          /**< Robot oriantation forward.                 */
-bool steerBackward;         /**< Robot oriantation backward.                */
+bool steerForward;          /**< Robot orientation forward.                 */
+bool steerBackward;         /**< Robot orientation backward.                */
 bool steerStop      = true; /* Stop by default                              */
 bool steerLeft;             /**< Robot orientation left.                    */
-bool steerRight;            /**< Robot oriantation rigth.                   */
+bool steerRight;            /**< Robot orientation right.                   */
 
 /* Extern variables. */
 extern long wheelPosition;
-extern long lastWheelPosition;
+//extern long lastWheelPosition;
 extern long wheelVelocity;
 extern long targetPosition;
 
@@ -79,10 +79,10 @@ void pidInit(float kpval, float kival, float kdval) {
 /**
  * @brief   Calcul the command to send to the motors according to last error.
  *
- * @param[in] pitch       mesured angle of the robot
+ * @param[in] pitch       measured angle of the robot
  * @param[in] restAngle   target angle of the robot
  * @param[in] offset      angle we want to add to the target angle
- * @param[in] turning     value use to turn robot over rigth or left
+ * @param[in] turning     value use to turn robot over right or left
  * @return    result      the result of the pid calcul
 */
 float pid(float pitch, float restAngle, float offset, float turning) {

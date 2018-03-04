@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ipbuzzer.c
+ * @file    ip_buzzer.c
  *
  * @brief   Buzzer driver source file.
  *

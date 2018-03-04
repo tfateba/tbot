@@ -1,7 +1,7 @@
 
 /**
  * 
- * @file    ipencoder.c
+ * @file    ip_encoder.c
  *
  * @brief   Encoder driver source file.
  *
@@ -34,7 +34,7 @@
 
 /* Project local variables. */
 long wheelPosition;     /**< Position of the robot wheels.                  */
-long wheelVelocity;     /**< Velocity fo the robot wheels.                  */
+long wheelVelocity;     /**< Velocity of the robot wheels.                  */
 long lastWheelPosition; /**< Backup of the robot wheel position.            */
 long targetPosition;    /**< The robot target angle  position.              */
 
@@ -65,7 +65,7 @@ static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
 }
 
 /**
- * @brief   Rigth motor encoder external interrupt callback.
+ * @brief   Right motor encoder external interrupt callback.
  */
 static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
 
@@ -219,8 +219,8 @@ void encoderInit(void) {
  */
 void encoderGetWheelVelocity(void) {
 
-  static  bool    stopped       = true; /* Breaking target position.  */
-  static  uint8_t loopCounter   = 0;    /**< Update wheel velocity.   */
+  static  bool    stopped       = TRUE; /* Breaking target position.  */
+  static  uint8_t loopCounter   = 0;    /* Update wheel velocity.     */
 
   loopCounter++;
 
@@ -233,7 +233,7 @@ void encoderGetWheelVelocity(void) {
     if (abs(wheelVelocity) <= 20 && !stopped) {
       /* Set new targetPosition if braking. */
       targetPosition = wheelPosition;
-      stopped = true;
+      stopped = TRUE;
     }
   }
 }

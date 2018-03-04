@@ -71,7 +71,7 @@ static PWMConfig pwm4cfg = {
 /*==========================================================================*/
 
 /**
- * @brief   Initialize the PWM output.
+ * @brief   Initialise the PWM output.
  */
 void pwmInits(void) {
 
@@ -126,7 +126,7 @@ void pwmDisable(PWMDriver *pwmp) {
 /**
  * @brief   Generate the corresponding PWM for speed control.
  *
- * @param[in] motor       the motor to pilot, rigth or left.
+ * @param[in] motor       the motor to pilot, right or left.
  * @param[in] direction   the direction of the motor, backward or forward.
  * @param[in] dutyCycle   the duty cycle to set the pwm.
  */

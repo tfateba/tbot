@@ -58,7 +58,7 @@ extern BaseSequentialStream* chp;
 /**
  * @brief   Stop the corresponding motor.
  *
- * @param[in] motor   the motor to stop, rigth or left
+ * @param[in] motor   the motor to stop, right or left
  */
 void motorStop(uint8_t motor) {
 
@@ -74,7 +74,7 @@ void motorStop(uint8_t motor) {
 }
 
 /**
- * @brief   Stop both motors and initialize wheels position, PID parameters.
+ * @brief   Stop both motors and initialise wheels position, PID parameters.
  */
 void motorsStopAndReset(void) {
 
@@ -86,7 +86,7 @@ void motorsStopAndReset(void) {
 /**
  * @brief   Driving the motor to the given speed.
  *
- * @param[in] motor       the motor to pilot, rigth or left
+ * @param[in] motor       the motor to pilot, right or left
  * @param[in] direction   the direction of the motor, backward or forward
  * @param[in] speedRaw    the speed to set the motor
  */
@@ -128,21 +128,21 @@ void motorDisable(motor_e motor) {
 }
 
 /**
- * @brief   Initialize all pins needs for motor control
+ * @brief   Initialise all pins needs for motor control
  */
 void motorInit(void) {
 
-  // Setup Left Motor Driver ( LMD )
+  /* Setup Left Motor Driver ( LMD ). */
   palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPadMode(LMD_LPWM_PORT,  LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPadMode(LMD_EN_PORT,    LMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
 
-  // Setup Rigth Motor Driver ( RMD )
+  /* Setup Right Motor Driver ( RMD ).  */
   palSetPadMode(RMD_RPWM_PORT,  RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPadMode(RMD_LPWM_PORT,  RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
 
-  // Eneble Right and Left Motors.
+  /* Enable Right and Left Motors.  */
   motorEnable(MOTOR_R);
   motorEnable(MOTOR_L);
 }

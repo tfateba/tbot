@@ -79,7 +79,7 @@ msg_t mpu6050Sleep(I2CDriver *i2cp) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  *
- * @return    msg   result of the wakeup operation
+ * @return    msg   result of the wake up operation
  */
 msg_t mpu6050Wakeup(I2CDriver *i2cp) {
 
@@ -130,7 +130,7 @@ msg_t mpu6050Reset(I2CDriver *i2cp) {
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] scale   scale to set the MPU6050(250, 500, 1000 or 2000)
  *
- * @return    msg   result of the wakeup operation
+ * @return    msg   result of the wake up operation
  */
 msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
 
@@ -169,7 +169,7 @@ msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] scale   scale to set the MPU6050(2, 4, 8 or 16)
  *
- * @return    msg   result of the wakeup operation
+ * @return    msg   result of the wake up operation
  */
 msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
 
@@ -380,7 +380,7 @@ msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp) {
  * @brief   Read all axis of data and also the temperature.
  *
  * @param[in] i2cp    pointer of the i2C interface
- * @param[in] rxbuf   reception buffer for the i2c data readed
+ * @param[in] rxbuf   reception buffer for the i2c data read
  *
  * @return    msg   result of the reading operation
  */
@@ -484,7 +484,7 @@ msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
   mpup->y_gyro_offset   = mpup->y_gyro_offset/sampleNumber;
   mpup->z_gyro_offset   = mpup->z_gyro_offset/sampleNumber;
 
-  msg = mpu6050SetXGyroOffset(&I2CD1, -(mpup->x_gyro_offset/4)); // TODO: Utiliser un decalage de deux ici pour faire la division.
+  msg = mpu6050SetXGyroOffset(&I2CD1, -(mpup->x_gyro_offset/4));
   msg = mpu6050SetYGyroOffset(&I2CD1, -(mpup->y_gyro_offset/4));
   msg = mpu6050SetZGyroOffset(&I2CD1, -(mpup->z_gyro_offset/4));
 
@@ -497,7 +497,7 @@ msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] sad   mpu i2c serial address
  *
- * @return    msg   result of the initialization operation
+ * @return    msg   result of the initialisation operation
  */
 msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad) {
 

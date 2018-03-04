@@ -1,13 +1,13 @@
 
 /**
  *
- * @file    ipkalman.c
+ * @file    ip_kalman.c
  *
  * @brief   Kalman filter source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    05 Jully 2016
+ * @date    05 July 2016
  *
  */
 
@@ -51,7 +51,7 @@ float S;         /**< Estimate error.                                       */
 /*==========================================================================*/
 
 /**
- * @brief  Initialize the Kalman filter.
+ * @brief  Initialise the Kalman filter.
  */
 void kalmanInit(void) {
 
@@ -81,10 +81,9 @@ void kalmanInit(void) {
  * @note    The rate should be in degrees per second.
  * @note    The delta time should be in seconds.
  *
- * @param[in] newAngle  current angle mesured by the IMU
- * @param[in] newRate   current angle rate mesured by the IMU
+ * @param[in] newAngle  current angle measured by the IMU
+ * @param[in] newRate   current angle rate measured by the IMU
  * @param[in] dt        time between tow angles measurement
- *
  * @return    angle     the result of the kalman filter computing
  */
 float kalmanGetAngle(float newAngle, float newRate, float dt) {

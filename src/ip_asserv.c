@@ -1,13 +1,13 @@
 
 /**
  *
- * @file    ipasserv.c
+ * @file    ip_asserv.c
  *
  * @brief   Robot asservissement source file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
- * @date    07 Septembre 2015
+ * @date    07 September 2015
  *
  */
 
@@ -46,12 +46,12 @@
 /*==========================================================================*/
 
 /* Local variables. */
-bool  layingDown    = true;     /**< Robot position, down or not.           */
+bool  layingDown    = TRUE;     /**< Robot position, down or not.           */
 float targetAngle   = 180;      /**< The angle we want the robot to reach.  */
-float targetOffset  = 0;        /**< Offset for going forward and backwrd.  */
+float targetOffset  = 0;        /**< Offset for going forward and backward. */
 float turningOffset = 0;        /**< Offset for turning left and right.     */
 
-const float   dt = 0.01;         /**< Asservissement period.                */
+const float   dt = 0.01;        /**< Asservissement period.                 */
 
 /* Extern variables. */
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
@@ -84,7 +84,7 @@ void asserv(ROBOTDriver *rdp) {
     return;
   }
 
-  /* Calcul of the Pitch angle of the selbalancing robot. */
+  /* Calcul of the Pitch angle of the self balancing robot. */
   rdp->imu.pitch = (atan2(rdp->imu.y_accel, rdp->imu.z_accel) + PI)*(RAD_TO_DEG);
 
   /* Get the Kalman estimation of the angle. */
@@ -101,15 +101,15 @@ void asserv(ROBOTDriver *rdp) {
     chprintf(chp, "%s: The Robot is laying down.\n\r", __func__);
 #endif
 
-    layingDown = true;
+    layingDown = TRUE;
     motorsStopAndReset();
   }
   else {
     /*
      * It's no longer laying down,
-     * so we can try to stabilized the robot now.
+     * so we can try to stabilised the robot now.
      */
-    layingDown = false;
+    layingDown = FALSE;
 
     pidlvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
     pidrvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
@@ -120,7 +120,7 @@ void asserv(ROBOTDriver *rdp) {
     else
       motorMove(MOTOR_L, MOTOR_DIR_B, abs(pidlvalue));
 
-    /* Set the rigth motor PWM value. */
+    /* Set the right motor PWM value. */
     if (pidrvalue >= 0)
       motorMove(MOTOR_R, MOTOR_DIR_F, pidrvalue);
     else
