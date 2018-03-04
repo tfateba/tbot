@@ -26,9 +26,9 @@
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void buzzerInit(void);
-void buzzerSound(void);
-void buzzerStopSound(void);
+void buzzer_init(void);
+void buzzer_sound_play(void);
+void buzzer_sound_stop(void);
 
 #endif /* IP_BUZZER_H */
 

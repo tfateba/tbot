@@ -60,13 +60,12 @@ typedef struct ENCODERDriver ENCODERDriver;
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-bool encoderReadLeftStateA(void);
-bool encoderReadLeftStateB(void);
-bool encoderReadRightStateA(void);
-bool encoderReadRightStateB(void);
-void encoderInit(void);
-void encoderGetWheelVelocity(void);
-void encoderInit(void);
+bool encoder_left_read_state_a(void);
+bool encoder_left_read_state_b(void);
+bool encoder_right_read_state_a(void);
+bool encoder_right_read_state_b(void);
+void encoder_init(void);
+void encoder_get_wheel_velocity(void);
 
 #endif /* IP_ENCODER_H */
 

@@ -38,9 +38,9 @@ typedef struct PIDDriver PIDDriver;
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void pidInit(float kpval, float kival, float kdval);
+void pid_init(float kpval, float kival, float kdval);
 float pid(float pitch, float restAngle, float offset, float turning);
-void pidResetParameters(void);
+void pid_Reset_Parameters(void);
 
 #endif /* IP_PID_H */
 

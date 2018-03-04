@@ -104,79 +104,79 @@ static const EXTConfig extcfg = {
 /*==========================================================================*/
 
 /**
- * @brief   Get the state of the left encoder A.
+ * @brief   Get the state of the left encoder output A.
  *
- * @return  ret   the value of the left encoder A
+ * @return  state   the value of the left encoder output A
  */
-bool encoderReadLeftStateA(void) {
+bool encoder_left_read_state_a(void) {
 
-  bool ret;
+  bool state;
 
   if (iprobot.lencoder.statea)
-    ret = 1;
+    state = 1;
   else
-    ret = 0;
+    state = 0;
 
-  return ret;
+  return state;
 }
 
 /**
- * @brief   Get the state of the left encoder B.
+ * @brief   Get the state of the left encoder output B.
  *
- * @return  ret   the value of the left encoder B
+ * @return  state   the value of the left encoder output B
  */
-bool encoderReadLeftEncoderStateB(void) {
+bool encoder_left_read_state_b(void) {
 
-  bool ret;
+  bool state;
 
   if (iprobot.lencoder.stateb)
-    ret = 1;
+    state = 1;
   else
-    ret = 0;
+    state = 0;
 
-  return ret;
+  return state;
 }
 
 /**
- * @brief   Get the state of the right encoder A.
+ * @brief   Get the state of the right encoder output A.
  *
- * @return  ret  the value of the right encoder A
+ * @return  state  the value of the right encoder output A
  */
-bool encoderReadRightStateA(void) {
+bool encoder_right_read_state_a(void) {
 
-  bool ret;
+  bool state;
 
   if (iprobot.rencoder.statea)
-    ret = 1;
+    state = 1;
   else
-    ret = 0;
+    state = 0;
 
-  return ret;
+  return state;
 }
 
 /**
- * @brief   Get the state of the right encoder B.
+ * @brief   Get the state of the right encoder output B.
  *
- * @return  ret  the value of the right encoder B
+ * @return  state  the value of the right encoder output B
  */
-bool encoderReadRightStateB(void) {
+bool encoder_right_read_state_b(void) {
 
-  bool ret;
+  bool state;
 
   if (iprobot.rencoder.stateb)
-    ret = 1;
+    state = 1;
   else
-    ret = 0;
+    state = 0;
 
-  return ret;
+  return state;
 }
 
 /**
- * @brief   Initialize all pins needs for motor control.
+ * @brief   Initialise all pins needs for encoder.
  */
-void encoderInit(void) {
+void encoder_init(void) {
 
-  /* Initialise left encoder . */
+  /* Initialise left encoder. */
   iprobot.lencoder.id       = ENCODER_L;
   iprobot.lencoder.eichan   = INT3;
   iprobot.lencoder.porta    = IOPORT4;
@@ -187,7 +187,7 @@ void encoderInit(void) {
   iprobot.lencoder.statea   = false;
   iprobot.lencoder.stateb   = false;
 
-  /* Initialise rigth encoder . */
+  /* Initialise right encoder.  */
   iprobot.rencoder.id       = ENCODER_R;
   iprobot.rencoder.eichan   = INT2;
   iprobot.rencoder.porta    = IOPORT4;
@@ -198,11 +198,11 @@ void encoderInit(void) {
   iprobot.rencoder.statea   = false;
   iprobot.rencoder.stateb   = false;
 
-  /* Set left Motors Encoders. */
+  /* Set left motor encoders ports and pins. */
   palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT);
   palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT);
 
-  /* Set Rigth motor encoders. */
+  /* Set right motor encoders ports and pins. */
   palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT);
   palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT);
 
@@ -217,7 +217,7 @@ void encoderInit(void) {
 /**
  * @brief   Get the wheel velocity for asservissement routine.
  */
-void encoderGetWheelVelocity(void) {
+void encoder_get_wheel_velocity(void) {
 
   static  bool    stopped       = TRUE; /* Breaking target position.  */
   static  uint8_t loopCounter   = 0;    /* Update wheel velocity.     */

@@ -74,7 +74,7 @@ void asserv(ROBOTDriver *rdp) {
   float pidrvalue;
 
   /* Read the IMU data (x,y,z accel and gyroscope). */
-  msg = mpu6050GetData(&I2CD1, &rdp->imu);
+  msg = mpu6050_get_data(&I2CD1, &rdp->imu);
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
@@ -88,7 +88,7 @@ void asserv(ROBOTDriver *rdp) {
   rdp->imu.pitch = (atan2(rdp->imu.y_accel, rdp->imu.z_accel) + PI)*(RAD_TO_DEG);
 
   /* Get the Kalman estimation of the angle. */
-  rdp->imu.pitch_k = kalmanGetAngle(rdp->imu.pitch, (rdp->imu.x_gyro / 131.0), dt);
+  rdp->imu.pitch_k = kalman_get_angle(rdp->imu.pitch, (rdp->imu.x_gyro / 131.0), dt);
 
   if ((layingDown && (rdp->imu.pitch_k < 170 || rdp->imu.pitch_k > 190)) ||
     (!layingDown && (rdp->imu.pitch_k < 135 || rdp->imu.pitch_k > 225))) {
@@ -102,7 +102,7 @@ void asserv(ROBOTDriver *rdp) {
 #endif
 
     layingDown = TRUE;
-    motorsStopAndReset();
+    motors_stop_and_reset();
   }
   else {
     /*
@@ -116,15 +116,15 @@ void asserv(ROBOTDriver *rdp) {
 
     /* Set the left motor PWM value. */
     if (pidlvalue >= 0)
-      motorMove(MOTOR_L, MOTOR_DIR_F, pidlvalue);
+      motor_move(MOTOR_L, MOTOR_DIR_F, pidlvalue);
     else
-      motorMove(MOTOR_L, MOTOR_DIR_B, abs(pidlvalue));
+      motor_move(MOTOR_L, MOTOR_DIR_B, abs(pidlvalue));
 
     /* Set the right motor PWM value. */
     if (pidrvalue >= 0)
-      motorMove(MOTOR_R, MOTOR_DIR_F, pidrvalue);
+      motor_move(MOTOR_R, MOTOR_DIR_F, pidrvalue);
     else
-      motorMove(MOTOR_R, MOTOR_DIR_B, abs(pidrvalue));
+      motor_move(MOTOR_R, MOTOR_DIR_B, abs(pidrvalue));
 
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
     chprintf(chp, "%s: filtered pitch = %.3f\r\n", __func__, rdp->imu.pitch_k);

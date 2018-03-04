@@ -60,15 +60,15 @@ extern BaseSequentialStream* chp;
  *
  * @param[in] motor   the motor to stop, right or left
  */
-void motorStop(uint8_t motor) {
+void motor_stop(uint8_t motor) {
 
   if (motor == MOTOR_L) {
-    pwmSetDutyCycle(MOTOR_L, MOTOR_DIR_F, 0);
+    pwm_set_duty_cycle(MOTOR_L, MOTOR_DIR_F, 0);
     palClearPad(LMD_EN_PORT, LMD_EN);
   }
 
   if (motor == MOTOR_R) {
-    pwmSetDutyCycle(MOTOR_R, MOTOR_DIR_F, 0);
+    pwm_set_duty_cycle(MOTOR_R, MOTOR_DIR_F, 0);
     palClearPad(RMD_EN_PORT, RMD_EN);
   }
 }
@@ -76,11 +76,11 @@ void motorStop(uint8_t motor) {
 /**
  * @brief   Stop both motors and initialise wheels position, PID parameters.
  */
-void motorsStopAndReset(void) {
+void motors_stop_and_reset(void) {
 
-  motorStop(MOTOR_R);
-  motorStop(MOTOR_L);
-  pidResetParameters();
+  motor_stop(MOTOR_R);
+  motor_stop(MOTOR_L);
+  pid_Reset_Parameters();
 }
 
 /**
@@ -90,7 +90,7 @@ void motorsStopAndReset(void) {
  * @param[in] direction   the direction of the motor, backward or forward
  * @param[in] speedRaw    the speed to set the motor
  */
-void motorMove(uint8_t motor, uint8_t direction, float speedRaw) {
+void motor_move(uint8_t motor, uint8_t direction, float speedRaw) {
 
   int speed;
 
@@ -98,7 +98,7 @@ void motorMove(uint8_t motor, uint8_t direction, float speedRaw) {
     speedRaw = maxSpeedValue;
 
   speed = speedRaw*((float)PWMVALUE)/maxSpeedValue;
-  pwmSetDutyCycle(motor, direction, speed);
+  pwm_set_duty_cycle(motor, direction, speed);
 }
 
 /**
@@ -106,7 +106,7 @@ void motorMove(uint8_t motor, uint8_t direction, float speedRaw) {
  *
  * @param[in] motor   the motor to be enable
  */
-void motorEnable(motor_e motor) {
+void motor_enable(motor_e motor) {
 
   if (motor == MOTOR_L)
     palSetPad(LMD_EN_PORT, LMD_EN);
@@ -119,7 +119,7 @@ void motorEnable(motor_e motor) {
  *
  * @param[in] motor   the motor to be disable
  */
-void motorDisable(motor_e motor) {
+void motor_disable(motor_e motor) {
 
   if (motor == MOTOR_L)
     palClearPad(LMD_EN_PORT, LMD_EN);
@@ -130,7 +130,7 @@ void motorDisable(motor_e motor) {
 /**
  * @brief   Initialise all pins needs for motor control
  */
-void motorInit(void) {
+void motor_init(void) {
 
   /* Setup Left Motor Driver ( LMD ). */
   palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
@@ -143,7 +143,7 @@ void motorInit(void) {
   palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
 
   /* Enable Right and Left Motors.  */
-  motorEnable(MOTOR_R);
-  motorEnable(MOTOR_L);
+  motor_enable(MOTOR_R);
+  motor_enable(MOTOR_L);
 }
 

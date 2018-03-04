@@ -69,7 +69,7 @@ ROBOTDriver iprobot;
 /*==========================================================================*/
 
 /*
- * @brief   Onboard led Blink thread.
+ * @brief   On board led Blink thread.
  */
 static THD_WORKING_AREA(waBlink, 64);
 static THD_FUNCTION(blinkThd, arg) {
@@ -88,8 +88,8 @@ static THD_FUNCTION(blinkThd, arg) {
     }
     else {
       if (spf == FALSE) {
-        buzzerSound();
-        buzzerStopSound();
+        buzzer_sound_play();
+        buzzer_sound_stop();
         spf = TRUE;
       }
       palTogglePad(IOPORT2, PORTB_LED1);
@@ -137,10 +137,10 @@ int main(void) {
   /* Start the serial. */
   sdStart(&SD1, NULL);
 
-  buzzerInit();
+  buzzer_init();
 
-  buzzerSound();
-  buzzerStopSound();
+  buzzer_sound_play();
+  buzzer_sound_stop();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r");
@@ -160,7 +160,7 @@ int main(void) {
   chprintf(chp, "\n\r Made by Theodore Ateba (tfateba), tf.ateba@gmail.com");
   chprintf(chp, "\n\r The robot is controlled with ChibiOS/RT v16.1.5");
   chprintf(chp, "\n\r The target board is an Arduino Mega.");
-  chprintf(chp, "\n\r The micro controller is an ATMEGA2560.");
+  chprintf(chp, "\n\r The icro controller is an ATMEGA2560.");
   chprintf(chp, "\n\r Copyright: 2015...2018");
 
   chprintf(chp, "\n\r");
@@ -187,16 +187,16 @@ int main(void) {
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Init Kalman filter. */
-  kalmanInit();
+  /* Initialise Kalman filter. */
+  kalman_init();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Kalman filter initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Init MPU module. */
-   msg = mpu6050Init(&I2CD1, &iprobot.imu, MPU6050_ADDR);
+  /* Initialise MPU module. */
+   msg = mpu6050_init(&I2CD1, &iprobot.imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
@@ -212,49 +212,49 @@ int main(void) {
 #endif
 
   /* Start MPU calibration process. */
-  mpu6050Calibration(&I2CD1, &iprobot.imu);
+  mpu6050_calibration(&I2CD1, &iprobot.imu);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: IMU sensor calibration done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Configure the left pid for the robot. */
+  /* Configure the left PID for the robot. */
   iprobot.lpid.kp = 55.468;
   iprobot.lpid.ki = 0.554;
   iprobot.lpid.kd = 42.524;
 
-  /* Configure the right pid for the robot. */
+  /* Configure the right PID for the robot. */
   iprobot.rpid.kp = 55.468;
   iprobot.rpid.ki = 0.554;
   iprobot.rpid.kd = 42.524;
 
-  /* Init PID controller. */
-  pidInit(iprobot.rpid.kp, iprobot.rpid.ki, iprobot.rpid.kd);
+  /* Initialise PID controller. */
+  pid_init(iprobot.rpid.kp, iprobot.rpid.ki, iprobot.rpid.kd);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: PID initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Init Motors. */
-  motorInit();
+  /* Initialise Motors. */
+  motor_init();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Motors initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Init Encoders. */
-  encoderInit();
+  /* Initialise Encoders. */
+  encoder_init();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: Encoder initialisation done.", __func__);
   chThdSleepMilliseconds(10);
 #endif
 
-  /* Init PWM modules. */
-  pwmInits();
+  /* Initialise PWM modules. */
+  pwm_inits();
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: PWM initialisation done.", __func__);

@@ -32,7 +32,7 @@
  * @param[in] length  size of data to read
  * @return    msg     the result of the reading operation
  */
-msg_t i2cReadRegisters( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
+msg_t i2c_read_registers( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
                         uint8_t *rxbuf, uint8_t length) {
 
   msg_t msg;
@@ -54,7 +54,7 @@ msg_t i2cReadRegisters( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
  * @param[in] length  size of data to write to the sensor
  * @return    msg     the result of the writing operation
  */
-msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
+msg_t i2c_write_registers(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
                         uint8_t length) {
 
   msg_t msg;

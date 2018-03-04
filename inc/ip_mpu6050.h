@@ -260,21 +260,21 @@ typedef struct MPU6050Driver MPU6050Driver;
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-msg_t mpu6050GetIdentity(I2CDriver *i2cp, uint8_t *idp);
-msg_t mpu6050Sleep(I2CDriver *i2cp);
-msg_t mpu6050Wakeup(I2CDriver *i2cp);
-msg_t mpu6050Reset(I2CDriver *i2cp);
-msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale);
-msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale);
-msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp);
-msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf);
-msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpu);
-msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
-msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
+msg_t mpu6050_get_identity(I2CDriver *i2cp, uint8_t *idp);
+msg_t mpu6050_sleep(I2CDriver *i2cp);
+msg_t mpu6050_wakeup(I2CDriver *i2cp);
+msg_t mpu6050_reset(I2CDriver *i2cp);
+msg_t mpu6050_gyro_config(I2CDriver *i2cp, mpu6050_gyro_fs_e scale);
+msg_t mpu6050_accel_config(I2CDriver *i2cp, mpu6050_accel_fs_e scale);
+msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp);
+msg_t mpu6050_read_all_sensors(I2CDriver *i2cp, uint8_t *rxbuf);
+msg_t mpu6050_set_x_gyro_offset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050_set_y_gyro_offset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050_set_z_gyro_offset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050_set_z_accel_offset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050_get_data(I2CDriver *i2cp, MPU6050Driver *mpu);
+msg_t mpu6050_calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
+msg_t mpu6050_init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
 
 #endif /* IP_MPU6050_H */
 

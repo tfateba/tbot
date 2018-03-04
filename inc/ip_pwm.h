@@ -34,11 +34,11 @@
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void pwmInits(void);
-void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width);
-void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
-void pwmDisable(PWMDriver *pwmp);
-void pwmSetDutyCycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
+void pwm_inits(void);
+void pwm_set_pulse_width(PWMDriver *pwmp, uint8_t channel, uint16_t width);
+void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
+void pwm_disable(PWMDriver *pwmp);
+void pwm_set_duty_cycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
 
 #endif /* IP_PWM_H */
 

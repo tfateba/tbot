@@ -69,7 +69,7 @@ extern long targetPosition;
  * @param[in] kival   Ki value to be set
  * @param[in] kdval   Kd value to be set
 */
-void pidInit(float kpval, float kival, float kdval) {
+void pid_init(float kpval, float kival, float kdval) {
 
   kp = kpval;
   ki = kival;
@@ -152,7 +152,7 @@ float pid(float pitch, float restAngle, float offset, float turning) {
 /**
  * @brief   Reset the PID parameters.
  */
-void pidResetParameters(void) {
+void pid_Reset_Parameters(void) {
   pTerm           = 0;
   iTerm           = 0;
   dTerm           = 0;
