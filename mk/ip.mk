@@ -11,4 +11,4 @@ IPSRC	= $(IPROBOT)/src/ip_asserv.c		\
 				$(IPROBOT)/src/ip_pid.c				\
 				$(IPROBOT)/src/ip_pwm.c				\
 
-IPINC = $(IPROBOT)/inc	\
+IPINC = $(IPROBOT)/inc
