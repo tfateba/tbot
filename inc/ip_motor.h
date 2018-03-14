@@ -3,7 +3,7 @@
  *
  * @file    ip_motor.h
  *
- * @brief   motor driver header file.
+ * @brief   Motor driver header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *

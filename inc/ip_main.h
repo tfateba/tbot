@@ -3,7 +3,7 @@
  *
  * @file    ip_main.h
  *
- * @brief   main application header file.
+ * @brief   Main application header file.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *
