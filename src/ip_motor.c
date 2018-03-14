@@ -52,9 +52,7 @@
 
 /* Project files. */
 #include "ip_conf.h"
-#include "ip_encoder.h"
 #include "ip_motor.h"
-#include "ip_pid.h"
 #include "ip_pwm.h"
 
 /*==========================================================================*/
@@ -76,7 +74,7 @@ extern BaseSequentialStream* chp;
  *
  * @param[in] motor   the motor to stop, right or left
  */
-void motor_stop(uint8_t motor) {
+void motor_stop(motor_e motor) {
 
   if (motor == MOTOR_L) {
     pwm_set_duty_cycle(MOTOR_L, MOTOR_DIR_F, 0);
@@ -90,23 +88,13 @@ void motor_stop(uint8_t motor) {
 }
 
 /**
- * @brief   Stop both motors and initialise wheels position, PID parameters.
- */
-void motors_stop_and_reset(void) {
-
-  motor_stop(MOTOR_R);
-  motor_stop(MOTOR_L);
-  pid_Reset_Parameters();
-}
-
-/**
  * @brief   Driving the motor to the given speed.
  *
  * @param[in] motor       the motor to pilot, right or left
  * @param[in] direction   the direction of the motor, backward or forward
  * @param[in] speedRaw    the speed to set the motor
  */
-void motor_move(uint8_t motor, uint8_t direction, float speedRaw) {
+void motor_move(motor_e motor, uint8_t direction, float speedRaw) {
 
   int speed;
 

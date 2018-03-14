@@ -91,9 +91,8 @@ typedef struct MOTORDriver MOTORDriver;
 /* Functions prototypes.                                                    */
 /*==========================================================================*/
 
-void motor_stop(uint8_t motor);
-void motors_stop_and_reset(void);
-void motor_move(uint8_t motor, uint8_t direction, float speedRaw);
+void motor_stop(motor_e motor);
+void motor_move(motor_e motor, uint8_t direction, float speedRaw);
 void motor_init(void);
 void motor_enable(motor_e motor);
 void motor_disable(motor_e motor);
