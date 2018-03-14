@@ -32,9 +32,9 @@
 /* Global variables.                                                        */
 /*==========================================================================*/
 
-float Q_angle;   /**< Process noise variance for the accelerometer.         */
-float Q_bias;    /**< Process noise variance for the gyro bias.             */
-float R_measure; /**< The variance of the measurement noise.                */
+float qAngle;   /**< Process noise variance for the accelerometer.          */
+float qBias;    /**< Process noise variance for the gyro bias.              */
+float rMeasure; /**< The variance of the measurement noise.                 */
 
 float angle;     /**< The angle calculated by the Kalman filter.            */
 float bias;      /**< The gyro bias calculated by the Kalman filter.        */
@@ -56,9 +56,9 @@ float S;         /**< Estimate error.                                       */
 void kalman_init(void) {
 
   /* We will set the variables like so, these can also be tuned by the user */
-  Q_angle   = 0.001;
-  Q_bias    = 0.003;
-  R_measure = 100;
+  qAngle    = 0.001;
+  qBias     = 0.003;
+  rMeasure  = 100;
   angle     = 0;      /* Reset the angle. */
   bias      = 0;      /* Reset bias.      */
 
@@ -100,10 +100,10 @@ float kalman_get_angle(float newAngle, float newRate, float dt) {
 
   /* Update estimation error covariance - Project the error covariance ahead */
   /* Step 2 */
-  P[0][0] += dt * (dt*P[1][1] - P[0][1] - P[1][0] + Q_angle);
+  P[0][0] += dt * (dt*P[1][1] - P[0][1] - P[1][0] + qAngle);
   P[0][1] -= dt * P[1][1];
   P[1][0] -= dt * P[1][1];
-  P[1][1] += Q_bias * dt;
+  P[1][1] += qBias * dt;
 
   /* Discrete Kalman filter measurement update equations
    * - Measurement Update ("Correct")
@@ -111,7 +111,7 @@ float kalman_get_angle(float newAngle, float newRate, float dt) {
    */
 
   /* Step 4 */
-  S = P[0][0] + R_measure;
+  S = P[0][0] + rMeasure;
 
   /* Step 5 */
   K[0] = P[0][0] / S;
@@ -159,60 +159,60 @@ float kalman_get_rate(void) {
 /**
  * @brief   Tune the kalman filter by setting the angle.
  *
- * @param[in] newQ_angle  angle used to tune the Kalman filter
+ * @param[in] newQAngle  angle used to tune the Kalman filter
  */
-void kalman_set_q_angle(float newQ_angle) {
+void kalman_set_q_angle(float newQAngle) {
 
-  Q_angle = newQ_angle;
+  qAngle = newQAngle;
 }
 
 /**
  * @brief   Tune the kalman filter by setting the bias.
  *
- * @param[in] newQ_bias   bias angle used to set the Kalman filter
+ * @param[in] newQBias   bias angle used to set the Kalman filter
  */
-void kalman_set_q_bias(float newQ_bias) {
+void kalman_set_q_bias(float newQBias) {
 
-  Q_bias = newQ_bias;
+  qBias = newQBias;
 }
 
 /**
  * @brief   set the variance of the measured noise.
  *
- * @param[in] newR_measure  variance of the measurement noise value
+ * @param[in] newRMeasure  variance of the measurement noise value
  */
-void kalman_set_r_measure(float newR_measure) {
+void kalman_set_r_measure(float newRMeasure) {
 
-  R_measure = newR_measure;
+  rMeasure = newRMeasure;
 }
 
 /**
  * @brief   Read the process noise variance for the gyro bias.
  *
- * @return  Q_angle process noise variance for the gyro bias
+ * @return  qAngle process noise variance for the gyro bias
  */
 float kalman_get_q_angle(void) {
 
-  return Q_angle;
+  return qAngle;
 }
 
 /**
  * @brief   Read the process noise variance for the accelerometer.
  *
- * @return  Q_bias  process noise variance for the accelerometer
+ * @return  qBias  process noise variance for the accelerometer
  */
 float kalman_get_q_bias(void) {
 
-  return Q_bias;
+  return qBias;
 }
 
 /**
  * @brief   Read the process noise variance for the gyro bias.
  *
- * @return  R_measure   process noise variance for the gyro bias
+ * @return  rMeasure   process noise variance for the gyro bias
  */
 float kalman_get_r_measure(void) {
 
-  return R_measure;
+  return rMeasure;
 }
 
