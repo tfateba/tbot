@@ -77,7 +77,7 @@ extern long targetPosition;
 /*==========================================================================*/
 /* Functions.                                                               */
 /*==========================================================================*/
-
+/* FIXME: Try to use the driver as parameter of all pid function. */
 /**
  * @brief   Initialise the Kp Ki and Kd pid term.
  *
@@ -166,9 +166,9 @@ float pid(float pitch, float restAngle, float offset, float turning) {
 }
 
 /**
- * @brief   Reset the PID parameters.
+ * @brief   Reset the PID parameters and whells position.
  */
-void pid_Reset_Parameters(void) {
+void pid_reset_parameters(void) {
   pTerm           = 0;
   iTerm           = 0;
   dTerm           = 0;

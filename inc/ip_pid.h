@@ -56,7 +56,7 @@ typedef struct PIDDriver PIDDriver;
 
 void pid_init(float kpval, float kival, float kdval);
 float pid(float pitch, float restAngle, float offset, float turning);
-void pid_Reset_Parameters(void);
+void pid_reset_parameters(void);
 
 #endif /* IP_PID_H */
 
