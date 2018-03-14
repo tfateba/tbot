@@ -117,7 +117,9 @@ void asserv(ROBOTDriver *rdp) {
 #endif
 
     layingDown = TRUE;
-    motors_stop_and_reset();
+    motor_stop(MOTOR_R);
+    motor_stop(MOTOR_L);
+    pid_reset_parameters();
   }
   else {
     /*
