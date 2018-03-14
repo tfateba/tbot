@@ -33,7 +33,6 @@
 
 /* Project files. */
 #include "ip_i2c.h"
-#include "ip_motor.h"
 #include "ip_mpu6050.h"
 
 /*==========================================================================*/
@@ -45,7 +44,6 @@
  *
  * @param[in] i2cp  pointer to the I2C driver interface
  * @param[in] idp   pointer to the id variable of the MPU6050 sensor
- *
  * @return    msg   result of the reading identity operation
  */
 msg_t mpu6050_get_identity(I2CDriver *i2cp, uint8_t *idp) {
@@ -69,7 +67,6 @@ msg_t mpu6050_get_identity(I2CDriver *i2cp, uint8_t *idp) {
  * @brief   Put the MPU6050 in the Power Sleep Mode.
  *
  * @param[in] i2cp  pointer of the I2C driver interface
- *
  * @return    msg   result of the power mode configuration
  */
 msg_t mpu6050_sleep(I2CDriver *i2cp) {
@@ -94,7 +91,6 @@ msg_t mpu6050_sleep(I2CDriver *i2cp) {
  * @brief   Remove the MPU6050 from the sleep mode.
  *
  * @param[in] i2cp  pointer of the i2C interface
- *
  * @return    msg   result of the wake up operation
  */
 msg_t mpu6050_wakeup(I2CDriver *i2cp) {
@@ -119,7 +115,6 @@ msg_t mpu6050_wakeup(I2CDriver *i2cp) {
  * @brief   Reset the MPU6050.
  *
  * @param[in] i2cp  pointer of the i2C interface
- *
  * @return    msg   result of the reset operation
  */
 msg_t mpu6050_reset(I2CDriver *i2cp) {
@@ -145,7 +140,6 @@ msg_t mpu6050_reset(I2CDriver *i2cp) {
  *
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] scale   scale to set the MPU6050(250, 500, 1000 or 2000)
- *
  * @return    msg   result of the wake up operation
  */
 msg_t mpu6050_gyro_config(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
@@ -184,7 +178,6 @@ msg_t mpu6050_gyro_config(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
  *
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] scale   scale to set the MPU6050(2, 4, 8 or 16)
- *
  * @return    msg   result of the wake up operation
  */
 msg_t mpu6050_accel_config(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
@@ -223,7 +216,6 @@ msg_t mpu6050_accel_config(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] gxop  pointer to Gyroscope x axis offset
- *
  * @return    msg   result of the offset reading operation
  */
 msg_t mpu6050GetXGyroOffset(I2CDriver *i2cp, int16_t *gxop) {
@@ -244,7 +236,6 @@ msg_t mpu6050GetXGyroOffset(I2CDriver *i2cp, int16_t *gxop) {
  *
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] offset  gyroscope x axis offset
- *
  * @return    msg     result of the offset writing operation
  */
 msg_t mpu6050_set_x_gyro_offset(I2CDriver *i2cp, int16_t offset) {
@@ -265,7 +256,6 @@ msg_t mpu6050_set_x_gyro_offset(I2CDriver *i2cp, int16_t offset) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] gyop  gyroscope Y axis offset pointer
- *
  * @return    msg   result of the offset reading operation
  */
 msg_t mpu6050GetYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
@@ -286,7 +276,6 @@ msg_t mpu6050GetYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
  *
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] offset  gyroscope Y axis offset
- *
  * @return    msg     result of the writing operation
  */
 msg_t mpu6050_set_y_gyro_offset(I2CDriver *i2cp, int16_t offset) {
@@ -307,7 +296,6 @@ msg_t mpu6050_set_y_gyro_offset(I2CDriver *i2cp, int16_t offset) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] gzop  gyroscope Z axis offset pointer
- *
  * @return    msg   the result of the reading operation
  */
 msg_t mpu6050GetZGyroOffset(I2CDriver *i2cp, int16_t *gzop) {
@@ -329,7 +317,6 @@ msg_t mpu6050GetZGyroOffset(I2CDriver *i2cp, int16_t *gzop) {
  *
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] offset  gyroscope Z axis offset
- *
  * @return    msg     the result of the writing operation
  */
 msg_t mpu6050_set_z_gyro_offset(I2CDriver *i2cp, int16_t offset) {
@@ -351,7 +338,6 @@ msg_t mpu6050_set_z_gyro_offset(I2CDriver *i2cp, int16_t offset) {
  *
  * @param[in] i2cp    pointer of the i2C interface.
  * @param[in] offset  accelerometer Z axis offset.
- *
  * @return    msg     writing operation result.
  */
 msg_t mpu6050_set_z_accel_offset(I2CDriver *i2cp, int16_t offset) {
@@ -373,7 +359,6 @@ msg_t mpu6050_set_z_accel_offset(I2CDriver *i2cp, int16_t offset) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] pmp   pointer to the power management configuration
- *
  * @return    msg   result of the reading  operation
  */
 msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp) {
@@ -397,7 +382,6 @@ msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp) {
  *
  * @param[in] i2cp    pointer of the i2C interface
  * @param[in] rxbuf   reception buffer for the i2c data read
- *
  * @return    msg   result of the reading operation
  */
 msg_t mpu6050_read_all_sensors(I2CDriver *i2cp, uint8_t *rxbuf) {
@@ -417,7 +401,6 @@ msg_t mpu6050_read_all_sensors(I2CDriver *i2cp, uint8_t *rxbuf) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] mpup  pointer of the mpu6050 data structure
- *
  * @return    msg   result of the reading operation
  */
 msg_t mpu6050_get_data(I2CDriver *i2cp, MPU6050Driver *mpup) {
@@ -466,7 +449,6 @@ msg_t mpu6050_get_data(I2CDriver *i2cp, MPU6050Driver *mpup) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] mpup  pointer of the MPU data structure
- *
  * @return    msg   result of the calibration operation
  */
 msg_t mpu6050_calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
@@ -512,7 +494,6 @@ msg_t mpu6050_calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
  *
  * @param[in] i2cp  pointer of the i2C interface
  * @param[in] sad   mpu i2c serial address
- *
  * @return    msg   result of the initialisation operation
  */
 msg_t mpu6050_init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad) {
