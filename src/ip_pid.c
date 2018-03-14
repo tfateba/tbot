@@ -1,7 +1,7 @@
 
 /**
- * 
- * @file    ippid.c
+ *
+ * @file    ip_pid.c
  *
  * @brief   PID corrector source file.
  *

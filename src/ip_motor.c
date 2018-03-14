@@ -1,13 +1,13 @@
 
 /**
  *
- * @file          ipmotor.c
+ * @file          ip_motor.c
  *
- * @brief         motor driver source file.
+ * @brief         Motor driver source file.
  *
  * @author        Theodore Ateba, tf.ateba@gmail.com
  *
- * @date          07 Septembre 2015
+ * @date          07 September 2015
  *
  * @description   Motor control and Encoder Read
  *                Description:

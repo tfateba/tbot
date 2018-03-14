@@ -3,7 +3,7 @@
  *
  * @file    ip_main.c
  *
- * @brief   main file of inverted pendulum Robot.
+ * @brief   Main file of inverted pendulum Robot.
  *
  * @author  Theodore Ateba, tf.ateba@gmail.com
  *

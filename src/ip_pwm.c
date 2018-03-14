@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ippwm.c
+ * @file    ip_pwm.c
  *
  * @brief   PWM configuration and management source file.
  *

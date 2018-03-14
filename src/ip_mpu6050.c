@@ -1,7 +1,7 @@
 
 /**
  *
- * @file    ipmpu6050.c
+ * @file    ip_mpu6050.c
  *
  * @brief   Motion interface driver source file.
  *
