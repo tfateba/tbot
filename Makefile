@@ -67,8 +67,11 @@ endif
 # Define project name here.
 PROJECT = tbot
 
-# ChibiOS source path.
-CHIBIOS = ../trunk
+# tbot sources root paths.
+TBOT = ../tbot
+
+# Imported source files.
+CHIBIOS  := ../trunk/
 
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
@@ -83,10 +86,7 @@ include $(CHIBIOS)/os/common/ports/AVR/compilers/GCC/mk/port.mk
 # Other files.
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
-# TBOT source path:
-TBOT = ../tbot
-
-# Application files:
+# Application files.
 include $(TBOT)/mk/app.mk
 
 # List C source files here. (C dependencies are automatically generated.)
@@ -103,9 +103,9 @@ CSRC =  $(KERNSRC)                      \
 # List C++ sources file here.
 CPPSRC =
 
-INCDIR =  $(CHIBIOS)/os/license $(PORTINC) $(KERNINC)  		\
-          $(HALINC) $(OSALINC) $(PLATFORMINC) $(TBOTINC)  \
-          $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various
+INCDIR =  $(CHIBIOS)/os/license $(PORTINC) $(KERNINC) \
+          $(HALINC) $(OSALINC) $(PLATFORMINC) $(TBOTINC)         \
+          $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various $(CONFDIR)
 
 #
 # Project, sources and paths.

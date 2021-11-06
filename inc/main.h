@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_main.h
- *
- * @brief   Main application header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    17 November 2017
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,8 +14,20 @@
     limitations under the License.
 */
 
-#ifndef IP_MAIN_H
-#define IP_MAIN_H
+/**
+ * @file    main.h
+ * @brief   main application header file.
+ *
+ * @addtogroup MAIN
+ * @{
+ */
+
+#ifndef MAIN_H
+#define MAIN_H
+
+/*==========================================================================*/
+/* Includes files.                                                          */
+/*==========================================================================*/
 
 /* Project files. */
 #include "encoder.h"
@@ -36,20 +35,38 @@
 #include "mpu6050.h"
 #include "pid.h"
 
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
+/*==========================================================================*/
 
+/**
+ * @brief   Structure representing a Robot driver.
+ */
 struct ROBOTDriver {
-  MPU6050Driver imu;
 
-  PIDDriver     lpid;
-  PIDDriver     rpid;
+  MPU6050Driver imu;          /**< Robot IMU. */
 
-  MOTORDriver   lmotor;
-  MOTORDriver   rmotor;
+  PIDDriver pidSpeed;         /**< must be pidSpeed. */
+  PIDDriver pidAngle;         /**< Must be pidAngle. */
+  PIDDriver pidMotorLeft;     /**< TODO: must be pidLeftMotor. */
+  PIDDriver pidMotorRight;    /**< TODO: must be pidRightMotor. */
 
-  ENCODERDriver lencoder;
-  ENCODERDriver rencoder;
+  MOTORDriver   motorLeft;    /**< Robot left  motor. */
+  MOTORDriver   motorRight;   /**< Robot rigth motor. */
+
+  ENCODERDriver encoderLeft;  /**< Robot left  encoder. */
+  ENCODERDriver encoderRight; /**< Robot rigth encoder. */
 };
 
+/**
+ * @brief   Type representing a Robot driver.
+ */
 typedef struct ROBOTDriver ROBOTDriver;
 
-#endif /* IP_MAIN_H */
+/*==========================================================================*/
+/* External declarations.                                                   */
+/*==========================================================================*/
+
+#endif /* MAIN_H */
+
+/** @} */

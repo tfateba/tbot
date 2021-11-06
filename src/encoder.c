@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_encoder.c
- *
- * @brief   Encoder driver source file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    27 August 2017
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,6 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file    encoder.c
+ * @brief   Encoder driver source file.
+ *
+ * @addtogroup ENCODER
+ * @{
+ */
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -50,11 +45,12 @@
 
 /* Project local variables. */
 long wheelPosition;     /**< Position of the robot wheels.                  */
-long wheelVelocity;     /**< Velocity of the robot wheels.                  */
+long wheelVelocity;     /**< Velocity fo the robot wheels.                  */
 long lastWheelPosition; /**< Backup of the robot wheel position.            */
 long targetPosition;    /**< The robot target angle  position.              */
 
-extern ROBOTDriver iprobot;
+extern ROBOTDriver tbot;
+
 /*==========================================================================*/
 /* Encoders callback.                                                       */
 /*==========================================================================*/
@@ -69,19 +65,19 @@ static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
 
   chSysLockFromISR();
 
-  if (palReadPad(L_ENCODER_B_PORT, L_ENCODER_B))
-    iprobot.lencoder.counter--;
+  if (palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B))
+    tbot.encoderLeft.counter--;
   else
-    iprobot.lencoder.counter++;
+    tbot.encoderLeft.counter++;
 
-  iprobot.lencoder.statea = palReadPad(L_ENCODER_A_PORT, L_ENCODER_A);
-  iprobot.lencoder.stateb = palReadPad(L_ENCODER_B_PORT, L_ENCODER_B);
+  tbot.encoderLeft.statea = palReadPad(L_ENCODER_PORT_A, L_ENCODER_PIN_A);
+  tbot.encoderLeft.stateb = palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B);
 
   chSysUnlockFromISR();
 }
 
 /**
- * @brief   Right motor encoder external interrupt callback.
+ * @brief   Rigth motor encoder external interrupt callback.
  */
 static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
 
@@ -90,13 +86,13 @@ static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
 
   chSysLockFromISR();
 
-  if (palReadPad(R_ENCODER_A_PORT, R_ENCODER_A))
-    iprobot.rencoder.counter--;
+  if (palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A))
+    tbot.encoderRight.counter--;
   else
-    iprobot.rencoder.counter++;
+    tbot.encoderRight.counter++;
 
-  iprobot.rencoder.statea = palReadPad(R_ENCODER_A_PORT, R_ENCODER_A);
-  iprobot.rencoder.stateb = palReadPad(R_ENCODER_B_PORT, R_ENCODER_B);
+  tbot.encoderRight.statea = palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A);
+  tbot.encoderRight.stateb = palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B);
 
   chSysUnlockFromISR();
 }
@@ -106,12 +102,12 @@ static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
  */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT0 Config. */
-    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT1 Config. */
-    {EXT_CH_MODE_RISING_EDGE, encoderRightCallback},  /***< INT2 Config. */
-    {EXT_CH_MODE_RISING_EDGE, encoderLeftCallback},   /***< INT3 Config. */
-    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT4 Config. */
-    {EXT_CH_MODE_DISABLED, NULL},                     /***< INT5 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /**< INT0 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /**< INT1 Config. */
+    {EXT_CH_MODE_RISING_EDGE, encoderRightCallback},  /**< INT2 Config. */
+    {EXT_CH_MODE_RISING_EDGE, encoderLeftCallback},   /**< INT3 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /**< INT4 Config. */
+    {EXT_CH_MODE_DISABLED, NULL},                     /**< INT5 Config. */
   }
 };
 
@@ -120,137 +116,129 @@ static const EXTConfig extcfg = {
 /*==========================================================================*/
 
 /**
- * @brief   Get the state of the left encoder output A.
+ * @brief   Get the state of the left encoder A.
  *
- * @return  state   the value of the left encoder output A
+ * @return  ret   the value of the left encoder A
  */
-bool encoder_left_read_state_a(void) {
+bool encoderReadLeftStateA(void) {
 
-  bool state;
+  bool ret;
 
-  if (iprobot.lencoder.statea)
-    state = 1;
+  if (tbot.encoderLeft.statea)
+    ret = 1;
   else
-    state = 0;
+    ret = 0;
 
-  return state;
+  return ret;
 }
 
 /**
- * @brief   Get the state of the left encoder output B.
+ * @brief   Get the state of the left encoder B.
  *
- * @return  state   the value of the left encoder output B
+ * @return  ret   the value of the left encoder B
  */
-bool encoder_left_read_state_b(void) {
+bool encoderReadLeftEncoderStateB(void) {
 
-  bool state;
+  bool ret;
 
-  if (iprobot.lencoder.stateb)
-    state = 1;
+  if (tbot.encoderLeft.stateb)
+    ret = 1;
   else
-    state = 0;
+    ret = 0;
 
-  return state;
+  return ret;
 }
 
 /**
- * @brief   Get the state of the right encoder output A.
+ * @brief   Get the state of the right encoder A.
  *
- * @return  state  the value of the right encoder output A
+ * @return  ret  the value of the right encoder A
  */
-bool encoder_right_read_state_a(void) {
+bool encoderReadRightStateA(void) {
 
-  bool state;
+  bool ret;
 
-  if (iprobot.rencoder.statea)
-    state = 1;
+  if (tbot.encoderRight.statea)
+    ret = 1;
   else
-    state = 0;
+    ret = 0;
 
-  return state;
+  return ret;
 }
 
 /**
- * @brief   Get the state of the right encoder output B.
+ * @brief   Get the state of the right encoder B.
  *
- * @return  state  the value of the right encoder output B
+ * @return  ret  the value of the right encoder B
  */
-bool encoder_right_read_state_b(void) {
+bool encoderReadRightStateB(void) {
 
-  bool state;
+  bool ret;
 
-  if (iprobot.rencoder.stateb)
-    state = 1;
+  if (tbot.encoderRight.stateb)
+    ret = 1;
   else
-    state = 0;
+    ret = 0;
 
-  return state;
+  return ret;
 }
 
 /**
- * @brief   Initialise all pins needs for encoder.
+ * @brief   Initialize all pins needs for motor control.
  */
-void encoder_init(void) {
+void encoderInit(ENCODERDriver *edp, ENCODERConfig cfg) {
 
-  /* Initialise left encoder. */
-  iprobot.lencoder.id       = ENCODER_L;
-  iprobot.lencoder.eichan   = INT3;
-  iprobot.lencoder.porta    = IOPORT4;
-  iprobot.lencoder.pina     = PD3;
-  iprobot.lencoder.portb    = IOPORT7;
-  iprobot.lencoder.pinb     = PG5;
-  iprobot.lencoder.counter  = 0;
-  iprobot.lencoder.statea   = false;
-  iprobot.lencoder.stateb   = false;
+  /* Initialise left encoder . */
+  edp->config  = cfg;
+  edp->counter = 0;
+  edp->statea = false;
+  edp->stateb = false;
 
-  /* Initialise right encoder.  */
-  iprobot.rencoder.id       = ENCODER_R;
-  iprobot.rencoder.eichan   = INT2;
-  iprobot.rencoder.porta    = IOPORT4;
-  iprobot.rencoder.pina     = PD2;
-  iprobot.rencoder.portb    = IOPORT5;
-  iprobot.rencoder.pinb     = PE3;
-  iprobot.rencoder.counter  = 0;
-  iprobot.rencoder.statea   = false;
-  iprobot.rencoder.stateb   = false;
+  /* Initialise rigth encoder . */
+  /* @tbot.rencoder.config = configEncoderRight;  */
+  /* @tbot.rencoder.counter  = 0;                 */
+  /* @tbot.rencoder.statea   = false;             */
+  /* @tbot.rencoder.stateb   = false;             */
 
-  /* Set left motor encoders ports and pins. */
-  palSetPadMode(L_ENCODER_A_PORT, L_ENCODER_A, PAL_MODE_INPUT);
-  palSetPadMode(L_ENCODER_B_PORT, L_ENCODER_B, PAL_MODE_INPUT);
+  /* Set left Motors Encoders. */
+  palSetPadMode(edp->config.porta, edp->config.pina, PAL_MODE_INPUT);
+  palSetPadMode(edp->config.portb, edp->config.pinb, PAL_MODE_INPUT);
 
-  /* Set right motor encoders ports and pins. */
-  palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT);
-  palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT);
+  /* Set Rigth motor encoders. */
+  /* @palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT); */
+  /* @palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT); */
 
   /* Start the EXT Driver with our configuration. */
   extStart(&EXTD1, &extcfg);
 
   /* Enable External interruptions for encoders. */
-  extChannelEnable(&EXTD1, INT2);
-  extChannelEnable(&EXTD1, INT3);
+  /* @extChannelEnable(&EXTD1, INT2); */
+  /* @extChannelEnable(&EXTD1, INT3); */
+  extChannelEnable(&EXTD1, edp->config.eichan);
 }
 
 /**
  * @brief   Get the wheel velocity for asservissement routine.
  */
-void encoder_get_wheel_velocity(void) {
+void encoderGetWheelVelocity(void) {
 
-  static  bool    stopped       = TRUE; /* Breaking target position.  */
-  static  uint8_t loopCounter   = 0;    /* Update wheel velocity.     */
+  static  bool    stopped       = true; /**< Breaking target position.  */
+  static  uint8_t loopCounter   = 0;    /**< Update wheel velocity.     */
 
   loopCounter++;
 
   if (loopCounter == 10) {
     loopCounter = 0;
-    wheelPosition = iprobot.lencoder.counter + iprobot.rencoder.counter;
+    wheelPosition = tbot.encoderLeft.counter + tbot.encoderRight.counter;
     wheelVelocity = wheelPosition - lastWheelPosition;
     lastWheelPosition = wheelPosition;
 
     if (abs(wheelVelocity) <= 20 && !stopped) {
       /* Set new targetPosition if braking. */
       targetPosition = wheelPosition;
-      stopped = TRUE;
+      stopped = true;
     }
   }
 }
 
+/** @} */

@@ -1,23 +1,5 @@
-
-/**
- *
- * @file    ip_motor.h
- *
- * @brief   Motor driver header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    07 September 2015
- *
- * @note
- *          Motor Wires, connection to the Motor Drivers:
- *          Motor + is the Yellow wire.
- *          Motor - is the White wire.
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -32,11 +14,24 @@
     limitations under the License.
 */
 
-#ifndef IP_MOTOR_H
-#define IP_MOTOR_H
+/**
+ * @file    motor.h
+ * @brief   motor driver header file.
+ *
+ * @note
+ *          Motor Wires, connexion to the Motor Drivers
+ *          Motor + is the Yellow wire.
+ *          Motor - is the White wire.
+ *
+ * @addtogroup MOTOR
+ * @{
+ */
+
+#ifndef MOTOR_H
+#define MOTOR_H
 
 /*==========================================================================*/
-/* Includes Files.                                                          */
+/* Includes files.                                                          */
 /*==========================================================================*/
 
 /* ChibiOS files. */
@@ -46,56 +41,77 @@
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
+#define L_MOTOR_FORWARD_PORT   IOPORT5 /**< Left motor forward port. */
+#define L_MOTOR_BACKWARD_PORT  IOPORT5 /**< Left motor backward port. */
+#define L_MOTOR_ENABLE_PORT    IOPORT2 /**< Left motor enable port. */
+
+#define L_MOTOR_FORWARD_PIN    PE5     /**< Left motor forward pin. */
+#define L_MOTOR_BACKWARD_PIN   PE4     /**< Left motor backwad pin. */
+#define L_MOTOR_ENABLE_PIN     PB5     /**< Left motor enable pin. */
+
+#define R_MOTOR_FORWARD_PORT   IOPORT8 /**< Right motor forward port. */
+#define R_MOTOR_BACKWARD_PORT  IOPORT8 /**< Right motor backward port. */
+#define R_MOTOR_ENABLE_PORT    IOPORT8 /**< Right motor enable port. */
+
+#define R_MOTOR_FORWARD_PIN    PH3     /**< Right motor forward pin. */
+#define R_MOTOR_BACKWARD_PIN   PH5     /**< Right motor backward pin. */
+#define R_MOTOR_ENABLE_PIN     PH4     /**< Right motor enable pin. */
+
+/**
+ * @brief Motors identifier enumeration.
+ */
+typedef enum {
+  MOTOR_L,  /**< Left motor. */
+  MOTOR_R,  /**< Right motor. */
+} motor_id_t;
+
 /**
  * @brief Motors enumerations
  */
 typedef enum {
-  MOTOR_L,      /**< Left motor.                */
-  MOTOR_R,      /**< Right motor.               */
-  MOTOR_DIR_F,  /**< Motor forward direction.   */
-  MOTOR_DIR_B,  /**< Motor backward direction.  */
-}motor_e;
+  MOTOR_DIR_F,  /**< Motor forward direction. */
+  MOTOR_DIR_B,  /**< Motor backward direction. */
+} motor_dir_t;
 
-struct MOTORDriver {
-  uint8_t     id;           /**< Motor identification name.       */
-  uint8_t     dir;          /**< Motor rotation directory.        */
-  float       speed;        /**< Motor speed.                     */
-  float       maxSpeed;     /**< Motor maximum speed.             */
-  ioportid_t  forwardPort;  /**< Motor driver forward pwm port.   */
-  uint8_t     forwardPin;   /**< Motor driver forward pwm pin.    */
-  ioportid_t  backwardPort; /**< Motor driver backward pwm port.  */
-  uint8_t     backwardPin;  /**< Motor driver backward pwm pin.   */
-  ioportid_t  enablePort;   /**< Motor driver enable port.        */
-  uint8_t     enablePin;    /**< Motor driver enable pin.         */
-};
+/**
+ * @brief Motor configuration structure.
+ */
+typedef struct {
+  motor_id_t  mid;          /**< Motor identification name. */
+  float       maxSpeed;     /**< Motor maximum speed. */
+  ioportid_t  forwardPort;  /**< Motor driver forward pwm Port. */
+  ioportid_t  backwardPort; /**< Motor driver backwad pwm Port. */
+  ioportid_t  enablePort;   /**< Motor driver enable Port. */
+  uint8_t     forwardPin;   /**< Motor driver forward pwm pin. */
+  uint8_t     backwardPin;  /**< Motor driver backwad pwm pin. */
+  uint8_t     enablePin;    /**< Motor driver enable pin. */
+} MOTORConfig;
 
-typedef struct MOTORDriver MOTORDriver;
-
-#define LMD_LPWM_PORT     IOPORT5 /**< Left motor driver forward pwm port.  */
-#define LMD_RPWM_PORT     IOPORT5 /**< Left motor driver backward pwm port. */
-#define LMD_EN_PORT       IOPORT2 /**< Left motor enable port.              */
-
-#define LMD_LPWM          PE5     /**< Left motor driver forward pwm pin.   */
-#define LMD_RPWM          PE4     /**< Left motor driver backward pwm pin.  */
-#define LMD_EN            PB5     /**< Left motor enable pin.               */
-
-#define RMD_LPWM_PORT     IOPORT8 /**< Right motor driver forward port.     */
-#define RMD_RPWM_PORT     IOPORT8 /**< Right motor driver backward port.    */
-#define RMD_EN_PORT       IOPORT8 /**< Right motor driver enable port.      */
-
-#define RMD_LPWM          PH3     /**< Right motor driver forward pin.      */
-#define RMD_RPWM          PH5     /**< Right motor driver backward pin.     */
-#define RMD_EN            PH4     /**< Right motor driver enable pin.       */
+/**
+ * @brief   Motor driver structure.
+ */
+typedef struct {
+  MOTORConfig config;  /**< Motor configuration. */
+  motor_dir_t dir;     /**< Motor rotation directory. */
+  float       speed;   /**< Motor speed. */
+} MOTORDriver;
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* External declarations.                                                   */
 /*==========================================================================*/
 
-void motor_stop(motor_e motor);
-void motor_move(motor_e motor, uint8_t direction, float speedRaw);
-void motor_init(void);
-void motor_enable(motor_e motor);
-void motor_disable(motor_e motor);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* IP_MOTOR_H */
+void motorStop(MOTORDriver *mdp);
+void motorMove(MOTORDriver *mdp);
+void motorInit(MOTORDriver *mdp, MOTORConfig cfg);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MOTOR_H */
+
+/** @} */

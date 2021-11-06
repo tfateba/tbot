@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_mpu6050.h
- *
- * @brief   Motion interface driver header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    22 June 2016
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,33 +14,45 @@
     limitations under the License.
 */
 
-#ifndef IP_MPU6050_H
-#define IP_MPU6050_H
+/**
+ * @file    mpu6050.h
+ * @brief   Motion interface driver header file.
+ *
+ * @addtogroup MPU6050
+ * @{
+ */
+
+#ifndef MPU6050_H
+#define MPU6050_H
 
 /*==========================================================================*/
-/* Structures and enumerations.                                             */
+/* Includes files.                                                          */
+/*==========================================================================*/
+
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
 /**
- * @brief   MPU6050 Slave I2C address enumeration type.
+ * @brief   MPU6050 Slave I2C adress enumeration type.
  */
 typedef enum {
-  MPU6050_ADDR = 0x68  /**< I2C address of the mpu6050 module.              */
-}mpu6050_sad_e;
+  MPU6050_ADDR = 0x68  /**< I2C adress of the mpu6050 module.               */
+} mpu6050_sad_e;
 
 /**
- * @brief   External Frame Synchronisation values.
+ * @brief   External Frame Synchronisation values
  */
 typedef enum {
-  MPU6050_INPUT_DISABLED  = 0x00, /**< External Frame Synchronisation 0.    */
-  MPU6050_TEMP_OUT_L      = 0x01, /**< External Frame Synchronisation 1.    */
-  MPU6050_GYRO_XOUT_L     = 0x02, /**< External Frame Synchronisation 2.    */
-  MPU6050_GYRO_YOUT_L     = 0x03, /**< External Frame Synchronisation 3.    */
-  MPU6050_GYRO_ZOUT_L     = 0x04, /**< External Frame Synchronisation 4.    */
-  MPU6050_ACCEL_XOUT_L    = 0x05, /**< External Frame Synchronisation 5.    */
-  MPU6050_ACCEL_YOUT_L    = 0x06, /**< External Frame Synchronisation 6.    */
-  MPU6050_ACCEL_ZOUT_L    = 0x07  /**< External Frame Synchronisation 7.    */
-}mpu6050_ext_sync_set_e;          /**< External Frame Synchronisation type. */
+  MPU6050_INPUT_DISABLED  = 0x00, /**< External Frame Synchronization 0.    */
+  MPU6050_TEMP_OUT_L      = 0x01, /**< External Frame Synchronization 1.    */
+  MPU6050_GYRO_XOUT_L     = 0x02, /**< External Frame Synchronization 2.    */
+  MPU6050_GYRO_YOUT_L     = 0x03, /**< External Frame Synchronization 3.    */
+  MPU6050_GYRO_ZOUT_L     = 0x04, /**< External Frame Synchronization 4.    */
+  MPU6050_ACCEL_XOUT_L    = 0x05, /**< External Frame Synchronization 5.    */
+  MPU6050_ACCEL_YOUT_L    = 0x06, /**< External Frame Synchronization 6.    */
+  MPU6050_ACCEL_ZOUT_L    = 0x07  /**< External Frame Synchronization 7.    */
+} mpu6050_ext_sync_set_e;         /**< External Frame Synchronization type. */
 
 /**
  * @brief   Digital Low Pass Filter setting for Accelerator and the Gyroscope.
@@ -64,10 +63,10 @@ typedef enum {
   MPU6050_GLPF_CFG_2  = 0x02, /**< DIgital Low Pass Filter value 2.         */
   MPU6050_DLPF_CFG_3  = 0x03, /**< Digital Low Pass Filter value 3.         */
   MPU6050_DLPF_CFG_4  = 0x04, /**< Digital Low Pass Filter value 4.         */
-  MPU6050_DLPF_CFG_5  = 0x05, /**< Digital Low Pass Filter value 5.         */
+  MPU6050_DLPF_CFG_5  = 0x05, /**< Digital Low Pass Filetr value 5.         */
   MPU6050_DLPF_CFG_6  = 0x06, /**< Digital Low Pass Filter value 6.         */
   MPU6050_DLPF_CFG_7  = 0x07  /**< Digital Low Pass Filter value 7.         */
-}mpu6050_dlpf_cfg_e;          /**< Digital Low Pass Filter type             */
+} mpu6050_dlpf_cfg_e;         /**< Digital Low Pass Filter type             */
 
 /**
  * @brief   Power management 1 enumeration. Configuration of the device
@@ -79,7 +78,7 @@ typedef enum {
   MPU6050_PM1_CYCLE         = 0x02, /**< Bit for Cycle mode.                */
   MPU6050_PM1_TEMP_DIS      = 0x03, /**< Bit for disabling temp sensor.     */
   MPU6050_PM1_CLKSEL        = 0x04  /**< Bit for device clock source.       */
-}mpu6050_pm1_e;                     /**< Power Management type enumeration. */
+} mpu6050_pm1_e;                    /**< Power Management type enumeration. */
 
 /**
  * @brief   Power Management 2 enumeration. Configuration of the device
@@ -94,7 +93,7 @@ typedef enum {
   MPU6050_STBY_XG       = 0x04, /**< Bit to control X axis gyroscope.       */
   MPU6050_STBY_YG       = 0x05, /**< Bit to control Y axis gyroscope.       */
   MPU6050_STBY_ZG       = 0x06  /**< Bit to control Z axis gyroscope.       */
-}mpu6050_pm2_e;
+} mpu6050_pm2_e;
 
 /**
  * @brief   Gyroscope full scale values.
@@ -104,7 +103,7 @@ typedef enum {
   MPU6050_GYRO_FS_500   = 0x01, /**< Gyroscope full Scale value 1.          */
   MPU6050_GYRO_FS_1000  = 0x02, /**< Gyroscope full Scale value 2.          */
   MPU6050_GYRO_FS_2000  = 0x03  /**< Gyroscope full Scale value 3.          */
-}mpu6050_gyro_fs_e;             /**< Gyroscope full scale enum.             */
+} mpu6050_gyro_fs_e;             /**< Gyroscope full scale enum.            */
 
 /**
  * @brief   Accelerometer full scale values.
@@ -114,12 +113,12 @@ typedef enum {
   MPU6050_ACCEL_FS_4  = 0x01, /**< Accelerometer full scale value 1.        */
   MPU6050_ACCEL_FS_8  = 0x02, /**< Accelerometer full scale value 2.        */
   MPU6050_ACCEL_FS_16 = 0x03  /**< Accelerometer full scale value 3.        */
-}mpu6050_accel_fs_e;          /**< Accelerometer full scale enum.           */
+} mpu6050_accel_fs_e;         /**< Accelerometer full scale enum.           */
 
 /**
  * @brief   MPU6050 data structure
  */
-struct MPU6050Driver {
+typedef struct {
   mpu6050_sad_e sad;            /**< MPU6050 I2C slave address              */
   float         x_accel;        /**< Accelerometer x data.                  */
   float         y_accel;        /**< Accelerometer y data.                  */
@@ -143,15 +142,11 @@ struct MPU6050Driver {
   float         roll_c;         /**< Roll angle by complementary filter.    */
   float         yaw_c;          /**< Yaw angle by complementary filter.     */
   float         temp;           /**< MPU Temperature.                       */
-};
+} MPU6050Driver;
 
-typedef struct MPU6050Driver MPU6050Driver;
-
-/*==========================================================================*/
-/* Driver macros.                                                           */
-/*==========================================================================*/
-
-/* MPU6050 Registers List */
+/**
+ * @brief   MPU6050 available registers.
+ */
 #define MPU6050_XG_OFFSET_TC        0x00 /**< TODO: Add register comment.   */
 #define MPU6050_YG_OFFSET_TC        0x01
 #define MPU6050_ZG_OFFSET_TC        0x02
@@ -233,7 +228,7 @@ typedef struct MPU6050Driver MPU6050Driver;
 #define MPU6050_EXT_SENS_DATA_03    0x4C /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_04    0x4D /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_05    0x4E /**< External Sensor Data.         */
-#define MPU6050_EXT_SENS_DATA_06    0x4F /**< External Sensor Data.         */
+#define MPU6050_EXT_SENS_DATA_06    0x4F /**< Ecternal Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_07    0x50 /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_08    0x51 /**< External Sensor Data.         */
 #define MPU6050_EXT_SENS_DATA_09    0x52 /**< External Sensor Data.         */
@@ -273,24 +268,33 @@ typedef struct MPU6050Driver MPU6050Driver;
 #define MPU6050_WHO_AM_I            0x75 /**< Who Am I.                     */
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* External declarations.                                                   */
 /*==========================================================================*/
 
-msg_t mpu6050_get_identity(I2CDriver *i2cp, uint8_t *idp);
-msg_t mpu6050_sleep(I2CDriver *i2cp);
-msg_t mpu6050_wakeup(I2CDriver *i2cp);
-msg_t mpu6050_reset(I2CDriver *i2cp);
-msg_t mpu6050_gyro_config(I2CDriver *i2cp, mpu6050_gyro_fs_e scale);
-msg_t mpu6050_accel_config(I2CDriver *i2cp, mpu6050_accel_fs_e scale);
-msg_t mpu6050_read(I2CDriver *i2cp, uint8_t *pmp);
-msg_t mpu6050_read_all_sensors(I2CDriver *i2cp, uint8_t *rxbuf);
-msg_t mpu6050_set_x_gyro_offset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050_set_y_gyro_offset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050_set_z_gyro_offset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050_set_z_accel_offset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050_get_data(I2CDriver *i2cp, MPU6050Driver *mpu);
-msg_t mpu6050_calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
-msg_t mpu6050_init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* IP_MPU6050_H */
+msg_t mpu6050GetIdentity(I2CDriver *i2cp, uint8_t *idp);
+msg_t mpu6050Sleep(I2CDriver *i2cp);
+msg_t mpu6050Wakeup(I2CDriver *i2cp);
+msg_t mpu6050Reset(I2CDriver *i2cp);
+msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale);
+msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale);
+msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp);
+msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf);
+msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset);
+msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpu);
+msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
+msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MPU6050_H */
+
+/** @} */

@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_pwm.c
- *
- * @brief   PWM configuration and management source file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    30 June 2016
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,6 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file    pwm.c
+ * @brief   PWM configuration and management source file.
+ *
+ * @addtogroup PWM
+ * @{
+ */
 
 /*==========================================================================*/
 /* Includes Files.                                                          */
@@ -87,9 +82,9 @@ static PWMConfig pwm4cfg = {
 /*==========================================================================*/
 
 /**
- * @brief   Initialise the PWM output.
+ * @brief   Initialize the PWM output.
  */
-void pwm_inits(void) {
+void pwmInits(void) {
 
   /* PH3 and PH5 are timer 4 pwm channels outputs. */
   palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
@@ -111,7 +106,7 @@ void pwm_inits(void) {
  * @param[in] channel   channel to control
  * @param[in] width     pwm width to generate
  */
-void pwm_set_pulse_width(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
+void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
 
   pwmEnableChannel(pwmp, channel, width);
 }
@@ -123,10 +118,10 @@ void pwm_set_pulse_width(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
  * @param[in] pwmcfg    configuration of the pwm driver
  * @param[in] channel   channel to enable
  */
-void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
+void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
 
   pwmStart(pwmp, pwmcfg);
-  pwm_set_pulse_width(pwmp, channel, 0);
+  pwmSetPulseWidth(pwmp, channel, 0);
 }
 
 /**
@@ -134,7 +129,7 @@ void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
  *
  * @param[in] pwmp  pointer of the pwm driver to disable
  */
-void pwm_disable(PWMDriver *pwmp) {
+void pwmDisable(PWMDriver *pwmp) {
 
   pwmStop(pwmp);
 }
@@ -142,39 +137,39 @@ void pwm_disable(PWMDriver *pwmp) {
 /**
  * @brief   Generate the corresponding PWM for speed control.
  *
- * @param[in] motor       the motor to pilot, right or left.
+ * @param[in] mId         the motor to pilot, rigth or left.
  * @param[in] direction   the direction of the motor, backward or forward.
  * @param[in] dutyCycle   the duty cycle to set the pwm.
  */
-void pwm_set_duty_cycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle) {
+void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
 
 #if (DEBUG == TRUE || DEBUG_PWM == TRUE)
   chprintf(chp, "pwm: %d\t", dutyCycle);
 #endif
 
-  if (motor == MOTOR_L) {
-    palSetPad(LMD_EN_PORT, LMD_EN);
+  if (mid == MOTOR_L) {
+    palSetPad(L_MOTOR_ENABLE_PORT, L_MOTOR_ENABLE_PIN);
 
-    if (direction == MOTOR_DIR_F) {
-      pwm_set_pulse_width(&PWMD4, 0, maxPwmValue);
-      pwm_set_pulse_width(&PWMD4, 2, dutyCycle);
+    if (dir == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD4, 0, maxPwmValue);
+      pwmSetPulseWidth(&PWMD4, 2, dutyCycle);
     }
-    else if (direction == MOTOR_DIR_B) {
-      pwm_set_pulse_width(&PWMD4, 0, dutyCycle);
-      pwm_set_pulse_width(&PWMD4, 2, maxPwmValue);
+    else if (dir == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD4, 0, dutyCycle);
+      pwmSetPulseWidth(&PWMD4, 2, maxPwmValue);
     }
   }
-  else if (motor == MOTOR_R) {
-    palSetPad(RMD_EN_PORT, RMD_EN);
+  else if (mid == MOTOR_R) {
+    palSetPad(R_MOTOR_ENABLE_PORT, R_MOTOR_ENABLE_PIN);
 
-    if (direction == MOTOR_DIR_F) {
-      pwm_set_pulse_width(&PWMD3, 1, maxPwmValue);
-      pwm_set_pulse_width(&PWMD3, 2, dutyCycle);
+    if (dir == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD3, 1, maxPwmValue);
+      pwmSetPulseWidth(&PWMD3, 2, dutyCycle);
     }
-    else if (direction == MOTOR_DIR_B) {
-      pwm_set_pulse_width(&PWMD3, 1, dutyCycle);
-      pwm_set_pulse_width(&PWMD3, 2, maxPwmValue);
+    else if (dir == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD3, 1, dutyCycle);
+      pwmSetPulseWidth(&PWMD3, 2, maxPwmValue);
     }
   }
 }
-
+/** @} */

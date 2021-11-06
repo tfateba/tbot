@@ -1,28 +1,5 @@
-
-/**
- *
- * @file          ip_motor.c
- *
- * @brief         Motor driver source file.
- *
- * @author        Theodore Ateba, tf.ateba@gmail.com
- *
- * @date          07 September 2015
- *
- * @description   Motor control and Encoder Read
- *                Description:
- *                Get the PWM control value from the I2C.
- *                Send the Encoder value to the I2C master when required.
- *                Motor Power:  white
- *                Motor Power:  yellow
- *                Encoder GND:  blue
- *                Encoder VCC:  green
- *                Encoder A:    black
- *                Encoder B:    Red
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -36,6 +13,23 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file          motor.c
+ * @brief         motor driver source file.
+ *
+ * @description   Motor control and Encoder Read
+ *                Description:
+ *                Motor Power:  white
+ *                Motor Power:  yellow
+ *                Encoder GND:  blue
+ *                Encoder VCC:  green
+ *                Encoder A:    black
+ *                Encoder B:    Red
+ *
+ * @addtogroup MOTOR
+ * @{
+ */
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -72,82 +66,75 @@ extern BaseSequentialStream* chp;
 /**
  * @brief   Stop the corresponding motor.
  *
- * @param[in] motor   the motor to stop, right or left
+ * @param[in] mId   motor id of the motor to stop, rigth/left
  */
-void motor_stop(motor_e motor) {
+void motorStop(MOTORDriver *mdp) {
 
-  if (motor == MOTOR_L) {
-    pwm_set_duty_cycle(MOTOR_L, MOTOR_DIR_F, 0);
-    palClearPad(LMD_EN_PORT, LMD_EN);
-  }
-
-  if (motor == MOTOR_R) {
-    pwm_set_duty_cycle(MOTOR_R, MOTOR_DIR_F, 0);
-    palClearPad(RMD_EN_PORT, RMD_EN);
-  }
+  pwmSetDutyCycle(mdp->config.mid, mdp->dir, 0);
+  palClearPad(mdp->config.enablePort, mdp->config.enablePin);
 }
 
 /**
  * @brief   Driving the motor to the given speed.
  *
- * @param[in] motor       the motor to pilot, right or left
- * @param[in] direction   the direction of the motor, backward or forward
- * @param[in] speedRaw    the speed to set the motor
+ * @param[in] mdp    pointer to the motor (rigth/left)
  */
-void motor_move(motor_e motor, uint8_t direction, float speedRaw) {
+void motorMove(MOTORDriver *mdp) {
 
-  int speed;
+  int duty;
+  float speedabs;
 
-  if (speedRaw > maxSpeedValue)
-    speedRaw = maxSpeedValue;
+  /* Get the motor direction:. */
+  if (mdp->speed >= 0) {
+    mdp->dir = MOTOR_DIR_F;
+    speedabs = mdp->speed;
+  }
+  else {
+    mdp->dir = MOTOR_DIR_B;
+    speedabs = abs(mdp->speed);
+  }
 
-  speed = speedRaw*((float)PWMVALUE)/maxSpeedValue;
-  pwm_set_duty_cycle(motor, direction, speed);
+  if (speedabs > maxSpeedValue)
+    speedabs = maxSpeedValue;
+
+  duty = speedabs*((float)PWMVALUE)/maxSpeedValue;
+  pwmSetDutyCycle(mdp->config.mid, mdp->dir, duty);
 }
 
 /**
  * @brief   Enable left or right motor with GPIO signal.
  *
- * @param[in] motor   the motor to be enable
+ * @param[in] mid  id of the motor to be enable, left/right
  */
-void motor_enable(motor_e motor) {
+static void motorEnable(MOTORDriver *mdp) {
 
-  if (motor == MOTOR_L)
-    palSetPad(LMD_EN_PORT, LMD_EN);
-  else
-    palSetPad(RMD_EN_PORT, RMD_EN);
+  palSetPad(mdp->config.enablePort, mdp->config.enablePin);
 }
 
 /**
  * @brief   Disable left or right motor with GPIO signal.
  *
- * @param[in] motor   the motor to be disable
- */
-void motor_disable(motor_e motor) {
+ * @param[in] mid  Id of the motor to be disable, left/right
+ *//*
+static void motorDisable(motor_id_t mid) {
 
-  if (motor == MOTOR_L)
+  if (mid == MOTOR_L)
     palClearPad(LMD_EN_PORT, LMD_EN);
-  else
+
+  if (mid == MOTOR_R)
     palClearPad(RMD_EN_PORT, RMD_EN);
-}
+}*/
 
 /**
- * @brief   Initialise all pins needs for motor control
+ * @brief   Initialize all pins needs for motor control
  */
-void motor_init(void) {
+void motorInit(MOTORDriver *mdp, MOTORConfig cfg) {
 
-  /* Setup Left Motor Driver ( LMD ). */
-  palSetPadMode(LMD_RPWM_PORT,  LMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(LMD_LPWM_PORT,  LMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(LMD_EN_PORT,    LMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
-
-  /* Setup Right Motor Driver ( RMD ).  */
-  palSetPadMode(RMD_RPWM_PORT,  RMD_RPWM, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(RMD_LPWM_PORT,  RMD_LPWM, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(RMD_EN_PORT,    RMD_EN,   PAL_MODE_OUTPUT_PUSHPULL);
-
-  /* Enable Right and Left Motors.  */
-  motor_enable(MOTOR_R);
-  motor_enable(MOTOR_L);
+  mdp->config = cfg;
+  palSetPadMode(mdp->config.forwardPort,  mdp->config.forwardPin,  PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(mdp->config.backwardPort, mdp->config.backwardPin, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(mdp->config.enablePort,   mdp->config.enablePin,   PAL_MODE_OUTPUT_PUSHPULL);
+  motorEnable(mdp);
 }
 
+/** @}  */

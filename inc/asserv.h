@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_asserv.h
- *
- * @brief   Robot asservissement header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    07 September 2015
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,8 +14,16 @@
     limitations under the License.
 */
 
-#ifndef IP_ASSERV_H
-#define IP_ASSERV_H
+/**
+ * @file    asserv.h
+ * @brief   Asservissement header file.
+ *
+ * @addtogroup ASSERV
+ * @{
+ */
+
+#ifndef ASSERV_H
+#define ASSERV_H
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -38,10 +33,23 @@
 #include "main.h"
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
+
+/*==========================================================================*/
+/* External declarations.                                                   */
+/*==========================================================================*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void asserv(ROBOTDriver *rdp);
 
-#endif /* IP_ASSERV_H */
+#ifdef __cplusplus
+}
+#endif
 
+#endif /* ASSERV_H */
+
+/** @} */

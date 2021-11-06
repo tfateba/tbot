@@ -1,52 +1,62 @@
+/*
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+*/
 
 /**
- *
- * @file    ip_kalman.h
- *
+ * @file    kalman.h
  * @brief   Kalman filter header file.
  *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    05 July 2016
- *
+ * @addtogroup KALMAN
+ * @{
  */
 
-/* Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
-
- This software may be distributed and modified under the terms of the GNU
- General Public License version 2 (GPL2) as published by the Free Software
- Foundation and appearing in the file GPL2.TXT included in the packaging of
- this file. Please note that GPL2 Section 2[b] requires that all works based
- on this software must also be made publicly available under the terms of
- the GPL2 ("Copyleft").
-
- Contact information
- -------------------
-
- Kristian Lauszus, TKJ Electronics
- Web      :   http://www.tkjelectronics.com
- e-mail   :   kristianl@tkjelectronics.com
-
- Modify by:   Theodore Ateba, tf.ateba@gmail.com
- */
-
-#ifndef IP_KALMAN_H
-#define IP_KALMAN_H
+#ifndef KALMAN_H
+#define KALMAN_H
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* Includes files.                                                          */
 /*==========================================================================*/
 
-void  kalman_init(void);
-float kalman_get_angle(float newAngle, float newRate, float dt);
-void  kalman_set_angle(float newAngle);
-float kalman_get_rate(void);
-void  kalman_set_q_angle(float newQ_angle);
-void  kalman_set_q_bias(float newQ_bias);
-void  kalman_set_r_measure(float newR_measure);
-float kalman_get_q_angle(void);
-float kalman_get_q_bias(void);
-float kalman_get_r_measure(void);
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
+/*==========================================================================*/
 
-#endif /* IP_KALMAN_H */
+/*==========================================================================*/
+/* External declarations.                                                   */
+/*==========================================================================*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void  kalmanInit(void);
+float kalmanGetAngle(float newAngle, float newRate, float dt);
+void  kalmanSetAngle(float newAngle);
+float kalmanGetRate(void);
+void  kalmanSetQangle(float newQ_angle);
+void  kalmanSetQbias(float newQ_bias);
+void  kalmanSetRmeasure(float newR_measure);
+float kalmanGetQangle(void);
+float kalmanGetQbias(void);
+float kalmanGetRmeasure(void);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#endif /* KALMAN_H */
+
+/** @} */

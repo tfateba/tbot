@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_pid.h
- *
- * @brief   PID corrector header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    13 July 2016
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,36 +14,65 @@
     limitations under the License.
 */
 
-#ifndef IP_PID_H
-#define IP_PID_H
-
-/*==========================================================================*/
-/* Structures of the PID controller.                                        */
-/*==========================================================================*/
-
 /**
- * @brief   PID driver data structure.
+ * @file    pid.h
+ * @brief   PID corrector header file.
+ *
+ * @addtogroup PID
+ * @{
  */
-struct PIDDriver {
-  uint8_t id;
-  float   kp;
-  float   ki;
-  float   kd;
-  float   result;
-};
+
+#ifndef PID_H
+#define PID_H
+
+/*==========================================================================*/
+/* Includes files.                                                          */
+/*==========================================================================*/
+
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
+/*==========================================================================*/
+
+/* TODO: Rename the PIDDriver to PIDController. */
 
 /**
  * @brief   PID driver type definition.
  */
-typedef struct PIDDriver PIDDriver;
+typedef struct {
+
+  float consigne;
+  float measure;
+
+  float kp;          /**< Proportional parameter of PID controler.    */
+  float ki;          /**< Integral parameter of PID controler.        */
+  float kd;          /**< Derivate parameter of PID controler.        */
+
+  float actuError;   /**< Actual error between consigne an measured.  */
+  float lastError;   /**< Last error.                                 */
+
+  float pTerm;       /**< Proportional error.                         */
+  float iTerm;       /**< Integral error.                             */
+  float dTerm;       /**< Derivate error.                             */
+
+  float output;      /**< PID value, sum of all the errors.           */
+} PIDDriver;
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* External declarations.                                                   */
 /*==========================================================================*/
 
-void pid_init(float kpval, float kival, float kdval);
-float pid(float pitch, float restAngle, float offset, float turning);
-void pid_reset_parameters(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* IP_PID_H */
+void pidInit(PIDDriver *pidp, float kpval, float kival, float kdval);
+void pidCompute(PIDDriver *pidp);
+void pidResetParameters(PIDDriver *pidp);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* PID_H */
+
+/** @} */

@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_buzzer.c
- *
- * @brief   Buzzer driver source file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    22 August 2017
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,6 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file    buzzer.c
+ * @brief   Buzzer driver source file.
+ *
+ * @addtogroup BUZZER
+ * @{
+ */
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -41,40 +36,40 @@
 /*==========================================================================*/
 
 /**
- * @brief   Initialisation buffer.
+ * @brief   Initialization buffer.
  */
-void buzzer_init(void)  {
+void buzzerInit(void)  {
 
-  // set up timer with pre-scaler = 64 and CTC mode
+  /* Set up timer with prescaler = 64 and CTC mode  */
   TCCR5B |= (1 << WGM52)|(1 << CS51)|(1 << CS50);
-  // set up timer OC1A pin in toggle mode
+  /* Set up timer OC1A pin in toggle mode.          */
   TCCR5A |= (1 << COM5A0);
-  // initialise counter
+  /* Initialize counter.                            */
   TCNT5 = 0;
-  // initialise compare value
+  /* Initialize compare value.                      */
   OCR5A = 0;
-  // enable compare interrupt
+  /* Enable compare interrupt.                      */
   TIMSK5 |= (1 << OCIE5A);
-  // enable global interrupts
-  //sei();
+  /* Enable global interrupts.                      */
+  /* @sei();                                        */
 
-  // Initialise buzzer Pin
-  // connect buzzer to pin PL3
+  /* Initialize buzzer Pin.                         */
+  /* Connect buzzer to pin PL3.                     */
   DDRL |= (1 << 3);
 }
 
 /**
  * @brief   Stop all playing sound.
  */
-void buzzer_sound_stop(void) {
+void buzzerStopSound(void) {
 
   OCR5A = 0;
 }
 
 /**
- * @brief   Play sound with buzzer.
+ * @brief   Play soung with buzzer.
  */
-void buzzer_sound_play(void) {
+void buzzerSound(void) {
 
   OCR5A = 29;
   _delay_ms(100);
@@ -86,7 +81,11 @@ void buzzer_sound_play(void) {
   _delay_ms(100);
 }
 
+/**
+ * @brief   Timer 5 ISR handler.
+ */
 ISR (TIMER5_COMPA_vect) {
 
 }
 
+/** @} */

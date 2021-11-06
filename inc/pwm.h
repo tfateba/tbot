@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_pwm.h
- *
- * @brief   PWM configuration and management header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    30 June 2016
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,8 +14,20 @@
     limitations under the License.
 */
 
-#ifndef IP_PWM_H
-#define IP_PWM_H
+/**
+ * @file    pwm.h
+ * @brief   PWM configuration and management header file.
+ *
+ * @addtogroup PWM
+ * @{
+ */
+
+#ifndef PWM_H
+#define PWM_H
+
+/*==========================================================================*/
+/* Includes files.                                                          */
+/*==========================================================================*/
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
@@ -39,22 +38,31 @@
  */
 #define PWM_FREQUENCY 20000 /**< PWM frequency value. */
 
-/*
- * Frequency is given by F_CPU/(2*N*ICR) - where N is the pre-scaler,
- * we use no pre-scaling so:
+/**
+ * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
+ * prescaling so:
  * frequency is given by F_CPU/(2*ICR) - ICR = F_CPU/PWM_FREQUENCY/2
  */
 #define PWMVALUE F_CPU/PWM_FREQUENCY/2
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* External declarations.                                                   */
 /*==========================================================================*/
 
-void pwm_inits(void);
-void pwm_set_pulse_width(PWMDriver *pwmp, uint8_t channel, uint16_t width);
-void pwm_enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
-void pwm_disable(PWMDriver *pwmp);
-void pwm_set_duty_cycle(uint8_t motor, uint8_t direction, uint16_t dutyCycle);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* IP_PWM_H */
+void pwmInits(void);
+void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width);
+void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
+void pwmDisable(PWMDriver *pwmp);
+void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* PWM_H */
+
+/** @} */

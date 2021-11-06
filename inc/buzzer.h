@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_buzzer.h
- *
- * @brief   Buzzer driver header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    22 August 2017
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,24 +14,45 @@
     limitations under the License.
 */
 
-#ifndef IP_BUZZER_H
-#define IP_BUZZER_H
+/**
+ * @file    buzzer.h
+ * @brief   Buzzer driver header file.
+ *
+ * @addtogroup BUZZER
+ * @{
+ */
+
+#ifndef BUZZER_H
+#define BUZZER_H
 
 /*==========================================================================*/
-/* Driver macros.                                                           */
+/* Includes files.                                                          */
+/*==========================================================================*/
+
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
 /* Pin used to control the buzzer. */
-//#define BUZZER_PIN_PORT   IOPORT11
-//#define BUZZER_PIN        46
+/* #define BUZZER_PIN_PORT   IOPORT11   */
+/* #define BUZZER_PIN        46         */
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* External declarations.                                                   */
 /*==========================================================================*/
 
-void buzzer_init(void);
-void buzzer_sound_play(void);
-void buzzer_sound_stop(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* IP_BUZZER_H */
+void buzzerInit(void);
+void buzzerSound(void);
+void buzzerStopSound(void);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* BUZZER_H */
+
+/** @} */

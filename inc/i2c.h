@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_i2c.h
- *
- * @brief   I2C driver header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    05 July 2016
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,25 +14,29 @@
     limitations under the License.
 */
 
-#ifndef IP_I2C_H
-#define IP_I2C_H
+/**
+ * @file    i2c.h
+ * @brief   I2C header file.
+ *
+ * @addtogroup I2C
+ * @{
+ */
+
+#ifndef I2C_H
+#define I2C_H
 
 /*==========================================================================*/
-/* Include Libraries.                                                       */
+/* Includes files.                                                          */
 /*==========================================================================*/
 
 /* ChibiOS files. */
 #include "hal.h"
 
 /*==========================================================================*/
-/* Driver macros.                                                           */
+/* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
 #define I2C_CLOCK_SPEED 400000
-
-/*==========================================================================*/
-/* Driver Configuration structure.                                          */
-/*==========================================================================*/
 
 /**
  * @brief I2C Configuration.
@@ -55,13 +46,22 @@ static const I2CConfig i2cConfig = {
 };
 
 /*==========================================================================*/
-/* Functions prototypes.                                                    */
+/* External declarations.                                                   */
 /*==========================================================================*/
 
-msg_t i2c_read_registers( I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+msg_t i2cReadRegisters(I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
                         uint8_t *rxbuf, uint8_t lenght);
-msg_t i2c_write_registers(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
+msg_t i2cWriteRegisters(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
                         uint8_t lenght);
 
-#endif /* IP_I2C_H */
+#ifdef __cplusplus
+}
+#endif
 
+#endif /* I2C_H */
+
+/** @} */

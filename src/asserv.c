@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_asserv.c
- *
- * @brief   Robot asservissement source file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    07 September 2015
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,6 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file    asserv.c
+ * @brief   Robot asservissement source file.
+ *
+ * @addtogroup ASSERV
+ * @{
+ */
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -48,6 +43,7 @@
 #include "motor.h"
 #include "mpu6050.h"
 #include "pid.h"
+#include "pwm.h"
 
 /*==========================================================================*/
 /* Application macros.                                                      */
@@ -61,17 +57,31 @@
 /*==========================================================================*/
 
 /* Local variables. */
-bool  layingDown    = TRUE;     /**< Robot position, down or not.           */
-float targetAngle   = 180;      /**< The angle we want the robot to reach.  */
-float targetOffset  = 0;        /**< Offset for going forward and backward. */
-float turningOffset = 0;        /**< Offset for turning left and right.     */
 
-const float   dt = 0.01;        /**< Asservissement period.                 */
+/* TODO: See all the variable that can be put in t-bot structure.           */
+/* TODO: put this variable in t-bot structure.                              */
+bool  layingDown    = true;       /**< Robot position, down or not. */
+
+/* Put  */
+const float   dt = 0.01;          /**< Asservissement period. */
 
 /* Extern variables. */
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
-extern BaseSequentialStream* chp; /*                                        */
+extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
 #endif
+
+/* Inputs for Speed PID. */
+float consigneSpeed = 0;          /**< The robot target speed. */
+float speedMean     = 0;          /**< Left and right motor speed mean. */
+
+/* Inputs for Angle PID. */
+const float consigneAngle = 180;  /**< The robot target angle. */
+float measuredAngle       = 0;    /**< Result of IMU and Kalman filter. */
+
+float turnSpeed = 0;              /**< Can be changed by the User. */
+
+float leftMeasuredSpeed  = 0;     /**< Left motor measured speed.  */
+float rightMeasuredSpeed = 0;     /**< Right motor measured speed. */
 
 /*==========================================================================*/
 /* Driver functions.                                                        */
@@ -85,11 +95,9 @@ extern BaseSequentialStream* chp; /*                                        */
 void asserv(ROBOTDriver *rdp) {
 
   msg_t msg;
-  float pidlvalue;
-  float pidrvalue;
 
   /* Read the IMU data (x,y,z accel and gyroscope). */
-  msg = mpu6050_get_data(&I2CD1, &rdp->imu);
+  msg = mpu6050GetData(&I2CD1, &rdp->imu);
 
   if (msg != MSG_OK) {
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
@@ -99,11 +107,12 @@ void asserv(ROBOTDriver *rdp) {
     return;
   }
 
-  /* Calcul of the Pitch angle of the self balancing robot. */
+  /* Calcul of the Pitch angle of the robot. */
   rdp->imu.pitch = (atan2(rdp->imu.y_accel, rdp->imu.z_accel) + PI)*(RAD_TO_DEG);
 
-  /* Get the Kalman estimation of the angle. */
-  rdp->imu.pitch_k = kalman_get_angle(rdp->imu.pitch, (rdp->imu.x_gyro / 131.0), dt);
+  /* Get the Kalman estimation of the robot angle. */
+  rdp->imu.pitch_k = kalmanGetAngle(rdp->imu.pitch, (rdp->imu.x_gyro / 131.0), dt);
+  measuredAngle = rdp->imu.pitch_k;
 
   if ((layingDown && (rdp->imu.pitch_k < 170 || rdp->imu.pitch_k > 190)) ||
     (!layingDown && (rdp->imu.pitch_k < 135 || rdp->imu.pitch_k > 225))) {
@@ -116,39 +125,66 @@ void asserv(ROBOTDriver *rdp) {
     chprintf(chp, "%s: The Robot is laying down.\n\r", __func__);
 #endif
 
-    layingDown = TRUE;
-    motor_stop(MOTOR_R);
-    motor_stop(MOTOR_L);
-    pid_reset_parameters();
+    layingDown = true;
+    motorStop(&rdp->motorLeft);
+    motorStop(&rdp->motorRight);
+    pidResetParameters(&rdp->pidSpeed);
+    pidResetParameters(&rdp->pidAngle);
+    pidResetParameters(&rdp->pidMotorLeft);
+    pidResetParameters(&rdp->pidMotorRight);
   }
   else {
+
     /*
      * It's no longer laying down,
-     * so we can try to stabilised the robot now.
+     * so we can try to stabilized the robot now.
      */
-    layingDown = FALSE;
+    layingDown = false;
 
-    pidlvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
-    pidrvalue = pid(rdp->imu.pitch_k, targetAngle, targetOffset, turningOffset);
+    /* Four PID are used to stabilize the robot and control it:
+     *
+     * - speed pid :       this is use to move robot backward and forward
+     * - angle pid :       this is use to stabilize the robot
+     * - left motor pid :  this is use to turn robot
+     * - right motor pid : this is use to turn robot
+     */
 
-    /* Set the left motor PWM value. */
-    if (pidlvalue >= 0)
-      motor_move(MOTOR_L, MOTOR_DIR_F, pidlvalue);
-    else
-      motor_move(MOTOR_L, MOTOR_DIR_B, abs(pidlvalue));
+    /* TODO: motor speed must be measure. */
 
-    /* Set the right motor PWM value. */
-    if (pidrvalue >= 0)
-      motor_move(MOTOR_R, MOTOR_DIR_F, pidrvalue);
-    else
-      motor_move(MOTOR_R, MOTOR_DIR_B, abs(pidrvalue));
+    /* Update the speed PID. */
+    rdp->pidSpeed.consigne = consigneSpeed;  /* Distance setpoint.  */
+    rdp->pidSpeed.measure  = speedMean;      /* Distance feedback.  */
+    pidCompute(&rdp->pidSpeed);              /* Set the PID output. */
+
+    /* Update the angle PID. */
+    rdp->pidAngle.consigne = consigneAngle + rdp->pidSpeed.output;
+    rdp->pidAngle.measure  = measuredAngle;
+    pidCompute(&rdp->pidAngle);
+
+    /* Manage PID for the left Motor. */
+    rdp->pidMotorLeft.consigne = (rdp->pidAngle.output + turnSpeed);
+    rdp->pidMotorLeft.measure  = leftMeasuredSpeed;
+    pidCompute(&rdp->pidMotorLeft);
+
+    /* Manage PID for the Right Motor. */
+    rdp->pidMotorRight.consigne = (rdp->pidAngle.output - turnSpeed);
+    rdp->pidMotorRight.measure  = rightMeasuredSpeed;
+    pidCompute(&rdp->pidMotorRight);
+
+    /* Get the motors power that need to be apply. */
+    rdp->motorLeft.speed  = rdp->pidMotorLeft.output;
+    rdp->motorRight.speed = rdp->pidMotorRight.output;
+
+    /* Set power to the left motor. */
+    motorMove(&rdp->motorLeft);
+
+    /* Set power to the rigth motor. */
+    motorMove(&rdp->motorRight);
 
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
     chprintf(chp, "%s: filtered pitch = %.3f\r\n", __func__, rdp->imu.pitch_k);
 #endif
   }
-
-  /* Update the robot wheel velocity every 100ms. */
-  //motorGetWheelVelocity();
 }
 
+/** @} */

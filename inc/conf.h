@@ -1,18 +1,5 @@
-
-/**
- *
- * @file    ip_conf.h
- *
- * @brief   Robot configuration header file.
- *
- * @author  Theodore Ateba, tf.ateba@gmail.com
- *
- * @date    08 December 2016
- *
- */
-
 /*
-    IP - Copyright (C) 2015..2018 Theodore Ateba
+    TBOT - Copyright (C) 2015...2021 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,13 +14,28 @@
     limitations under the License.
 */
 
-#ifndef IP_CONF_H
-#define IP_CONF_H
+/**
+ * @file    conf.h
+ * @brief   Robot configuration header file.
+ *
+ * @addtogroup CONF
+ * @{
+ */
+
+#ifndef CONF_H
+#define CONF_H
 
 /*==========================================================================*/
-/* Colour define for chprintf.                                              */
+/* Includes files.                                                          */
 /*==========================================================================*/
 
+/*==========================================================================*/
+/* Enumerations, Structures and macros.                                     */
+/*==========================================================================*/
+
+/**
+ * @brief   Color define for chprintf.
+ */
 #define chprintf_r(x, y)  chprintf(x, "\x1b[31m" y "\x1b[0m") /**< Red.     */
 #define chprintf_g(x, y)  chprintf(x, "\x1b[32m" y "\x1b[0m") /**< Green.   */
 #define chprintf_y(x, y)  chprintf(x, "\x1b[33m" y "\x1b[0m") /**< Yellow.  */
@@ -42,10 +44,9 @@
 #define chprintf_c(x, y)  chprintf(x, "\x1b[36m" y "\x1b[0m") /**< Cyant.   */
 #define chprintf_w(x, y)  chprintf(x, "\x1b[0m" y "\x1b[0m")  /**< White.   */
 
-/*==========================================================================*/
-/* Enumerations, Structures and macros.                                     */
-/*==========================================================================*/
-
+/**
+ * @brief   Available debug level.
+ */
 #define DEBUG     FALSE   /**< Debug activation in all source files.        */
 #define DEBUG_MAI FALSE   /**< Debug activation in main file.               */
 #define DEBUG_ASS FALSE   /**< Debug activation in asserv file              */
@@ -57,5 +58,10 @@
 #define DEBUG_I2C FALSE   /**< Debug activation in I2C file.                */
 #define DABUG_MPU FALSE   /**< Debug activation in MPU6050 file.            */
 
-#endif /* IP_CONF_H */
+/*==========================================================================*/
+/* External declarations.                                                   */
+/*==========================================================================*/
 
+#endif /* CONF_H */
+
+/** @} */
