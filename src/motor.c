@@ -51,9 +51,9 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ip_conf.h"
-#include "ip_motor.h"
-#include "ip_pwm.h"
+#include "conf.h"
+#include "motor.h"
+#include "pwm.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

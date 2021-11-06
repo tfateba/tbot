@@ -31,10 +31,10 @@
 #define IP_MAIN_H
 
 /* Project files. */
-#include "ip_encoder.h"
-#include "ip_motor.h"
-#include "ip_mpu6050.h"
-#include "ip_pid.h"
+#include "encoder.h"
+#include "motor.h"
+#include "mpu6050.h"
+#include "pid.h"
 
 
 struct ROBOTDriver {

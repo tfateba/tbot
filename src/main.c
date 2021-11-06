@@ -37,17 +37,17 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ip_asserv.h"
-#include "ip_buzzer.h"
-#include "ip_conf.h"
-#include "ip_encoder.h"
-#include "ip_i2c.h"
-#include "ip_kalman.h"
-#include "ip_main.h"
-#include "ip_motor.h"
-#include "ip_mpu6050.h"
-#include "ip_pid.h"
-#include "ip_pwm.h"
+#include "asserv.h"
+#include "buzzer.h"
+#include "conf.h"
+#include "encoder.h"
+#include "i2c.h"
+#include "kalman.h"
+#include "main.h"
+#include "motor.h"
+#include "mpu6050.h"
+#include "pid.h"
+#include "pwm.h"
 
 /*==========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */

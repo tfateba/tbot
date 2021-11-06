@@ -36,8 +36,8 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ip_conf.h"
-#include "ip_motor.h"
+#include "conf.h"
+#include "motor.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

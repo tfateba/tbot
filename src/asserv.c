@@ -42,12 +42,12 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ip_conf.h"
-#include "ip_kalman.h"
-#include "ip_main.h"
-#include "ip_motor.h"
-#include "ip_mpu6050.h"
-#include "ip_pid.h"
+#include "conf.h"
+#include "kalman.h"
+#include "main.h"
+#include "motor.h"
+#include "mpu6050.h"
+#include "pid.h"
 
 /*==========================================================================*/
 /* Application macros.                                                      */

@@ -41,8 +41,8 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "ip_encoder.h"
-#include "ip_main.h"
+#include "encoder.h"
+#include "main.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */

@@ -65,25 +65,29 @@ endif
 #
 
 # Define project name here.
-PROJECT = ip
+PROJECT = tbot
 
-# Imported source files.
+# ChibiOS source path.
 CHIBIOS = ../trunk
+
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/boards/ARDUINO_MEGA/board.mk
 include $(CHIBIOS)/os/hal/ports/AVR/MEGA/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
+
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/AVR/compilers/GCC/mk/port.mk
+
 # Other files.
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
-# IP-Robot root directory 
-IPROBOT = ../ip_robot
-# Application files
-include $(IPROBOT)/mk/ip.mk
+# TBOT source path:
+TBOT = ../tbot
+
+# Application files:
+include $(TBOT)/mk/app.mk
 
 # List C source files here. (C dependencies are automatically generated.)
 CSRC =  $(KERNSRC)                      \
@@ -94,13 +98,13 @@ CSRC =  $(KERNSRC)                      \
         $(BOARDSRC)                     \
         $(STREAMSSRC)                   \
         $(CHIBIOS)/os/various/evtimer.c \
-        $(IPSRC)
+        $(TBOTSRC)
 
 # List C++ sources file here.
 CPPSRC =
 
 INCDIR =  $(CHIBIOS)/os/license $(PORTINC) $(KERNINC)  		\
-          $(HALINC) $(OSALINC) $(PLATFORMINC) $(IPINC)    \
+          $(HALINC) $(OSALINC) $(PLATFORMINC) $(TBOTINC)  \
           $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various
 
 #
@@ -226,7 +230,8 @@ AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
 RULESPATH = $(CHIBIOS)/os/common/ports/AVR/compilers/GCC
 include $(RULESPATH)/rules.mk
-include $(IPROBOT)/mk/myrules.mk
+include $(TBOT)/mk/myrules.mk
+
 #
 # End of include file.
 ##############################################################################
