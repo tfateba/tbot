@@ -27,7 +27,7 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT =
+  USE_CPPOPT =mcuconf.h
 endif
 
 # Enable this if you want to see the full log while compiling.
@@ -54,6 +54,21 @@ endif
 # If enabled, this option increase the programming verbosity level.
 ifeq ($(USE_VERBOSE_PROGRAMMATION),)
   USE_VERBOSE_PROGRAMMATION = no
+endif
+
+# Enable this if you want to use AVRDUDE programmer.
+ifeq ($(USE_AVRDUDE_PROGRAMMER),)
+  USE_AVRDUDE_PROGRAMMER = yes
+endif
+
+# Enable this if you want to use DFU programmer.
+ifeq ($(USE_DFU_PROGRAMMER),)
+  USE_DFU_PROGRAMMER = no
+endif
+
+# Enable this if you want to use MICRONUCLEUS programmer.
+ifeq ($(USE_MICRONUCLEUS_PROGRAMMER),)
+  USE_MICRONUCLEUS_PROGRAMMER = no
 endif
 
 #
@@ -187,14 +202,28 @@ ULIBS =
 # Start of programming Options (avrdude).
 #
 
-# AVR programmer.
-AVRDUDE_PROGRAMMER = wiring
+# List of available AVR programmer.
+AVRDUDE_PROGRAMMER    = avrdude
+#AVRDUDE_PROGRAMMER_ID = arduino
+AVRDUDE_PROGRAMMER_ID = wiring
+DFU_PROGRAMMER        = dfu-programmer
+MICRONUCLEUS          = micronucleus
+
+# Set the AVR programmer according to the selection..
+ifeq ($(USE_AVRDUDE_PROGRAMMER),yes)
+	AVR_PROGRAMMER = $(AVRDUDE_PROGRAMMER)
+else ifeq ($(USE_DFU_PROGRAMMER),yes)
+	AVR_PROGRAMMER = $(DFU_PROGRAMMER)
+else ifeq ($(USE_MICRONUCLEUS_PROGRAMMER),yes)
+	AVR_PROGRAMMER = $(MICRONUCLEUS_PROGRAMMER)
+else
+  $(error ERROR: Please you need to configure the AVR programmer!)
+endif
 
 # AVR serial port.
 AVRDUDE_PORT = /dev/ttyACM0
 
 AVRDUDE_WRITE_FLASH = -D -U flash:w:$(BUILDDIR)/$(PROJECT).hex
-#AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(BUILDDIR)/$(PROJECT).eep
 
 # Check if the counter cycle erase must be performed after device programming.
 ifeq ($(USE_AVRDUDE_ERASE_COUNTER),yes)
@@ -211,17 +240,37 @@ ifeq ($(USE_VERBOSE_PROGRAMMATION),yes)
 	AVRDUDE_VERBOSE = -v -v
 endif
 
-# AVR programmer flags.
-AVRDUDE_FLAGS = -p $(MCU)
+# AVR programmer flags for AVRDUDE programmer.
+ifeq ($(AVR_PROGRAMMER),$(AVRDUDE_PROGRAMMER))
+AVRDUDE_FLAGS =  -p $(MCU)
 AVRDUDE_FLAGS += -P $(AVRDUDE_PORT)
 AVRDUDE_FLAGS += -b 115200
-AVRDUDE_FLAGS += -c $(AVRDUDE_PROGRAMMER)
+AVRDUDE_FLAGS += -c $(AVRDUDE_PROGRAMMER_ID)
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
+endif
+
+# AVR programmer flags for DFU programmer.
+ifeq ($(AVR_PROGRAMMER),$(DFU_PROGRAMMER))
+DFU_WRITE_FLASH = flash --force
+DFU_ERASE_FLASH = erase
+DFU_RESET       = reset
+endif
+
+# AVR programmer flags for MICRONUCLEUS programmer.
+ifeq ($(AVR_PROGRAMMER),$(MICRONUCLEUS_PROGRAMMER))
+MICRONUCLEUS_TIMEOUT_ARG = --timeout 60
+MICRONUCLEUS_RUN_ARG  = --run
+MICRONUCLEUS_TYPE_ARG = --type raw
+MICRONUCLEUS_DUMP_PROGRESS = --dump-progress
+MICRONUCLEUS_FLAGS =  $(MICRONUCLEUS_TYPE_ARG)
+MICRONUCLEUS_FLAGS += $(MICRONUCLEUS_TIMEOUT_ARG)
+MICRONUCLEUS_FLAGS += $(MICRONUCLEUS_RUN_ARG)
+endif
 
 #
-# End of Programming Options (avrdude).
+# End of Programming Options.
 ##############################################################################
 
 ##############################################################################
@@ -235,5 +284,53 @@ include $(TBOT)/mk/myrules.mk
 #
 # End of include file.
 ##############################################################################
+
+##############################################################################
+# Programming rules
+#
+
+# AVRDUDE programming rules.
+ifeq ($(AVR_PROGRAMMER),$(AVRDUDE_PROGRAMMER))
+program: $(BUILDDIR)/$(PROJECT).hex
+	@echo
+	@echo Programming $(MCU) device.
+	$(AVR_PROGRAMMER) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $<
+	@echo Done.
+endif
+
+# DFU programming rules.
+ifeq ($(AVR_PROGRAMMER),$(DFU_PROGRAMMER))
+program: $(BUILDDIR)/$(PROJECT).hex
+	@echo
+	@echo Programming $(MCU) device.
+	$(AVR_PROGRAMMER) $(MCU) $(DFU_WRITE_FLASH) $<
+	$(AVR_PROGRAMMER) $(MCU) $(DFU_RESET)
+	@echo Done.
+
+erase:
+	@echo
+	@echo Erasing $(MCU) device.
+	$(AVR_PROGRAMMER) $(MCU) $(DFU_ERASE_FLASH)
+	@echo Done.
+endif
+
+# MICRONUCLEUS programming rules.
+ifeq ($(AVR_PROGRAMMER),$(MICRONUCLEUS_PROGRAMMER))
+program: $(BUILDDIR)/$(PROJECT).bin
+	@echo
+	@echo Programming $(MCU) device.
+	$(AVR_PROGRAMMER) $(MICRONUCLEUS_FLAGS) $<
+	@echo Done.
+endif
+
+#
+# End of programming rules.
+##############################################################################
+
+# TBOT
+#connect:
+#	@echo
+#	@echo Connect to TBOT robot
+#	picocom -b 115200 /dev/ttyACM0
 
 # EOF
