@@ -143,7 +143,7 @@ void pwmDisable(PWMDriver *pwmp) {
  */
 void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
 
-#if (DEBUG == TRUE || DEBUG_PWM == TRUE)
+#if (DEBUG == TRUE && DEBUG_PWM == TRUE)
   chprintf(chp, "pwm: %d\t", dutyCycle);
 #endif
 

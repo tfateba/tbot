@@ -49,9 +49,6 @@
 /* Application macros.                                                      */
 /*==========================================================================*/
 
-#define PI          3.14159265359
-#define RAD_TO_DEG  180/PI
-
 /*==========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations   */
 /*==========================================================================*/
@@ -66,7 +63,7 @@ bool  layingDown    = true;       /**< Robot position, down or not. */
 const float   dt = 0.01;          /**< Asservissement period. */
 
 /* Extern variables. */
-#if (DEBUG == TRUE || DEBUG_ASS == TRUE)
+#if (DEBUG == TRUE && DEBUG_ASS == TRUE)
 extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
 #endif
 
@@ -82,6 +79,16 @@ float turnSpeed = 0;              /**< Can be changed by the User. */
 
 float leftMeasuredSpeed  = 0;     /**< Left motor measured speed.  */
 float rightMeasuredSpeed = 0;     /**< Right motor measured speed. */
+bool printEnable = true;
+
+float positionL;
+float positionR;
+
+const float   R = 0.04;   // Radius of the wheel
+const float   PPR = 480;  // This was measured whit the wheels on the robot.
+
+#define PI          3.14159265359
+#define RAD_TO_DEG  180/PI
 
 /*==========================================================================*/
 /* Driver functions.                                                        */
@@ -122,7 +129,10 @@ void asserv(ROBOTDriver *rdp) {
      */
 
 #if (DEBUG == TRUE || DEBUG_ASS == TRUE)
-    chprintf(chp, "%s: The Robot is laying down.\n\r", __func__);
+    if (printEnable == true) {
+      chprintf(chp, "%s: The Robot is laying down.\n\r", __func__);
+      printEnable = false;
+    }
 #endif
 
     layingDown = true;
@@ -140,6 +150,7 @@ void asserv(ROBOTDriver *rdp) {
      * so we can try to stabilized the robot now.
      */
     layingDown = false;
+    printEnable = true;
 
     /* Four PID are used to stabilize the robot and control it:
      *
@@ -181,8 +192,12 @@ void asserv(ROBOTDriver *rdp) {
     /* Set power to the rigth motor. */
     motorMove(&rdp->motorRight);
 
-#if (DEBUG == TRUE || DEBUG_ASS == TRUE)
-    chprintf(chp, "%s: filtered pitch = %.3f\r\n", __func__, rdp->imu.pitch_k);
+#if (DEBUG == TRUE && DEBUG_ASS == TRUE)
+    //encoderGetDistance(&rdp->encoderLeft);
+    //encoderGetDistance(&rdp->encoderRight);
+    positionL = ((2*PI*R)/PPR)*rdp->encoderLeft.counter;
+    positionR = ((2*PI*R)/PPR)*rdp->encoderRight.counter;
+    chprintf(chp, "%s: encoderL = %ld, encoderR = %ld, positionL = %.3f, positionR = %.3f\r\n", __func__, rdp->encoderLeft.counter, rdp->encoderRight.counter, positionL, positionR);
 #endif
   }
 }

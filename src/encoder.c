@@ -58,7 +58,7 @@ extern ROBOTDriver tbot;
 /**
  * @brief   Left motor encoder external interrupt callback.
  */
-static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
+static void encoderLCallback(EXTDriver *extp, expchannel_t channel) {
 
   (void)extp;
   (void)channel;
@@ -66,9 +66,9 @@ static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B))
-    tbot.encoderLeft.counter--;
-  else
     tbot.encoderLeft.counter++;
+  else
+    tbot.encoderLeft.counter--;
 
   tbot.encoderLeft.statea = palReadPad(L_ENCODER_PORT_A, L_ENCODER_PIN_A);
   tbot.encoderLeft.stateb = palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B);
@@ -79,17 +79,17 @@ static void encoderLeftCallback(EXTDriver *extp, expchannel_t channel) {
 /**
  * @brief   Rigth motor encoder external interrupt callback.
  */
-static void encoderRightCallback(EXTDriver *extp, expchannel_t channel) {
+static void encoderRCallback(EXTDriver *extp, expchannel_t channel) {
 
   (void)extp;
   (void)channel;
 
   chSysLockFromISR();
 
-  if (palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A))
-    tbot.encoderRight.counter--;
-  else
+  if (palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B))
     tbot.encoderRight.counter++;
+  else
+    tbot.encoderRight.counter--;
 
   tbot.encoderRight.statea = palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A);
   tbot.encoderRight.stateb = palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B);
@@ -104,8 +104,8 @@ static const EXTConfig extcfg = {
   {
     {EXT_CH_MODE_DISABLED, NULL},                     /**< INT0 Config. */
     {EXT_CH_MODE_DISABLED, NULL},                     /**< INT1 Config. */
-    {EXT_CH_MODE_RISING_EDGE, encoderRightCallback},  /**< INT2 Config. */
-    {EXT_CH_MODE_RISING_EDGE, encoderLeftCallback},   /**< INT3 Config. */
+    {EXT_CH_MODE_RISING_EDGE, encoderRCallback},      /**< INT2 Config. */
+    {EXT_CH_MODE_RISING_EDGE, encoderLCallback},      /**< INT3 Config. */
     {EXT_CH_MODE_DISABLED, NULL},                     /**< INT4 Config. */
     {EXT_CH_MODE_DISABLED, NULL},                     /**< INT5 Config. */
   }
@@ -219,11 +219,11 @@ void encoderInit(ENCODERDriver *edp, ENCODERConfig cfg) {
 
 /**
  * @brief   Get the wheel velocity for asservissement routine.
- */
+ *//*
 void encoderGetWheelVelocity(void) {
 
-  static  bool    stopped       = true; /**< Breaking target position.  */
-  static  uint8_t loopCounter   = 0;    /**< Update wheel velocity.     */
+  static  bool    stopped       = true; // Breaking target position.
+  static  uint8_t loopCounter   = 0;    // Update wheel velocity.
 
   loopCounter++;
 
@@ -234,11 +234,11 @@ void encoderGetWheelVelocity(void) {
     lastWheelPosition = wheelPosition;
 
     if (abs(wheelVelocity) <= 20 && !stopped) {
-      /* Set new targetPosition if braking. */
+      // Set new targetPosition if braking.
       targetPosition = wheelPosition;
       stopped = true;
     }
   }
 }
-
+*/
 /** @} */

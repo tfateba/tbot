@@ -43,11 +43,11 @@
 #define L_ENCODER_PIN_B    PG5      /**< Left encoder B pin.                */
 #define L_ENCODER_EXT_INT  INT3     /**< Left encoder external isr pin.     */
 
-#define R_ENCODER_PORT_B   IOPORT5  /**< Right encoder B port.              */
 #define R_ENCODER_PORT_A   IOPORT4  /**< Right encoder A port.              */
-#define R_ENCODER_EXT_INT  INT2     /**< Right encoder external isr pin.    */
+#define R_ENCODER_PORT_B   IOPORT5  /**< Right encoder B port.              */
 #define R_ENCODER_PIN_A    PD2      /**< Right encoder A pin.               */
 #define R_ENCODER_PIN_B    PE3      /**< Right encoder B pin.               */
+#define R_ENCODER_EXT_INT  INT2     /**< Right encoder external isr pin.    */
 
 /**
  * @brief Encoders identifier enumerations
@@ -74,7 +74,7 @@ typedef struct {
  */
 typedef struct {
   ENCODERConfig config;
-  long          counter;  /**< Rigth encoder counter.                       */
+  volatile long          counter;  /**< Rigth encoder counter.                       */
   bool          statea;   /**< Left motor encoder A.                        */
   bool          stateb;   /**< Left motor encoder B.                        */
 } ENCODERDriver;
@@ -91,7 +91,7 @@ bool encoderReadLeftStateA(void);
 bool encoderReadLeftStateB(void);
 bool encoderReadRightStateA(void);
 bool encoderReadRightStateB(void);
-void encoderGetWheelVelocity(void);
+//void encoderGetWheelVelocity(void);
 void encoderInit(ENCODERDriver *edp, ENCODERConfig cfg);
 
 #ifdef __cplusplus

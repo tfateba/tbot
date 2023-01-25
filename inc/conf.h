@@ -47,9 +47,9 @@
 /**
  * @brief   Available debug level.
  */
-#define DEBUG     FALSE   /**< Debug activation in all source files.        */
+#define DEBUG     TRUE   /**< Debug activation in all source files.        */
 #define DEBUG_MAI FALSE   /**< Debug activation in main file.               */
-#define DEBUG_ASS FALSE   /**< Debug activation in asserv file              */
+#define DEBUG_ASS TRUE   /**< Debug activation in asserv file              */
 #define DEBUG_ENC FALSE   /**< Debug activation in asserv file              */
 #define DEBUG_PID FALSE   /**< Debug activation in pid file.                */
 #define DEBUG_MOT FALSE   /**< Debug activation in Motor file.              */

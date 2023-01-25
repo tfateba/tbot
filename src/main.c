@@ -255,7 +255,7 @@ int main(void) {
 #endif
 
   /* Start MPU calibration process. */
-  mpu6050Calibration(&I2CD1, &tbot.imu);
+  //mpu6050Calibration(&I2CD1, &tbot.imu);
 
 #if (DEBUG == TRUE || DEBUG_MAI == TRUE)
   chprintf(chp, "\n\r%s: IMU sensor calibration done.", __func__);
