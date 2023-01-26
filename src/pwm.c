@@ -41,7 +41,7 @@
 const uint16_t maxPwmValue = 512; /**< Max PWM value.                       */
 
 /* Extern variables. */
-#if (DEBUG == TRUE || DEBUG_PWM == TRUE)
+#if (DEBUG_PWM)
 extern BaseSequentialStream*  chp;
 #endif
 
@@ -143,7 +143,7 @@ void pwmDisable(PWMDriver *pwmp) {
  */
 void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
 
-#if (DEBUG == TRUE && DEBUG_PWM == TRUE)
+#if (DEBUG_PWM)
   chprintf(chp, "pwm: %d\t", dutyCycle);
 #endif
 
@@ -172,4 +172,5 @@ void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
     }
   }
 }
+
 /** @} */

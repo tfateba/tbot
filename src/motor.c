@@ -55,7 +55,7 @@
 
 const uint16_t  maxSpeedValue = 512;  /**< Robot maximum speed value.       */
 
-#if (DEBUG == TRUE || DEBUG_MOT == TRUE)
+#if (DEBUG_MOTOR)
 extern BaseSequentialStream* chp;
 #endif
 

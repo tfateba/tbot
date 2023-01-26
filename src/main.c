@@ -48,7 +48,7 @@
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
 /*==========================================================================*/
 
-BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
+BaseSequentialStream* chp = (BaseSequentialStream*) &SD1;/**< Pointer for
                                                                 the serial
                                                                 stream to
                                                                 output the
@@ -56,6 +56,8 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1; /**< Pointer for
                                                                 USB connector
                                                                 of the arduino
                                                                 board.      */
+
+#define pr_debug(x) chprintf(chp, x)
 
 ROBOTDriver tbot;
 
@@ -184,82 +186,72 @@ int main(void) {
   /* Stop beep. */
   buzzerStopSound();
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
+#if (DEBUG_MAIN)
   /* TODO: Make a function, so that the code will be more clear. */
-  chprintf(chp, "\n\r");
-  chprintf_g(chp, "\n\r   IP-Robot logo.");
-  chprintf_c(chp, "\n\r    _                    _           _");
-  chprintf_c(chp, "\n\r   (_)                  | |         | |");
-  chprintf_c(chp, "\n\r    _ _ __     _ __ ___ | |__   ___ | |_");
-  chprintf_c(chp, "\n\r   | | '_ \\   | '__/ _ \\| '_ \\ / _ \\| __|");
-  chprintf_c(chp, "\n\r   | | |_) |  | | | (_) | |_) | (_) | |_");
-  chprintf_c(chp, "\n\r   |_| .__/   |_|  \\___/|_.__/ \\___/ \\__|");
-  chprintf_c(chp, "\n\r     | |");
-  chprintf_c(chp, "\n\r     |_|");
+  pr_debug("\n\r");
+  pr_debug("\n\r");
+  pr_debug("\n\r    _   _           _");
+  pr_debug("\n\r   | | | |         | |");
+  pr_debug("\n\r   | |_| |__   ___ | |_");
+  pr_debug("\n\r   | __| '_ \\ / _ \\| __|");
+  pr_debug("\n\r   | |_| |_) | (_) | |_");
+  pr_debug("\n\r    \\__|_.__/ \\___/ \\__|");
 
-  chprintf(chp, "\n\r");
-  chprintf_g(chp, "\n\r   General informations.");
-  chprintf(chp, "\n\r ip-robot is Inverted Pendulum Robot.");
-  chprintf(chp, "\n\r Made by Theodore Ateba (tfateba), tf.ateba@gmail.com");
-  chprintf(chp, "\n\r The robot is controlled with ChibiOS/RT v16.1.5");
-  chprintf(chp, "\n\r The target board is an Arduino Mega.");
-  chprintf(chp, "\n\r The microcontroller is an ATMEGA2560.");
-  chprintf(chp, "\n\r Copyrigth: 2015...2017");
+  pr_debug("\n\r");
+  pr_debug("\n\rInverted Pendulum Robot");
+  pr_debug("\n\rMade by tfateba, tf.ateba@gmail.com");
+  pr_debug("\n\rControlled with ChibiOS/RT (trunk)");
+  pr_debug("\n\rTarget board is an Arduino Mega");
+  pr_debug("\n\rCopyrigth: 2015...2023");
 
-  chprintf(chp, "\n\r");
-  chprintf_g(chp, "\n\r   IP-Robot initialization.");
-  chprintf(chp, "\n\r%s: Initialization of Inverted pendulum Robot started:",
-  __func__);
-  chprintf(chp, "\n\r%s: Serial driver initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+  pr_debug("\n\r");
+  pr_debug("\n\rInitialization started...");
+  //chThdSleepMilliseconds(10);
 #endif
 
   /* Turn off the debug LED. */
   palClearPad(IOPORT2, PORTB_LED1);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: On-board LED initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rOn-board LED initialization done");
+  //chThdSleepMilliseconds(10);
 #endif
 
   /* Start I2C interface. */
   i2cStart(&I2CD1, &i2cConfig);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: I2C bus interface initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rI2C bus interface initialization done");
+  //chThdSleepMilliseconds(10);
 #endif
 
   /* Init Kalman filter. */
   kalmanInit();
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Kalman filter initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rKalman filter initialization done");
+  //chThdSleepMilliseconds(10);
 #endif
 
   /* Init MPU module. */
    msg = mpu6050Init(&I2CD1, &tbot.imu, MPU6050_ADDR);
 
   if (msg != MSG_OK) {
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-    chprintf_r(chp, "\n\r Error while initialising the IMU.");
+#if (DEBUG_MAIN)
+    pr_debug("\n\r Error while initialising the IMU");
 #endif
     return -1;
   }
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: IMU sensor initialization started, please wait...",
-  __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rIMU sensor initialization started, please wait...");
 #endif
 
   /* Start MPU calibration process. */
   //mpu6050Calibration(&I2CD1, &tbot.imu);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: IMU sensor calibration done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rIMU sensor calibration done");
 #endif
 
   /* Init PID controller. */
@@ -267,72 +259,53 @@ int main(void) {
   pidInit(&tbot.pidAngle, 55.468, 0.554, 42.524); /* PID  */
 
   /* OK, but the PID still need to be tuned.  */
-  /* TODO: motorLeftPid ==> must be rename pidLeftMotor.   */
   pidInit(&tbot.pidMotorLeft,  1, 0, 0);
-  /* TODO: motorRightPid ==> must be rename pidRightMotor.  */
   pidInit(&tbot.pidMotorRight, 1, 0, 0);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: PID initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rPID initialization done");
 #endif
 
   /* Init Motors. */
   motorInit(&tbot.motorLeft, motorLeftConfig);
   motorInit(&tbot.motorRight, motorRightConfig);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Motors initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rMotors initialization done");
 #endif
 
   /* Init Encoders. */
   encoderInit(&tbot.encoderRight, encoderRightConfig);
   encoderInit(&tbot.encoderLeft, encoderLeftConfig);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Encoder initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rEncoder initialization done");
 #endif
 
   /* Init PWM modules. */
   pwmInits();
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: PWM initialization done.", __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rPWM initialization done");
 #endif
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Buzzer initialization done.",
-  __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rBuzzer initialization done");
 #endif
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Inverted Pendulum Robot initialization done.",
-  __func__);
-  chThdSleepMilliseconds(10);
+#if (DEBUG_MAIN)
+  pr_debug("\n\rInverted Pendulum Robot initialization done");
+  pr_debug("\n\rBlink and Asservissement thread will be created and started");
 #endif
 
   /* Create and starts the LED blinker thread. */
   chThdCreateStatic(waBlink, sizeof(waBlink), NORMALPRIO + 4, blinkThd, NULL);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r");
-  chprintf_g(chp, "\n\r   Threads creation.");
-  chprintf(chp, "\n\r%s: Create Blink thread.", __func__);
-  chThdSleepMilliseconds(10);
-#endif
-
   /* Create and starts asservissement thread. */
   chThdCreateStatic(waAsser, sizeof(waAsser), NORMALPRIO + 8, asserThd, NULL);
 
-#if (DEBUG == TRUE || DEBUG_MAI == TRUE)
-  chprintf(chp, "\n\r%s: Create Asservissement thread.", __func__);
-  chThdSleepMilliseconds(10);
-  chprintf(chp, "\n\r");
-  chprintf_g(chp, "\n\r   Application is started.");
+#if (DEBUG_MAIN)
+  pr_debug("\n\rApplication started");
 #endif
 
   while (TRUE) {

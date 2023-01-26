@@ -28,6 +28,7 @@
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
+#include "chprintf.h"
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
@@ -42,21 +43,21 @@
 #define chprintf_b(x, y)  chprintf(x, "\x1b[34m" y "\x1b[0m") /**< Blue.    */
 #define chprintf_m(x, y)  chprintf(x, "\x1b[35m" y "\x1b[0m") /**< Magenta. */
 #define chprintf_c(x, y)  chprintf(x, "\x1b[36m" y "\x1b[0m") /**< Cyant.   */
-#define chprintf_w(x, y)  chprintf(x, "\x1b[0m" y "\x1b[0m")  /**< White.   */
+#define chprintf_w(x, y)  chprintf(x, "\x1b[0m"  y "\x1b[0m")  /**< White.   */
 
 /**
  * @brief   Available debug level.
  */
-#define DEBUG     TRUE   /**< Debug activation in all source files.        */
-#define DEBUG_MAI FALSE   /**< Debug activation in main file.               */
-#define DEBUG_ASS TRUE   /**< Debug activation in asserv file              */
-#define DEBUG_ENC FALSE   /**< Debug activation in asserv file              */
-#define DEBUG_PID FALSE   /**< Debug activation in pid file.                */
-#define DEBUG_MOT FALSE   /**< Debug activation in Motor file.              */
-#define DEBUG_KAL FALSE   /**< Debug activation in Kalman filter file.      */
-#define DEBUG_PWM FALSE   /**< Debug activation in PWM file.                */
-#define DEBUG_I2C FALSE   /**< Debug activation in I2C file.                */
-#define DABUG_MPU FALSE   /**< Debug activation in MPU6050 file.            */
+#define DEBUG           FALSE   /**< Debug activation in all source files.  */
+#define DEBUG_MAIN      TRUE    /**< Debug activation in main file.         */
+#define DEBUG_ASSERV    TRUE    /**< Debug activation in asserv file        */
+#define DEBUG_ENCODER   FALSE   /**< Debug activation in asserv file        */
+#define DEBUG_PID       FALSE   /**< Debug activation in pid file.          */
+#define DEBUG_MOTOR     FALSE   /**< Debug activation in Motor file.        */
+#define DEBUG_KALMAN    FALSE   /**< Debug activation in Kalman filter file.*/
+#define DEBUG_PWM       FALSE   /**< Debug activation in PWM file.          */
+#define DEBUG_I2C       FALSE   /**< Debug activation in I2C file.          */
+#define DABUG_MPU       FALSE   /**< Debug activation in MPU6050 file.      */
 
 /*==========================================================================*/
 /* External declarations.                                                   */

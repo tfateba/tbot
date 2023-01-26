@@ -63,7 +63,7 @@ bool  layingDown    = true;       /**< Robot position, down or not. */
 const float   dt = 0.01;          /**< Asservissement period. */
 
 /* Extern variables. */
-#if (DEBUG == TRUE && DEBUG_ASS == TRUE)
+#if (DEBUG_ASSERV)
 extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
 #endif
 
@@ -107,7 +107,7 @@ void asserv(ROBOTDriver *rdp) {
   msg = mpu6050GetData(&I2CD1, &rdp->imu);
 
   if (msg != MSG_OK) {
-#if (DEBUG == TRUE || DEBUG_ASS == TRUE)
+#if (DEBUG_ASSERV)
     chprintf(chp, "\n\r %s: Error while reading the MPU6050 sensor data.",
               __func__);
 #endif
@@ -128,7 +128,7 @@ void asserv(ROBOTDriver *rdp) {
      * wait until it's vertical again.
      */
 
-#if (DEBUG == TRUE || DEBUG_ASS == TRUE)
+#if (DEBUG_ASSERV)
     if (printEnable == true) {
       chprintf(chp, "%s: The Robot is laying down.\n\r", __func__);
       printEnable = false;
@@ -164,7 +164,8 @@ void asserv(ROBOTDriver *rdp) {
 
     /* Update the speed PID. */
     rdp->pidSpeed.consigne = consigneSpeed;  /* Distance setpoint.  */
-    rdp->pidSpeed.measure  = speedMean;      /* Distance feedback.  */
+    rdp->pidSpeed.measure  = speedMean;      /* Distanc    //encoderGetDistance(&rdp->encoderLeft);
+    //encoderGetDistance(&rdp->encoderRight);e feedback.  */
     pidCompute(&rdp->pidSpeed);              /* Set the PID output. */
 
     /* Update the angle PID. */
@@ -192,12 +193,12 @@ void asserv(ROBOTDriver *rdp) {
     /* Set power to the rigth motor. */
     motorMove(&rdp->motorRight);
 
-#if (DEBUG == TRUE && DEBUG_ASS == TRUE)
+#if (DEBUG_ASSERV)
     //encoderGetDistance(&rdp->encoderLeft);
     //encoderGetDistance(&rdp->encoderRight);
     positionL = ((2*PI*R)/PPR)*rdp->encoderLeft.counter;
     positionR = ((2*PI*R)/PPR)*rdp->encoderRight.counter;
-    chprintf(chp, "%s: encoderL = %ld, encoderR = %ld, positionL = %.3f, positionR = %.3f\r\n", __func__, rdp->encoderLeft.counter, rdp->encoderRight.counter, positionL, positionR);
+    chprintf(chp, "%s: angle = %.3f, distanceL = %.3f, distanceR = %.3f\r\n", __func__, rdp->pidAngle.measure, positionL, positionR);
 #endif
   }
 }
