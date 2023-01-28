@@ -36,27 +36,11 @@
 
 /* ChibiOS files. */
 #include "hal.h"
+#include "conf.h"
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
-
-#define MOTOR_MAX_SPEED         255
-#define L_MOTOR_FORWARD_PORT    IOPORT5 /**< Left motor forward port.       */
-#define L_MOTOR_BACKWARD_PORT   IOPORT5 /**< Left motor backward port.      */
-#define L_MOTOR_ENABLE_PORT     IOPORT2 /**< Left motor enable port.        */
-
-#define L_MOTOR_FORWARD_PIN     PE5     /**< Left motor forward pin.        */
-#define L_MOTOR_BACKWARD_PIN    PE4     /**< Left motor backwad pin.        */
-#define L_MOTOR_ENABLE_PIN      PB5     /**< Left motor enable pin.         */
-
-#define R_MOTOR_FORWARD_PORT    IOPORT8 /**< Right motor forward port.      */
-#define R_MOTOR_BACKWARD_PORT   IOPORT8 /**< Right motor backward port.     */
-#define R_MOTOR_ENABLE_PORT     IOPORT8 /**< Right motor enable port.       */
-
-#define R_MOTOR_FORWARD_PIN     PH3     /**< Right motor forward pin.       */
-#define R_MOTOR_BACKWARD_PIN    PH5     /**< Right motor backward pin.      */
-#define R_MOTOR_ENABLE_PIN      PH4     /**< Right motor enable pin.        */
 
 /**
  * @brief Motors identifier enumeration.

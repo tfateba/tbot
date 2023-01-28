@@ -33,22 +33,6 @@
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
-/* Arduino Interruption */
-#define INT2 2      /**< ISR, D19 [PD2], BLACK wire motor Right.            */
-#define INT3 3      /**< ISR, D18 [PD3], RED wire Motor Left.               */
-
-#define L_ENCODER_PORT_A   IOPORT4  /**< Left encoder A port.               */
-#define L_ENCODER_PORT_B   IOPORT7  /**< Left encoder B port.               */
-#define L_ENCODER_PIN_A    PD3      /**< Left encoder A pin.                */
-#define L_ENCODER_PIN_B    PG5      /**< Left encoder B pin.                */
-#define L_ENCODER_EXT_INT  INT3     /**< Left encoder external isr pin.     */
-
-#define R_ENCODER_PORT_A   IOPORT4  /**< Right encoder A port.              */
-#define R_ENCODER_PORT_B   IOPORT5  /**< Right encoder B port.              */
-#define R_ENCODER_PIN_A    PD2      /**< Right encoder A pin.               */
-#define R_ENCODER_PIN_B    PE3      /**< Right encoder B pin.               */
-#define R_ENCODER_EXT_INT  INT2     /**< Right encoder external isr pin.    */
-
 /**
  * @brief Encoders identifier enumerations
  */

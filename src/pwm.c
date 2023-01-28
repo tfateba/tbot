@@ -33,6 +33,7 @@
 /* Project files. */
 #include "conf.h"
 #include "motor.h"
+#include "hardware.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */
@@ -148,7 +149,7 @@ void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
 #endif
 
   if (mid == MOTOR_L) {
-    palSetPad(L_MOTOR_ENABLE_PORT, L_MOTOR_ENABLE_PIN);
+    palSetPad(L_MOTOR_PORT_ENABLE, L_MOTOR_PIN_ENABLE);
 
     if (dir == MOTOR_DIR_F) {
       pwmSetPulseWidth(&PWMD4, 0, maxPwmValue);
@@ -160,7 +161,7 @@ void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
     }
   }
   else if (mid == MOTOR_R) {
-    palSetPad(R_MOTOR_ENABLE_PORT, R_MOTOR_ENABLE_PIN);
+    palSetPad(R_MOTOR_PORT_ENABLE, R_MOTOR_PIN_ENABLE);
 
     if (dir == MOTOR_DIR_F) {
       pwmSetPulseWidth(&PWMD3, 1, maxPwmValue);

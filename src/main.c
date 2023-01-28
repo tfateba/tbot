@@ -43,6 +43,7 @@
 #include "mpu6050.h"
 #include "pid.h"
 #include "pwm.h"
+#include "hardware.h"
 
 /*==========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
@@ -64,23 +65,23 @@ ROBOTDriver tbot;
 static MOTORConfig motorLConfig = {
   MOTOR_L,                /**< Motor ID.            */
   MOTOR_MAX_SPEED,        /**< Motor max speed.     */
-  L_MOTOR_FORWARD_PORT,   /**< Motor Forward  port. */
-  L_MOTOR_BACKWARD_PORT,  /**< Motor Backward port. */
-  L_MOTOR_ENABLE_PORT,    /**< Motor Enable   port. */
-  L_MOTOR_FORWARD_PIN,    /**< Motor Forwxard pin.  */
-  L_MOTOR_BACKWARD_PIN,   /**< Motor Backward pin.  */
-  L_MOTOR_ENABLE_PIN,     /**< Motor enable   pin.  */
+  L_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
+  L_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
+  L_MOTOR_PORT_ENABLE,    /**< Motor Enable   port. */
+  L_MOTOR_PIN_FORWARD,    /**< Motor Forwxard pin.  */
+  L_MOTOR_PIN_BACKWARD,   /**< Motor Backward pin.  */
+  L_MOTOR_PIN_ENABLE,     /**< Motor enable   pin.  */
 };
 
 static MOTORConfig motorRConfig = {
   MOTOR_R,                /**< Motor ID.            */
   MOTOR_MAX_SPEED,        /**< Motor max speed.     */
-  R_MOTOR_FORWARD_PORT,   /**< Motor Forward  port. */
-  R_MOTOR_BACKWARD_PORT,  /**< Motor Backward port. */
-  R_MOTOR_ENABLE_PORT,    /**< Motor Enable   port. */
-  R_MOTOR_FORWARD_PIN,    /**< Motor Forwxard pin.  */
-  R_MOTOR_BACKWARD_PIN,   /**< Motor Backward pin.  */
-  R_MOTOR_ENABLE_PIN,     /**< Motor enable   pin.  */
+  R_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
+  R_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
+  R_MOTOR_PORT_ENABLE,    /**< Motor Enable   port. */
+  R_MOTOR_PIN_FORWARD,    /**< Motor Forwxard pin.  */
+  R_MOTOR_PIN_BACKWARD,   /**< Motor Backward pin.  */
+  R_MOTOR_PIN_ENABLE,     /**< Motor enable   pin.  */
 };
 
 /* Left encoder Config. */

@@ -38,6 +38,7 @@
 /* Project files. */
 #include "encoder.h"
 #include "main.h"
+#include "hardware.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */
