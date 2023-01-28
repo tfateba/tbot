@@ -61,10 +61,9 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1;/**< Pointer for
 
 ROBOTDriver tbot;
 
-static MOTORConfig motorLeftConfig = {
+static MOTORConfig motorLConfig = {
   MOTOR_L,                /**< Motor ID.            */
-  /* TODO: Make a define for this parameter. */
-  255,                    /**< Motor max speed.     */
+  MOTOR_MAX_SPEED,        /**< Motor max speed.     */
   L_MOTOR_FORWARD_PORT,   /**< Motor Forward  port. */
   L_MOTOR_BACKWARD_PORT,  /**< Motor Backward port. */
   L_MOTOR_ENABLE_PORT,    /**< Motor Enable   port. */
@@ -73,9 +72,9 @@ static MOTORConfig motorLeftConfig = {
   L_MOTOR_ENABLE_PIN,     /**< Motor enable   pin.  */
 };
 
-static MOTORConfig motorRightConfig = {
+static MOTORConfig motorRConfig = {
   MOTOR_R,                /**< Motor ID.            */
-  255,                    /**< Motor max speed.     */
+  MOTOR_MAX_SPEED,        /**< Motor max speed.     */
   R_MOTOR_FORWARD_PORT,   /**< Motor Forward  port. */
   R_MOTOR_BACKWARD_PORT,  /**< Motor Backward port. */
   R_MOTOR_ENABLE_PORT,    /**< Motor Enable   port. */
@@ -85,7 +84,7 @@ static MOTORConfig motorRightConfig = {
 };
 
 /* Left encoder Config. */
-static ENCODERConfig encoderLeftConfig = {
+static ENCODERConfig encoderLConfig = {
   ENCODER_L,         /**< Encoderr identifier.         */
   L_ENCODER_EXT_INT, /**< External interrupt channel.  */
   L_ENCODER_PORT_A,  /**< Port A.                      */
@@ -95,7 +94,7 @@ static ENCODERConfig encoderLeftConfig = {
 };
 
 /* Rigth encoder Config. */
-static ENCODERConfig encoderRightConfig = {
+static ENCODERConfig encoderRConfig = {
   ENCODER_R,         /**< Encoderr identifier.         */
   R_ENCODER_EXT_INT, /**< External interrupt channel.  */
   R_ENCODER_PORT_A,  /**< Port A.                      */
@@ -206,7 +205,6 @@ int main(void) {
 
   pr_debug("\n\r");
   pr_debug("\n\rInitialization started...");
-  //chThdSleepMilliseconds(10);
 #endif
 
   /* Turn off the debug LED. */
@@ -214,7 +212,6 @@ int main(void) {
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rOn-board LED initialization done");
-  //chThdSleepMilliseconds(10);
 #endif
 
   /* Start I2C interface. */
@@ -222,7 +219,6 @@ int main(void) {
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rI2C bus interface initialization done");
-  //chThdSleepMilliseconds(10);
 #endif
 
   /* Init Kalman filter. */
@@ -230,7 +226,6 @@ int main(void) {
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rKalman filter initialization done");
-  //chThdSleepMilliseconds(10);
 #endif
 
   /* Init MPU module. */
@@ -254,29 +249,31 @@ int main(void) {
   pr_debug("\n\rIMU sensor calibration done");
 #endif
 
-  /* Init PID controller. */
-  pidInit(&tbot.pidSpeed, 0, 0, 0); /* PI */
+  /* Init Position PID controller. */
+  pidInit(&tbot.pidPosition, 0, 0, 0); /* PI */
+
+  /* Init Angle PID controller.  */
   pidInit(&tbot.pidAngle, 55.468, 0.554, 42.524); /* PID  */
 
-  /* OK, but the PID still need to be tuned.  */
-  pidInit(&tbot.pidMotorLeft,  1, 0, 0);
-  pidInit(&tbot.pidMotorRight, 1, 0, 0);
+  /* Init motors PID controllers.  */
+  pidInit(&tbot.pidMotorL, 1, 0, 0);
+  pidInit(&tbot.pidMotorR, 1, 0, 0);
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rPID initialization done");
 #endif
 
   /* Init Motors. */
-  motorInit(&tbot.motorLeft, motorLeftConfig);
-  motorInit(&tbot.motorRight, motorRightConfig);
+  motorInit(&tbot.motorL, motorLConfig);
+  motorInit(&tbot.motorR, motorRConfig);
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rMotors initialization done");
 #endif
 
   /* Init Encoders. */
-  encoderInit(&tbot.encoderRight, encoderRightConfig);
-  encoderInit(&tbot.encoderLeft, encoderLeftConfig);
+  encoderInit(&tbot.encoderR, encoderRConfig);
+  encoderInit(&tbot.encoderL, encoderLConfig);
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rEncoder initialization done");
@@ -287,10 +284,6 @@ int main(void) {
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rPWM initialization done");
-#endif
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rBuzzer initialization done");
 #endif
 
 #if (DEBUG_MAIN)

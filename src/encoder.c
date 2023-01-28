@@ -66,12 +66,12 @@ static void encoderLCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B))
-    tbot.encoderLeft.counter++;
+    tbot.encoderL.counter++;
   else
-    tbot.encoderLeft.counter--;
+    tbot.encoderL.counter--;
 
-  tbot.encoderLeft.statea = palReadPad(L_ENCODER_PORT_A, L_ENCODER_PIN_A);
-  tbot.encoderLeft.stateb = palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B);
+  tbot.encoderL.statea = palReadPad(L_ENCODER_PORT_A, L_ENCODER_PIN_A);
+  tbot.encoderL.stateb = palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B);
 
   chSysUnlockFromISR();
 }
@@ -87,12 +87,12 @@ static void encoderRCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B))
-    tbot.encoderRight.counter++;
+    tbot.encoderR.counter++;
   else
-    tbot.encoderRight.counter--;
+    tbot.encoderR.counter--;
 
-  tbot.encoderRight.statea = palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A);
-  tbot.encoderRight.stateb = palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B);
+  tbot.encoderR.statea = palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A);
+  tbot.encoderR.stateb = palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B);
 
   chSysUnlockFromISR();
 }
@@ -124,7 +124,7 @@ bool encoderReadLeftStateA(void) {
 
   bool ret;
 
-  if (tbot.encoderLeft.statea)
+  if (tbot.encoderL.statea)
     ret = 1;
   else
     ret = 0;
@@ -141,7 +141,7 @@ bool encoderReadLeftEncoderStateB(void) {
 
   bool ret;
 
-  if (tbot.encoderLeft.stateb)
+  if (tbot.encoderL.stateb)
     ret = 1;
   else
     ret = 0;
@@ -158,7 +158,7 @@ bool encoderReadRightStateA(void) {
 
   bool ret;
 
-  if (tbot.encoderRight.statea)
+  if (tbot.encoderR.statea)
     ret = 1;
   else
     ret = 0;
@@ -175,7 +175,7 @@ bool encoderReadRightStateB(void) {
 
   bool ret;
 
-  if (tbot.encoderRight.stateb)
+  if (tbot.encoderR.stateb)
     ret = 1;
   else
     ret = 0;

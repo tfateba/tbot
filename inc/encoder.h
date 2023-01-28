@@ -74,7 +74,7 @@ typedef struct {
  */
 typedef struct {
   ENCODERConfig config;
-  volatile long          counter;  /**< Rigth encoder counter.                       */
+  volatile long counter;  /**< Rigth encoder counter.                       */
   bool          statea;   /**< Left motor encoder A.                        */
   bool          stateb;   /**< Left motor encoder B.                        */
 } ENCODERDriver;

@@ -44,18 +44,18 @@
  */
 struct ROBOTDriver {
 
-  MPU6050Driver imu;          /**< Robot IMU. */
+  MPU6050Driver imu;            /**< Robot IMU.                             */
 
-  PIDDriver pidSpeed;         /**< must be pidSpeed. */
-  PIDDriver pidAngle;         /**< Must be pidAngle. */
-  PIDDriver pidMotorLeft;     /**< TODO: must be pidLeftMotor. */
-  PIDDriver pidMotorRight;    /**< TODO: must be pidRightMotor. */
+  PIDDriver     pidPosition;    /**< must be pidSpeed.                      */
+  PIDDriver     pidAngle;       /**< Must be pidAngle.                      */
+  PIDDriver     pidMotorL;      /**< TODO: must be pidLeftMotor.            */
+  PIDDriver     pidMotorR;      /**< TODO: must be pidRightMotor.           */
 
-  MOTORDriver   motorLeft;    /**< Robot left  motor. */
-  MOTORDriver   motorRight;   /**< Robot rigth motor. */
+  MOTORDriver   motorL;         /**< Robot left  motor.                     */
+  MOTORDriver   motorR;         /**< Robot rigth motor.                     */
 
-  ENCODERDriver encoderLeft;  /**< Robot left  encoder. */
-  ENCODERDriver encoderRight; /**< Robot rigth encoder. */
+  ENCODERDriver encoderL;       /**< Robot left  encoder.                   */
+  ENCODERDriver encoderR;       /**< Robot rigth encoder.                   */
 };
 
 /**

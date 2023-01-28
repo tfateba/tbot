@@ -49,7 +49,7 @@
  * @brief   Available debug level.
  */
 #define DEBUG           FALSE   /**< Debug activation in all source files.  */
-#define DEBUG_MAIN      TRUE    /**< Debug activation in main file.         */
+#define DEBUG_MAIN      FALSE    /**< Debug activation in main file.         */
 #define DEBUG_ASSERV    TRUE    /**< Debug activation in asserv file        */
 #define DEBUG_ENCODER   FALSE   /**< Debug activation in asserv file        */
 #define DEBUG_PID       FALSE   /**< Debug activation in pid file.          */

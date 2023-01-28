@@ -68,21 +68,16 @@ extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
 #endif
 
 /* Inputs for Speed PID. */
-float consigneSpeed = 0;          /**< The robot target speed. */
-float speedMean     = 0;          /**< Left and right motor speed mean. */
+float targetPosition    = 0;      /**< The robot target position. */
 
 /* Inputs for Angle PID. */
-const float consigneAngle = 180;  /**< The robot target angle. */
+const float targetAngle = 180;  /**< The robot target angle. */
 float measuredAngle       = 0;    /**< Result of IMU and Kalman filter. */
 
-float turnSpeed = 0;              /**< Can be changed by the User. */
-
-float leftMeasuredSpeed  = 0;     /**< Left motor measured speed.  */
-float rightMeasuredSpeed = 0;     /**< Right motor measured speed. */
 bool printEnable = true;
 
-float positionL;
-float positionR;
+float positionLMeasured;
+float positionRMeasured;
 
 const float   R = 0.04;   // Radius of the wheel
 const float   PPR = 480;  // This was measured whit the wheels on the robot.
@@ -136,12 +131,12 @@ void asserv(ROBOTDriver *rdp) {
 #endif
 
     layingDown = true;
-    motorStop(&rdp->motorLeft);
-    motorStop(&rdp->motorRight);
-    pidResetParameters(&rdp->pidSpeed);
+    motorStop(&rdp->motorL);
+    motorStop(&rdp->motorR);
+    pidResetParameters(&rdp->pidPosition);
     pidResetParameters(&rdp->pidAngle);
-    pidResetParameters(&rdp->pidMotorLeft);
-    pidResetParameters(&rdp->pidMotorRight);
+    pidResetParameters(&rdp->pidMotorL);
+    pidResetParameters(&rdp->pidMotorR);
   }
   else {
 
@@ -161,44 +156,45 @@ void asserv(ROBOTDriver *rdp) {
      */
 
     /* TODO: motor speed must be measure. */
+    positionLMeasured = ((2*PI*R)/PPR)*rdp->encoderL.counter;
+    positionRMeasured = ((2*PI*R)/PPR)*rdp->encoderR.counter;
 
-    /* Update the speed PID. */
-    rdp->pidSpeed.consigne = consigneSpeed;  /* Distance setpoint.  */
-    rdp->pidSpeed.measure  = speedMean;      /* Distanc    //encoderGetDistance(&rdp->encoderLeft);
-    //encoderGetDistance(&rdp->encoderRight);e feedback.  */
-    pidCompute(&rdp->pidSpeed);              /* Set the PID output. */
+    /* Update the Position PID. */
+    rdp->pidPosition.consigne = targetPosition;     /* Distance setpoint.   */
+    rdp->pidPosition.measure  = ((positionRMeasured + positionLMeasured)/2);  /* Distance measured.   */
+    pidCompute(&rdp->pidPosition);                  /* Set the PID output.  */
 
-    /* Update the angle PID. */
-    rdp->pidAngle.consigne = consigneAngle + rdp->pidSpeed.output;
+    /* Update the Angle PID. */
+    rdp->pidAngle.consigne = targetAngle - rdp->pidPosition.output;
     rdp->pidAngle.measure  = measuredAngle;
     pidCompute(&rdp->pidAngle);
 
     /* Manage PID for the left Motor. */
-    rdp->pidMotorLeft.consigne = (rdp->pidAngle.output + turnSpeed);
-    rdp->pidMotorLeft.measure  = leftMeasuredSpeed;
-    pidCompute(&rdp->pidMotorLeft);
+    rdp->pidMotorL.consigne = (rdp->pidAngle.output);
+    rdp->pidMotorL.measure  = positionLMeasured;
+    pidCompute(&rdp->pidMotorL);
 
     /* Manage PID for the Right Motor. */
-    rdp->pidMotorRight.consigne = (rdp->pidAngle.output - turnSpeed);
-    rdp->pidMotorRight.measure  = rightMeasuredSpeed;
-    pidCompute(&rdp->pidMotorRight);
+    rdp->pidMotorR.consigne = (rdp->pidAngle.output);
+    rdp->pidMotorR.measure  = positionRMeasured;
+    pidCompute(&rdp->pidMotorR);
 
     /* Get the motors power that need to be apply. */
-    rdp->motorLeft.speed  = rdp->pidMotorLeft.output;
-    rdp->motorRight.speed = rdp->pidMotorRight.output;
+    rdp->motorL.speed = rdp->pidMotorL.output;
+    rdp->motorR.speed = rdp->pidMotorR.output;
 
     /* Set power to the left motor. */
-    motorMove(&rdp->motorLeft);
+    motorMove(&rdp->motorL);
 
     /* Set power to the rigth motor. */
-    motorMove(&rdp->motorRight);
+    motorMove(&rdp->motorR);
 
 #if (DEBUG_ASSERV)
     //encoderGetDistance(&rdp->encoderLeft);
     //encoderGetDistance(&rdp->encoderRight);
-    positionL = ((2*PI*R)/PPR)*rdp->encoderLeft.counter;
-    positionR = ((2*PI*R)/PPR)*rdp->encoderRight.counter;
-    chprintf(chp, "%s: angle = %.3f, distanceL = %.3f, distanceR = %.3f\r\n", __func__, rdp->pidAngle.measure, positionL, positionR);
+    //chprintf(chp, "%s: angle = %.3f, distanceL = %.3f, distanceR = %.3f\r\n", __func__, rdp->pidAngle.measure, positionL, positionR);
+
+    chprintf(chp, "%s: Tposi = %.3f, Mposi = %.3f, Tangle %.3f, Mangle %.3f\r\n", __func__, rdp->pidPosition.consigne, rdp->pidPosition.measure, rdp->pidAngle.consigne, rdp->pidAngle.measure);
 #endif
   }
 }
