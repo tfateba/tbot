@@ -50,21 +50,24 @@
 
 #if (BOARD_USED == ARDUINO_MEGA)
 
-#define D2  PE4
-#define D3  PE5
-#define D4  PG5
-#define D5  PE3
-#define D6  PH3
-#define D7  PH4
-#define D8  PH5
-#define D11 PB5
-#define D12 PB6
-#define D18 PD3
-#define D19 PD2
-#define D46 PL3
+#define D2  PE4 /**< Motor L Forward pin.           */
+#define D3  PE5 /**< Motor L Reverse pin.           */
+#define D4  PG5 /**< Encoder L Sensor A pin.        */
+#define D5  PE3 /**< Encoder R sensor A pin.        */
+#define D6  PH3 /**< Motor R Forward pin.           */
+#define D8  PH5 /**< Motor R Reverse pin.           */
+#define D9  PH6 /**< Oled Reset pin.                */
+#define D12 PB6 /**< Motor L and R enable pin.      */
+#define D13 PB7 /**< Used by Onboard LED.           */
+#define D18 PD3 /**< Encoder L sensor B pin.        */
+#define D19 PD2 /**< Encoder R sensor B pin.        */
+#define D46 PL3 /**< Buzzer pin.                    */
+#define A0  PC0 /**< Hardware version pin.          */
+#define A1  PC1 /**< Battery Voltage Sensor pin.    */
+#define A2  PC2 /**< Battery Current Sensor pin.    */
 
 #elif (BOARD_USED == ARDUINO_UNO)
-#define D12   PB4
+#elif (BOARD_USED == NUCLEO_401RE)
 #endif
 
 #define MOTOR_MAX_SPEED         255
@@ -82,14 +85,13 @@
 #define R_ENCODER_PORT_A        IOPORT4 /**< Right encoder A port.          */
 #define R_ENCODER_PORT_B        IOPORT5 /**< Right encoder B port.          */
 
-#define L_MOTOR_PORT_FORWARD    IOPORT5 /**< Left motor forward port.       */
-#define L_MOTOR_PORT_BACKWARD   IOPORT5 /**< Left motor backward port.      */
+#define L_MOTOR_PORT_FORWARD    IOPORT8 /**< Left motor forward port.       */
+#define L_MOTOR_PORT_BACKWARD   IOPORT8 /**< Left motor backward port.      */
 #define L_MOTOR_PORT_ENABLE     IOPORT2 /**< Left motor enable port.        */
 
-#define R_MOTOR_PORT_FORWARD    IOPORT8 /**< Right motor forward port.      */
-#define R_MOTOR_PORT_BACKWARD   IOPORT8 /**< Right motor backward port.     */
-#define R_MOTOR_PORT_ENABLE     IOPORT8 /**< Right motor enable port.       */
-
+#define R_MOTOR_PORT_FORWARD    IOPORT5 /**< Right motor forward port.      */
+#define R_MOTOR_PORT_BACKWARD   IOPORT5 /**< Right motor backward port.     */
+#define R_MOTOR_PORT_ENABLE     IOPORT2 /**< Right motor enable port.       */
 
 #define L_ENCODER_PIN_A         D18     /**< Left encoder A pin.            */
 #define L_ENCODER_PIN_B         D4      /**< Left encoder B pin.            */
@@ -97,13 +99,13 @@
 #define R_ENCODER_PIN_A         D19     /**< Right encoder A pin.           */
 #define R_ENCODER_PIN_B         D5      /**< Right encoder B pin.           */
 
-#define L_MOTOR_PIN_FORWARD     D3      /**< Left motor forward pin.        */
-#define L_MOTOR_PIN_BACKWARD    D2      /**< Left motor backwad pin.        */
-#define L_MOTOR_PIN_ENABLE      D11     /**< Left motor enable pin.         */
+#define L_MOTOR_PIN_FORWARD     D6      /**< Left motor forward pin.        */
+#define L_MOTOR_PIN_BACKWARD    D8      /**< Left motor backwad pin.        */
+#define L_MOTOR_PIN_ENABLE      D12     /**< Left motor enable pin.         */
 
-#define R_MOTOR_PIN_FORWARD     D6      /**< Right motor forward pin.       */
-#define R_MOTOR_PIN_BACKWARD    D8      /**< Right motor backward pin.      */
-#define R_MOTOR_PIN_ENABLE      D7      /**< Right motor enable pin.        */
+#define R_MOTOR_PIN_FORWARD     D2      /**< Right motor forward pin.       */
+#define R_MOTOR_PIN_BACKWARD    D3      /**< Right motor backward pin.      */
+#define R_MOTOR_PIN_ENABLE      D12     /**< Right motor enable pin.        */
 
 /*==========================================================================*/
 /* External declarations.                                                   */
