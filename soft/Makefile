@@ -83,10 +83,10 @@ endif
 PROJECT = tbot
 
 # tbot sources root paths.
-TBOT = ../tbot
+TBOT = ../../tbot/soft
 
 # Imported source files.
-CHIBIOS  := ../trunk/
+CHIBIOS  := ../../trunk
 
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
