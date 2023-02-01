@@ -39,9 +39,9 @@
 #define PWM_FREQUENCY 20000 /**< PWM frequency value. */
 
 /**
- * Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler, we use no
- * prescaling so:
- * frequency is given by F_CPU/(2*ICR) - ICR = F_CPU/PWM_FREQUENCY/2
+ * @brief   Frequency is given by F_CPU/(2*N*ICR) - where N is the prescaler,
+ *          we use no prescaling so:
+ *          frequency is given by F_CPU/(2*ICR) - ICR = F_CPU/PWM_FREQUENCY/2
  */
 #define PWMVALUE F_CPU/PWM_FREQUENCY/2
 
@@ -53,11 +53,10 @@
 extern "C" {
 #endif
 
-void pwmInits(void);
-void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width);
+void pwmInits(MOTORConfig *mdp);
 void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
 void pwmDisable(PWMDriver *pwmp);
-void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle);
+void pwmSetDutyCycle(MOTORDriver *mdp);
 
 #ifdef __cplusplus
 }

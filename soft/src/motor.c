@@ -70,19 +70,19 @@ extern BaseSequentialStream* chp;
  */
 void motorStop(MOTORDriver *mdp) {
 
-  pwmSetDutyCycle(mdp->config.mid, mdp->dir, 0);
+  mdp->pwmValue = 0;
+  pwmSetDutyCycle(mdp);
   palClearPad(mdp->config.enablePort, mdp->config.enablePin);
 }
 
 /**
  * @brief   Driving the motor to the given speed.
  *
- * @param[in] mdp    pointer to the motor (rigth/left)
+ * @param[in] mdp    pointer to the motor to move.
  */
 void motorMove(MOTORDriver *mdp) {
 
-  int duty;
-  float speedabs;
+  float speedabs = 0;
 
   /* Get the motor direction:. */
   if (mdp->speed >= 0) {
@@ -97,8 +97,8 @@ void motorMove(MOTORDriver *mdp) {
   if (speedabs > maxSpeedValue)
     speedabs = maxSpeedValue;
 
-  duty = speedabs*((float)PWMVALUE)/maxSpeedValue;
-  pwmSetDutyCycle(mdp->config.mid, mdp->dir, duty);
+  mdp->pwmValue = speedabs*((float)PWMVALUE)/maxSpeedValue;
+  pwmSetDutyCycle(mdp);
 }
 
 /**
@@ -112,29 +112,18 @@ static void motorEnable(MOTORDriver *mdp) {
 }
 
 /**
- * @brief   Disable left or right motor with GPIO signal.
- *
- * @param[in] mid  Id of the motor to be disable, left/right
- *//*
-static void motorDisable(motor_id_t mid) {
-
-  if (mid == MOTOR_L)
-    palClearPad(LMD_EN_PORT, LMD_EN);
-
-  if (mid == MOTOR_R)
-    palClearPad(RMD_EN_PORT, RMD_EN);
-}*/
-
-/**
  * @brief   Initialize all pins needs for motor control
  */
 void motorInit(MOTORDriver *mdp, MOTORConfig cfg) {
 
   mdp->config = cfg;
-  palSetPadMode(mdp->config.forwardPort,  mdp->config.forwardPin,  PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(mdp->config.backwardPort, mdp->config.backwardPin, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(mdp->config.enablePort,   mdp->config.enablePin,   PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(mdp->config.forwardPort,  mdp->config.forwardPin, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(mdp->config.reversePort,  mdp->config.reversePin, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(mdp->config.enablePort,   mdp->config.enablePin,  PAL_MODE_OUTPUT_PUSHPULL);
   motorEnable(mdp);
+
+  /* Init PWM modules. */
+  pwmInits(&mdp->config);
 }
 
 /** @}  */

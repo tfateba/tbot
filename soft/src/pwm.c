@@ -50,54 +50,18 @@ extern BaseSequentialStream*  chp;
 /* Configurations structure.                                                */
 /*==========================================================================*/
 
-/*
- * @brief   PWM3 configuration structure.
- */
-static PWMConfig pwm3cfg = {
-  512,  /* Not real clock.     */
-  512,  /* Maximum PWM count.  */
-  NULL,
-  {
-    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A. */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM.   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C. */
-  },
-};
-
-/*
- * @brief   PWM4 configuration structure.
- */
-static PWMConfig pwm4cfg = {
-  512,  /* Not real clock.     */
-  512,  /* Maximum PWM count.  */
-  NULL,
-  {
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A .*/
-    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM.   */
-    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C. */
-  },
-};
-
 /*==========================================================================*/
 /* Driver functions.                                                        */
 /*==========================================================================*/
 
 /**
- * @brief   Initialize the PWM output.
+ * @brief   Initialize the PWM output for motor.
  */
-void pwmInits(void) {
+void pwmInits(MOTORConfig *mdp) {
 
-  /* PH3 and PH5 are timer 4 pwm channels outputs. */
-  palSetPadMode(IOPORT8, PH3, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(IOPORT8, PH5, PAL_MODE_OUTPUT_PUSHPULL);
-
-  /* PE4 and PE5 are timer 3 pwm channels outputs. */
-  palSetPadMode(IOPORT5, PE4, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(IOPORT5, PE5, PAL_MODE_OUTPUT_PUSHPULL);
-
-  /* Start PWM3 and PWM4. */
-  pwmStart(&PWMD4, &pwm4cfg);
-  pwmStart(&PWMD3, &pwm3cfg);
+  palSetPadMode(mdp->forwardPort, mdp->forwardPin, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(mdp->reversePort, mdp->reversePin, PAL_MODE_OUTPUT_PUSHPULL);
+  pwmStart(mdp->pwmDriver, mdp->pwmConfig);
 }
 
 /**
@@ -107,7 +71,7 @@ void pwmInits(void) {
  * @param[in] channel   channel to control
  * @param[in] width     pwm width to generate
  */
-void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
+static void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
 
   pwmEnableChannel(pwmp, channel, width);
 }
@@ -142,34 +106,30 @@ void pwmDisable(PWMDriver *pwmp) {
  * @param[in] direction   the direction of the motor, backward or forward.
  * @param[in] dutyCycle   the duty cycle to set the pwm.
  */
-void pwmSetDutyCycle(motor_id_t mid, motor_dir_t dir, uint16_t dutyCycle) {
+void pwmSetDutyCycle(MOTORDriver *mdp) {
 
-#if (DEBUG_PWM)
-  chprintf(chp, "pwm: %d\t", dutyCycle);
-#endif
+  palSetPad(mdp->config.enablePort, mdp->config.enablePin);
 
-  if (mid == MOTOR_L) {
-    palSetPad(L_MOTOR_PORT_ENABLE, L_MOTOR_PIN_ENABLE);
+  if (mdp->config.mid == MOTOR_L) {
 
-    if (dir == MOTOR_DIR_F) {
-      pwmSetPulseWidth(&PWMD4, 0, maxPwmValue);
-      pwmSetPulseWidth(&PWMD4, 2, dutyCycle);
+    if (mdp->dir == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel1, maxPwmValue);
+      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel2, mdp->pwmValue);
     }
-    else if (dir == MOTOR_DIR_B) {
-      pwmSetPulseWidth(&PWMD4, 0, dutyCycle);
-      pwmSetPulseWidth(&PWMD4, 2, maxPwmValue);
+    else if (mdp->dir == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel1, mdp->pwmValue);
+      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel2, maxPwmValue);
     }
   }
-  else if (mid == MOTOR_R) {
-    palSetPad(R_MOTOR_PORT_ENABLE, R_MOTOR_PIN_ENABLE);
+  else if (mdp->config.mid == MOTOR_R) {
 
-    if (dir == MOTOR_DIR_F) {
-      pwmSetPulseWidth(&PWMD3, 1, maxPwmValue);
-      pwmSetPulseWidth(&PWMD3, 2, dutyCycle);
+    if (mdp->dir == MOTOR_DIR_F) {
+      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel1, maxPwmValue);
+      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel2, mdp->pwmValue);
     }
-    else if (dir == MOTOR_DIR_B) {
-      pwmSetPulseWidth(&PWMD3, 1, dutyCycle);
-      pwmSetPulseWidth(&PWMD3, 2, maxPwmValue);
+    else if (mdp->dir == MOTOR_DIR_B) {
+      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel1, mdp->pwmValue);
+      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel2, maxPwmValue);
     }
   }
 }

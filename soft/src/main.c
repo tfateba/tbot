@@ -62,46 +62,82 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1;/**< Pointer for
 
 ROBOTDriver tbot;
 
+/*
+ * @brief   PWM3 configuration structure.
+ */
+static PWMConfig motorLPwmCfg = {
+  512,  /* Not real clock.     */
+  512,  /* Maximum PWM count.  */
+  NULL,
+  {
+    {PWM_OUTPUT_DISABLED, NULL},    /* PE3 use as PWM, OC3A. */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE4 Not use as PWM.   */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PE5 use as PWM, 0C3C. */
+  },
+};
+
+/*
+ * @brief   PWM4 configuration structure.
+ */
+static PWMConfig motorRPwmCfg = {
+  512,  /* Not real clock.     */
+  512,  /* Maximum PWM count.  */
+  NULL,
+  {
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH3 use as PWM, OC4A .*/
+    {PWM_OUTPUT_DISABLED, NULL},    /* PH4 Not use as PWM.   */
+    {PWM_OUTPUT_ACTIVE_HIGH, NULL}, /* PH5 use as PWM, 0C4C. */
+  },
+};
+
 static MOTORConfig motorLConfig = {
-  MOTOR_L,                /**< Motor ID.            */
-  MOTOR_MAX_SPEED,        /**< Motor max speed.     */
-  L_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
-  L_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
-  L_MOTOR_PORT_ENABLE,    /**< Motor Enable   port. */
-  L_MOTOR_PIN_FORWARD,    /**< Motor Forwxard pin.  */
-  L_MOTOR_PIN_BACKWARD,   /**< Motor Backward pin.  */
-  L_MOTOR_PIN_ENABLE,     /**< Motor enable   pin.  */
+  .mid          = MOTOR_L,                /**< Motor ID.            */
+  .maxSpeed     = MOTOR_MAX_SPEED,        /**< Motor max speed.     */
+  .forwardPort  = L_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
+  .reversePort  = L_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
+  .enablePort   = L_MOTOR_PORT_ENABLE,    /**< Motor Enable   port. */
+  .forwardPin   = L_MOTOR_PIN_FORWARD,    /**< Motor Forwxard pin.  */
+  .reversePin   = L_MOTOR_PIN_BACKWARD,   /**< Motor Backward pin.  */
+  .enablePin    = L_MOTOR_PIN_ENABLE,     /**< Motor enable   pin.  */
+  .pwmDriver    = &PWMD3,                 /**< Motor pwm driver.    */
+  .pwmConfig    = &motorLPwmCfg,          /**< Motor pwm config.    */
+  .pwmChannel1  = 0,
+  .pwmChannel2  = 2
 };
 
 static MOTORConfig motorRConfig = {
-  MOTOR_R,                /**< Motor ID.            */
-  MOTOR_MAX_SPEED,        /**< Motor max speed.     */
-  R_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
-  R_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
-  R_MOTOR_PORT_ENABLE,    /**< Motor Enable   port. */
-  R_MOTOR_PIN_FORWARD,    /**< Motor Forwxard pin.  */
-  R_MOTOR_PIN_BACKWARD,   /**< Motor Backward pin.  */
-  R_MOTOR_PIN_ENABLE,     /**< Motor enable   pin.  */
+  .mid          = MOTOR_R,                /**< Motor ID.            */
+  .maxSpeed     = MOTOR_MAX_SPEED,        /**< Motor max speed.     */
+  .forwardPort  = R_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
+  .reversePort  = R_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
+  .enablePort   = R_MOTOR_PORT_ENABLE,    /**< Motor Enable   port. */
+  .forwardPin   = R_MOTOR_PIN_FORWARD,    /**< Motor Forwxard pin.  */
+  .reversePin   = R_MOTOR_PIN_BACKWARD,   /**< Motor Backward pin.  */
+  .enablePin    = R_MOTOR_PIN_ENABLE,     /**< Motor enable   pin.  */
+  .pwmDriver    = &PWMD4,                 /**< Motor pwm driver.    */
+  .pwmConfig    = &motorRPwmCfg,          /**< Motor pwm config.    */
+  .pwmChannel1  = 1,
+  .pwmChannel2  = 2
 };
 
 /* Left encoder Config. */
 static ENCODERConfig encoderLConfig = {
-  ENCODER_L,         /**< Encoderr identifier.         */
-  L_ENCODER_EXT_INT, /**< External interrupt channel.  */
-  L_ENCODER_PORT_A,  /**< Port A.                      */
-  L_ENCODER_PORT_B,  /**< Port B.                      */
-  L_ENCODER_PIN_A,   /**< Pin A.                       */
-  L_ENCODER_PIN_B    /**< Pin B.                       */
+  .id     = ENCODER_L,         /**< Encoderr identifier.         */
+  .eichan = L_ENCODER_EXT_INT, /**< External interrupt channel.  */
+  .porta  = L_ENCODER_PORT_A,  /**< Port A.                      */
+  .portb  = L_ENCODER_PORT_B,  /**< Port B.                      */
+  .pina   = L_ENCODER_PIN_A,   /**< Pin A.                       */
+  .pinb   = L_ENCODER_PIN_B    /**< Pin B.                       */
 };
 
 /* Rigth encoder Config. */
 static ENCODERConfig encoderRConfig = {
-  ENCODER_R,         /**< Encoderr identifier.         */
-  R_ENCODER_EXT_INT, /**< External interrupt channel.  */
-  R_ENCODER_PORT_A,  /**< Port A.                      */
-  R_ENCODER_PORT_B,  /**< Port B.                      */
-  R_ENCODER_PIN_A,   /**< Pin A.                       */
-  R_ENCODER_PIN_B    /**< Pin B.                       */
+  .id     = ENCODER_R,         /**< Encoderr identifier.         */
+  .eichan = R_ENCODER_EXT_INT, /**< External interrupt channel.  */
+  .porta  = R_ENCODER_PORT_A,  /**< Port A.                      */
+  .portb  = R_ENCODER_PORT_B,  /**< Port B.                      */
+  .pina   = R_ENCODER_PIN_A,   /**< Pin A.                       */
+  .pinb   = R_ENCODER_PIN_B    /**< Pin B.                       */
 };
 
 /*==========================================================================*/
@@ -278,13 +314,6 @@ int main(void) {
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rEncoder initialization done");
-#endif
-
-  /* Init PWM modules. */
-  pwmInits();
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rPWM initialization done");
 #endif
 
 #if (DEBUG_MAIN)

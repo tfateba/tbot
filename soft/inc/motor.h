@@ -62,23 +62,28 @@ typedef enum {
  * @brief Motor configuration structure.
  */
 typedef struct {
-  motor_id_t  mid;          /**< Motor identification name. */
-  float       maxSpeed;     /**< Motor maximum speed. */
-  ioportid_t  forwardPort;  /**< Motor driver forward pwm Port. */
-  ioportid_t  backwardPort; /**< Motor driver backwad pwm Port. */
-  ioportid_t  enablePort;   /**< Motor driver enable Port. */
-  uint8_t     forwardPin;   /**< Motor driver forward pwm pin. */
-  uint8_t     backwardPin;  /**< Motor driver backwad pwm pin. */
-  uint8_t     enablePin;    /**< Motor driver enable pin. */
+  motor_id_t  mid;          /**< Motor identification name.       */
+  float       maxSpeed;     /**< Motor maximum speed.             */
+  ioportid_t  forwardPort;  /**< Motor driver forward pwm Port.   */
+  ioportid_t  reversePort;  /**< Motor driver backwad pwm Port.   */
+  ioportid_t  enablePort;   /**< Motor driver enable Port.        */
+  uint8_t     forwardPin;   /**< Motor driver forward pwm pin.    */
+  uint8_t     reversePin;   /**< Motor driver backwad pwm pin.    */
+  uint8_t     enablePin;    /**< Motor driver enable pin.         */
+  PWMDriver   *pwmDriver;   /**< Motor driver pwm for control.    */
+  PWMConfig   *pwmConfig;   /**< Motor driver pwm config.         */
+  uint8_t     pwmChannel1;  /**< Motoe driver pwm channel 1 used; */
+  uint8_t     pwmChannel2;  /**< Motoe driver pwm channel 2 used; */
 } MOTORConfig;
 
 /**
  * @brief   Motor driver structure.
  */
 typedef struct {
-  MOTORConfig config;  /**< Motor configuration. */
-  motor_dir_t dir;     /**< Motor rotation directory. */
-  float       speed;   /**< Motor speed. */
+  MOTORConfig config;   /**< Motor configuration.         */
+  motor_dir_t dir;      /**< Motor rotation directory.    */
+  float       speed;    /**< Motor speed.                 */
+  int         pwmValue; /**< Motor pwm value for control. */
 } MOTORDriver;
 
 /*==========================================================================*/
