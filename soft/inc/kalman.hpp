@@ -1,5 +1,5 @@
 /*
-    TBOT - Copyright (C) 2015...2021 Theodore Ateba
+    TBOT - Copyright (C) 2015...2023 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,25 +12,23 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
 */
 
 /**
- * @file    asserv.h
- * @brief   Asservissement header file.
+ * @file    kalman.h
+ * @brief   Kalman filter header file.
  *
- * @addtogroup ASSERV
+ * @addtogroup KALMAN
  * @{
  */
 
-#ifndef ASSERV_H
-#define ASSERV_H
+#ifndef KALMAN_H
+#define KALMAN_H
 
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
-
-/* Project files. */
-#include "main.h"
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
@@ -40,16 +38,21 @@
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class Kalman {
 
-void asserv(ROBOTDriver *rdp);
+    public:
+    void  init(void);
+    float getAngle(float newAngle, float newRate, float dt);
+    void  setAngle(float newAngle);
+    float getRate(void);
+    void  setQangle(float newQ_angle);
+    void  setQbias(float newQ_bias);
+    void  setRmeasure(float newR_measure);
+    float getQangle(void);
+    float getQbias(void);
+    float getRmeasure(void);
+};
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* ASSERV_H */
+#endif /* KALMAN_H */
 
 /** @} */

@@ -15,64 +15,38 @@
 */
 
 /**
- * @file    pid.h
- * @brief   PID corrector header file.
+ * @file    asserv.h
+ * @brief   Asservissement header file.
  *
- * @addtogroup PID
+ * @addtogroup ASSERV
  * @{
  */
 
-#ifndef PID_H
-#define PID_H
+#ifndef ASSERV_H
+#define ASSERV_H
 
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
 
+/* Project files. */
+#include "main.h"
+
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
-
-/* TODO: Rename the PIDDriver to PIDController. */
-
-/**
- * @brief   PID driver type definition.
- */
-typedef struct {
-
-  float consigne;
-  float measure;
-
-  float kp;          /**< Proportional parameter of PID controler.    */
-  float ki;          /**< Integral parameter of PID controler.        */
-  float kd;          /**< Derivate parameter of PID controler.        */
-
-  float actuError;   /**< Actual error between consigne an measured.  */
-  float lastError;   /**< Last error.                                 */
-
-  float pTerm;       /**< Proportional error.                         */
-  float iTerm;       /**< Integral error.                             */
-  float dTerm;       /**< Derivate error.                             */
-
-  float output;      /**< PID value, sum of all the errors.           */
-} PIDDriver;
 
 /*==========================================================================*/
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* @todo    Add Constructor and destructor for all cpp classes. */
+class Asserv {
 
-void pidInit(PIDDriver *pidp, float kpval, float kival, float kdval);
-void pidCompute(PIDDriver *pidp);
-void pidResetParameters(PIDDriver *pidp);
+    public:
+    void startAsserv(Tbot *robot);
+};
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* PID_H */
+#endif /* ASSERV_H */
 
 /** @} */

@@ -30,38 +30,17 @@
 /*==========================================================================*/
 
 /* Project files. */
-#include "encoder.h"
-#include "motor.h"
-#include "mpu6050.h"
-#include "pid.h"
+#include "encoder.hpp"
+#include "motor.hpp"
+#include "mpu6050.hpp"
+#include "pid.hpp"
+#include "led.hpp"
+#include "buzzer.hpp"
+#include "tbot.hpp"
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
-
-/**
- * @brief   Structure representing a Robot driver.
- */
-struct ROBOTDriver {
-
-  MPU6050Driver imu;            /**< Robot IMU.                             */
-
-  PIDDriver     pidPosition;    /**< must be pidSpeed.                      */
-  PIDDriver     pidAngle;       /**< Must be pidAngle.                      */
-  PIDDriver     pidMotorL;      /**< TODO: must be pidLeftMotor.            */
-  PIDDriver     pidMotorR;      /**< TODO: must be pidRightMotor.           */
-
-  MOTORDriver   motorL;         /**< Robot left  motor.                     */
-  MOTORDriver   motorR;         /**< Robot rigth motor.                     */
-
-  ENCODERDriver encoderL;       /**< Robot left  encoder.                   */
-  ENCODERDriver encoderR;       /**< Robot rigth encoder.                   */
-};
-
-/**
- * @brief   Type representing a Robot driver.
- */
-typedef struct ROBOTDriver ROBOTDriver;
 
 /*==========================================================================*/
 /* External declarations.                                                   */

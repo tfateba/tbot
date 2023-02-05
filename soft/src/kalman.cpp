@@ -27,6 +27,12 @@
  * @{
  */
 
+#include "kalman.hpp"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*==========================================================================*/
 /* Global variables.                                                        */
 /*==========================================================================*/
@@ -52,7 +58,7 @@ float S;         /**< Estimate error.                                       */
 /**
  * @brief  Initialize the Kalman filter.
  */
-void kalmanInit(void) {
+void Kalman::init(void) {
 
   /* We will set the variables like so, these can also be tuned by the user */
   Q_angle   = 0.001;
@@ -86,7 +92,7 @@ void kalmanInit(void) {
  *
  * @return    angle     the result of the kalman filter computing
  */
-float kalmanGetAngle(float newAngle, float newRate, float dt) {
+float Kalman::getAngle(float newAngle, float newRate, float dt) {
 
   /*
    * KasBot V2  -  Kalman filter module - http://www.x-firm.com/?page_id=145
@@ -141,7 +147,7 @@ float kalmanGetAngle(float newAngle, float newRate, float dt) {
  *
  * @param[in] newAngle  Set kalman filter starting angle
  */
-void setAngle(float newAngle) {
+void Kalman::setAngle(float newAngle) {
 
   angle = newAngle;
 }
@@ -151,7 +157,7 @@ void setAngle(float newAngle) {
  *
  * @return  rate  the unbiased angle rate
  */
-float kalmanGetRate(void) {
+float Kalman::getRate(void) {
 
   return rate;
 }
@@ -161,7 +167,7 @@ float kalmanGetRate(void) {
  *
  * @param[in] newQ_angle  angle used to tune the Kalman filter
  */
-void kalmanSetQangle(float newQ_angle) {
+void Kalman::setQangle(float newQ_angle) {
 
   Q_angle = newQ_angle;
 }
@@ -171,7 +177,7 @@ void kalmanSetQangle(float newQ_angle) {
  *
  * @param[in] newQ_bias   bias angle used to set the Kalman filter
  */
-void kalmanSetQbias(float newQ_bias) {
+void Kalman::setQbias(float newQ_bias) {
 
   Q_bias = newQ_bias;
 }
@@ -181,7 +187,7 @@ void kalmanSetQbias(float newQ_bias) {
  *
  * @param[in] newR_measure  variance of the measurement noise value
  */
-void kalmanSetRmeasure(float newR_measure) {
+void Kalman::setRmeasure(float newR_measure) {
 
   R_measure = newR_measure;
 }
@@ -191,7 +197,7 @@ void kalmanSetRmeasure(float newR_measure) {
  *
  * @return  Q_angle process noise variance for the gyro bias
  */
-float kalmanGetQangle(void) {
+float Kalman::getQangle(void) {
 
   return Q_angle;
 }
@@ -201,7 +207,7 @@ float kalmanGetQangle(void) {
  *
  * @return  Q_bias  process noise variance for the accelerometer
  */
-float kalmanGetQbias(void) {
+float Kalman::getQbias(void) {
 
   return Q_bias;
 }
@@ -211,9 +217,13 @@ float kalmanGetQbias(void) {
  *
  * @return  R_measure   process noise variance for the gyro bias
  */
-float kalmanGetRmeasure(void) {
+float Kalman::getRmeasure(void) {
 
   return R_measure;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /** @} */

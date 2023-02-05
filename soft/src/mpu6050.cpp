@@ -22,14 +22,20 @@
  * @{
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*==========================================================================*/
 /* Include files.                                                           */
 /*==========================================================================*/
 
 /* Project files. */
-#include "i2c.h"
-#include "motor.h"
-#include "mpu6050.h"
+#include "i2c.hpp"
+#include "motor.hpp"
+#include "mpu6050.hpp"
+
+I2c interfaceI2c;
 
 /*==========================================================================*/
 /* Driver functions.                                                        */
@@ -43,14 +49,14 @@
  *
  * @return    msg   result of the reading identity operation
  */
-msg_t mpu6050GetIdentity(I2CDriver *i2cp, uint8_t *idp) {
+msg_t Mpu6050::getIdentity(I2CDriver *i2cp, uint8_t *idp) {
 
   uint8_t   txbuf;
   uint8_t   rxbuf;
   msg_t     msg;
 
   txbuf = MPU6050_WHO_AM_I;
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, &rxbuf, 1);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, &txbuf, &rxbuf, 1);
 
   if (msg == MSG_OK) {
     *idp = rxbuf;
@@ -67,20 +73,20 @@ msg_t mpu6050GetIdentity(I2CDriver *i2cp, uint8_t *idp) {
  *
  * @return    msg   result of the power mode configuration
  */
-msg_t mpu6050Sleep(I2CDriver *i2cp) {
+msg_t Mpu6050::sleep(I2CDriver *i2cp) {
 
   uint8_t config;
   uint8_t txbuf[2];
   msg_t   msg;
 
   txbuf[0] = MPU6050_PWR_MGMT_1;
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, txbuf, &config, 1);
 
   if (msg != MSG_OK)
     return msg;
 
   txbuf[1] = config | (1 << 6);
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 2);
 
   return msg;
 }
@@ -92,20 +98,20 @@ msg_t mpu6050Sleep(I2CDriver *i2cp) {
  *
  * @return    msg   result of the wakeup operation
  */
-msg_t mpu6050Wakeup(I2CDriver *i2cp) {
+msg_t Mpu6050::wakeup(I2CDriver *i2cp) {
 
   uint8_t config;
   uint8_t txbuf[2];
   msg_t   msg;
 
   txbuf[0] = MPU6050_PWR_MGMT_1;
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, txbuf, &config, 1);
 
   if (msg != MSG_OK)
     return msg;
 
   txbuf[1] = config & ~(1 << 6);
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 2);
 
   return msg;
 }
@@ -117,20 +123,20 @@ msg_t mpu6050Wakeup(I2CDriver *i2cp) {
  *
  * @return    msg   result of the reset operation
  */
-msg_t mpu6050Reset(I2CDriver *i2cp) {
+msg_t Mpu6050::reset(I2CDriver *i2cp) {
 
   uint8_t config;
   uint8_t txbuf[2];
   msg_t   msg;
 
   txbuf[0] = MPU6050_PWR_MGMT_1;
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, txbuf, &config, 1);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, txbuf, &config, 1);
 
   if (msg != MSG_OK)
     return msg;
 
   txbuf[1] = config & ~(1 << 7);
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 2);
 
   return msg;
 }
@@ -143,7 +149,7 @@ msg_t mpu6050Reset(I2CDriver *i2cp) {
  *
  * @return    msg   result of the wakeup operation
  */
-msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
+msg_t Mpu6050::configGyro(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
 
   uint8_t txbuf[2];
   msg_t   msg;
@@ -169,7 +175,7 @@ msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
   else
     return MSG_RESET;
 
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 2);
 
   return msg;
 }
@@ -182,7 +188,7 @@ msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale) {
  *
  * @return    msg   result of the wakeup operation
  */
-msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
+msg_t Mpu6050::configAccel(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
 
   uint8_t txbuf[2];
   msg_t   msg;
@@ -208,7 +214,7 @@ msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
   else
     return MSG_RESET;
 
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 2);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 2);
 
   return msg;
 }
@@ -221,14 +227,14 @@ msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale) {
  *
  * @return    msg   result of the offset reading operation
  */
-msg_t mpu6050GetXGyroOffset(I2CDriver *i2cp, int16_t *gxop) {
+msg_t Mpu6050::getXGyroOffset(I2CDriver *i2cp, int16_t *gxop) {
 
   uint8_t txbuf;
   uint8_t rxbuf[2];
   msg_t   msg;
 
   txbuf = 0; /* TODO: Set the correct register. */
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
   *gxop = (int16_t) ((rxbuf[0] << 8) | rxbuf[1]);
 
   return msg;
@@ -242,7 +248,7 @@ msg_t mpu6050GetXGyroOffset(I2CDriver *i2cp, int16_t *gxop) {
  *
  * @return    msg     result of the offset writing operation
  */
-msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset) {
+msg_t Mpu6050::setXGyroOffset(I2CDriver *i2cp, int16_t offset) {
 
   uint8_t txbuf[3];
   msg_t   msg;
@@ -250,7 +256,7 @@ msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset) {
   txbuf[0] = MPU6050_X_GYRO_OFFSET_USRH;
   txbuf[2] = offset;
   txbuf[1] = offset >> 8;
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 3);
 
   return msg;
 }
@@ -263,14 +269,14 @@ msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset) {
  *
  * @return    msg   result of the offset reading operation
  */
-msg_t mpu6050GetYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
+msg_t Mpu6050::getYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
 
   msg_t   msg;
   uint8_t txbuf;
   uint8_t rxbuf[2];
 
   txbuf = 0; /* TODO: Set the correct register. */
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
   *gyop = (int16_t) ((rxbuf[0] << 8) | rxbuf[1]);
 
   return msg;
@@ -284,7 +290,7 @@ msg_t mpu6050GetYGyroOffset(I2CDriver *i2cp, int16_t *gyop) {
  *
  * @return    msg     result of the writing operation
  */
-msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset) {
+msg_t Mpu6050::setYGyroOffset(I2CDriver *i2cp, int16_t offset) {
 
   uint8_t txbuf[3];
   msg_t   msg;
@@ -292,7 +298,7 @@ msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset) {
   txbuf[0] = MPU6050_Y_GYRO_OFFSET_USRH;
   txbuf[2] = offset;
   txbuf[1] = offset >> 8;
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 3);
 
   return msg;
 }
@@ -305,14 +311,14 @@ msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset) {
  *
  * @return    msg   the result of the reading operation
  */
-msg_t mpu6050GetZGyroOffset(I2CDriver *i2cp, int16_t *gzop) {
+msg_t Mpu6050::getZGyroOffset(I2CDriver *i2cp, int16_t *gzop) {
 
   msg_t   msg;
   uint8_t txbuf;
   uint8_t rxbuf[2];
 
   txbuf = 0; /* TODO: Set the correct register. */
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 2);
 
   *gzop = (int16_t) ((rxbuf[0] << 8) | rxbuf[1]);
 
@@ -327,7 +333,7 @@ msg_t mpu6050GetZGyroOffset(I2CDriver *i2cp, int16_t *gzop) {
  *
  * @return    msg     the result of the writing operation
  */
-msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset) {
+msg_t Mpu6050::setZGyroOffset(I2CDriver *i2cp, int16_t offset) {
 
   uint8_t txbuf[3];
   msg_t   msg;
@@ -336,7 +342,7 @@ msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset) {
   txbuf[2] = offset;
   txbuf[1] = offset >> 8;
 
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 3);
 
   return msg;
 }
@@ -349,7 +355,7 @@ msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset) {
  *
  * @return    msg     writing operation result.
  */
-msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset) {
+msg_t Mpu6050::setZAccelOffset(I2CDriver *i2cp, int16_t offset) {
 
   uint8_t txbuf[3];
   msg_t   msg;
@@ -358,7 +364,7 @@ msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset) {
   txbuf[2] = offset;
   txbuf[1] = offset >> 8;
 
-  msg = i2cWriteRegisters(i2cp, MPU6050_ADDR, txbuf, 3);
+  msg = interfaceI2c.write(i2cp, MPU6050_ADDR, txbuf, 3);
 
   return msg;
 }
@@ -371,7 +377,7 @@ msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset) {
  *
  * @return    msg   result of the reading  operation
  */
-msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp) {
+msg_t Mpu6050::read(I2CDriver *i2cp, uint8_t *pmp) {
 
   uint8_t config;
   uint8_t txbuf;
@@ -379,7 +385,7 @@ msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp) {
 
   txbuf = MPU6050_PWR_MGMT_1;
 
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, &config, 1);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, &txbuf, &config, 1);
 
   if (msg != MSG_OK)
     return msg;
@@ -395,14 +401,14 @@ msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp) {
  *
  * @return    msg   result of the reading operation
  */
-msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
+msg_t Mpu6050::readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
 
   uint8_t txbuf;
   msg_t   msg;
 
   txbuf = MPU6050_ACCEL_XOUT_H;
 
-  msg = i2cReadRegisters(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 14);
+  msg = interfaceI2c.read(i2cp, MPU6050_ADDR, &txbuf, rxbuf, 14);
 
   return msg;
 }
@@ -411,46 +417,45 @@ msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
  * @brief   Read data from the IMU sensors.
  *
  * @param[in] i2cp  pointer of the i2C interface
- * @param[in] mpup  pointer of the mpu6050 data structure
  *
  * @return    msg   result of the reading operation
  */
-msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpup) {
+msg_t Mpu6050::getData(I2CDriver *i2cp) {
 
   int16_t temp    = 0;
-  int16_t x_accel = 0;
-  int16_t y_accel = 0;
-  int16_t z_accel = 0;
-  int16_t x_gyro  = 0;
-  int16_t y_gyro  = 0;
-  int16_t z_gyro  = 0;
-  uint8_t mpuData[14];
+  int16_t x_a = 0;
+  int16_t y_a = 0;
+  int16_t z_a = 0;
+  int16_t x_g = 0;
+  int16_t y_g = 0;
+  int16_t z_g = 0;
+  uint8_t data[14];
   msg_t   msg;
 
-  msg = mpu6050ReadAllSensors(i2cp, mpuData);
+  msg = readAllSensors(i2cp, data);
 
   if (msg != MSG_OK)
     return MSG_RESET;
   else {
-    x_accel |= (((int16_t)mpuData[0]) << 8) | mpuData[1];
-    y_accel |= (((int16_t)mpuData[2]) << 8) | mpuData[3];
-    z_accel |= (((int16_t)mpuData[4]) << 8) | mpuData[5];
+    x_a |= (((int16_t)data[0]) << 8) | data[1];
+    y_a |= (((int16_t)data[2]) << 8) | data[3];
+    z_a |= (((int16_t)data[4]) << 8) | data[5];
 
-    temp |= (((int16_t)mpuData[6]) << 8)   | mpuData[7];
+    temp |= (((int16_t)data[6]) << 8)   | data[7];
 
-    x_gyro |= (((int16_t)mpuData[8]) << 8)  | mpuData[9];
-    y_gyro |= (((int16_t)mpuData[10]) << 8) | mpuData[11];
-    z_gyro |= (((int16_t)mpuData[12]) << 8) | mpuData[13];
+    x_g |= (((int16_t)data[8]) << 8)  | data[9];
+    y_g |= (((int16_t)data[10]) << 8) | data[11];
+    z_g |= (((int16_t)data[12]) << 8) | data[13];
 
-    mpup->temp = (float)(temp/340)+36.53;
+    temperature = (float)(temp/340)+36.53;
 
-    mpup->x_accel = (float)x_accel;
-    mpup->y_accel = (float)y_accel;
-    mpup->z_accel = (float)z_accel;
+    x_accel = (float)x_a;
+    y_accel = (float)y_a;
+    z_accel = (float)z_a;
 
-    mpup->x_gyro = (float)x_gyro;
-    mpup->y_gyro = (float)y_gyro;
-    mpup->z_gyro = (float)z_gyro;
+    x_gyro = (float)x_g;
+    y_gyro = (float)y_g;
+    z_gyro = (float)z_g;
 
     return msg;
   }
@@ -460,45 +465,43 @@ msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpup) {
  * @brief   Calibrate the MPU6050 accelerometer and gyroscope sensors.
  *
  * @param[in] i2cp  pointer of the i2C interface
- * @param[in] mpup  pointer of the mpu data structure
  *
  * @return    msg   result of the calibration operation
  */
-msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
+msg_t Mpu6050::doCalibration(I2CDriver *i2cp) {
 
   msg_t msg;
   uint16_t i;
   uint16_t sampleNumber = 1000;
 
-  msg = mpu6050SetXGyroOffset(&I2CD1, 0);
-  msg = mpu6050SetYGyroOffset(&I2CD1, 0);
-  msg = mpu6050SetZGyroOffset(&I2CD1, 0);
+  msg = setXGyroOffset(&I2CD1, 0);
+  msg = setYGyroOffset(&I2CD1, 0);
+  msg = setZGyroOffset(&I2CD1, 0);
 
   for (i = 0; i < sampleNumber + 100; i++) {
-    msg = mpu6050GetData(i2cp, mpup);
+    msg = getData(i2cp);
 
     if (i > 100) {
-      mpup->x_accel_offset  += mpup->x_accel;
-      mpup->y_accel_offset  += mpup->y_accel;
-      mpup->z_accel_offset  += mpup->z_accel;
-      mpup->x_gyro_offset   += mpup->x_gyro;
-      mpup->y_gyro_offset   += mpup->y_gyro;
-      mpup->z_gyro_offset   += mpup->z_gyro;
+      x_accel_offset  += x_accel;
+      y_accel_offset  += y_accel;
+      z_accel_offset  += z_accel;
+      x_gyro_offset   += x_gyro;
+      y_gyro_offset   += y_gyro;
+      z_gyro_offset   += z_gyro;
     }
     chThdSleepMilliseconds(5);
   }
 
-  mpup->x_accel_offset  = mpup->x_accel_offset/sampleNumber;
-  mpup->y_accel_offset  = mpup->y_accel_offset/sampleNumber;
-  mpup->z_accel_offset  = mpup->z_accel_offset/sampleNumber;
-  mpup->x_gyro_offset   = mpup->x_gyro_offset/sampleNumber;
-  mpup->y_gyro_offset   = mpup->y_gyro_offset/sampleNumber;
-  mpup->z_gyro_offset   = mpup->z_gyro_offset/sampleNumber;
+  x_accel_offset  = x_accel_offset/sampleNumber;
+  y_accel_offset  = y_accel_offset/sampleNumber;
+  z_accel_offset  = z_accel_offset/sampleNumber;
+  x_gyro_offset   = x_gyro_offset/sampleNumber;
+  y_gyro_offset   = y_gyro_offset/sampleNumber;
+  z_gyro_offset   = z_gyro_offset/sampleNumber;
 
-  /* TODO: Utiliser un decalage de deux ici pour faire la division.  */
-  msg = mpu6050SetXGyroOffset(&I2CD1, -(mpup->x_gyro_offset/4));
-  msg = mpu6050SetYGyroOffset(&I2CD1, -(mpup->y_gyro_offset/4));
-  msg = mpu6050SetZGyroOffset(&I2CD1, -(mpup->z_gyro_offset/4));
+  msg = setXGyroOffset(&I2CD1, -(x_gyro_offset/4));
+  msg = setYGyroOffset(&I2CD1, -(y_gyro_offset/4));
+  msg = setZGyroOffset(&I2CD1, -(z_gyro_offset/4));
 
   return msg;
 }
@@ -511,17 +514,21 @@ msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpup) {
  *
  * @return    msg   result of the initialization operation
  */
-msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad) {
+msg_t Mpu6050::init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad) {
 
   msg_t msg;
 
   mpu->sad = sad;
-  msg = mpu6050Reset(i2cp);
-  msg = mpu6050Wakeup(i2cp);
-  msg = mpu6050AccelConfig(i2cp, MPU6050_ACCEL_FS_2);
-  msg = mpu6050GyroConfig(i2cp, MPU6050_GYRO_FS_250);
+  msg = reset(i2cp);
+  msg = wakeup(i2cp);
+  msg = configAccel(i2cp, MPU6050_ACCEL_FS_2);
+  msg = configGyro(i2cp, MPU6050_GYRO_FS_250);
 
   return msg;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /** @} */

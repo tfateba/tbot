@@ -25,6 +25,8 @@
 #ifndef ENCODER_H
 #define ENCODER_H
 
+#include "hal.h"
+
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
@@ -67,20 +69,33 @@ typedef struct {
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class Encoder {
+  public:
+  
+  //bool readLeftStateA(void);
+  //bool readLeftStateB(void);
 
-bool encoderReadLeftStateA(void);
-bool encoderReadLeftStateB(void);
-bool encoderReadRightStateA(void);
-bool encoderReadRightStateB(void);
-//void encoderGetWheelVelocity(void);
-void encoderInit(ENCODERDriver *edp, ENCODERConfig cfg);
+  //bool readRightStateA(void);
+  //bool readRightStateB(void);
+  
+  void incrementCounter(void) {counter++;}
+  void decrementCounter(void) {counter--;}
+  long getCounter(void) {return counter;}
 
-#ifdef __cplusplus
-}
-#endif
+  void setStateA(bool state) {stateA = state;}
+  void setStateB(bool state) {stateB = state;}
+
+  bool getStateA(void);
+  bool getStateB(void);
+
+  void init(ENCODERDriver *ep, ENCODERConfig cfg);
+  //void getWheelVelocity(void);
+
+  private:
+  bool stateA;
+  bool stateB;
+  volatile long counter;
+};
 
 #endif /* ENCODER_H */
 

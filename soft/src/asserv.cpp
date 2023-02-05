@@ -22,6 +22,10 @@
  * @{
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
@@ -38,12 +42,13 @@
 
 /* Project files. */
 #include "conf.h"
-#include "kalman.h"
+#include "kalman.hpp"
 #include "main.h"
-#include "motor.h"
-#include "mpu6050.h"
-#include "pid.h"
-#include "pwm.h"
+#include "motor.hpp"
+#include "mpu6050.hpp"
+#include "pid.hpp"
+#include "pwm.hpp"
+#include "asserv.hpp"
 
 /*==========================================================================*/
 /* Application macros.                                                      */
@@ -53,6 +58,7 @@
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations   */
 /*==========================================================================*/
 
+// TODO: all thoses variables must be in the asserv class.
 /* Local variables. */
 
 /* TODO: See all the variable that can be put in t-bot structure.           */
@@ -65,6 +71,7 @@ const float   dt = 0.01;          /**< Asservissement period. */
 /* Extern variables. */
 #if (DEBUG_ASSERV)
 extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
+//#define pr_debug(x) chprintf(chp, x)
 #endif
 
 /* Inputs for Speed PID. */
@@ -85,6 +92,9 @@ const float   PPR = 480;  // This was measured whit the wheels on the robot.
 #define PI          3.14159265359
 #define RAD_TO_DEG  180/PI
 
+//Mpu6050 inertial; // @rename it imu if possible
+//Kalman  kalmanFilter;
+
 /*==========================================================================*/
 /* Driver functions.                                                        */
 /*==========================================================================*/
@@ -92,14 +102,18 @@ const float   PPR = 480;  // This was measured whit the wheels on the robot.
 /**
  * @brief  Asservissement routine of the robot.
  *
- * @param[in] rdp   the pointer to the robot driver
+ * @param[in] robot   the pointer to the robot driver
  */
-void asserv(ROBOTDriver *rdp) {
+void Asserv::startAsserv(Tbot *robot) {
 
   msg_t msg;
 
+  // TODO: This Config must be in the main.cpp file
+  robot->motorL.setMaxSpeed(512);
+  robot->motorR.setMaxSpeed(512);
+
   /* Read the IMU data (x,y,z accel and gyroscope). */
-  msg = mpu6050GetData(&I2CD1, &rdp->imu);
+  robot->imu.getData(&I2CD1);
 
   if (msg != MSG_OK) {
 #if (DEBUG_ASSERV)
@@ -110,14 +124,15 @@ void asserv(ROBOTDriver *rdp) {
   }
 
   /* Calcul of the Pitch angle of the robot. */
-  rdp->imu.pitch = (atan2(rdp->imu.y_accel, rdp->imu.z_accel) + PI)*(RAD_TO_DEG);
+  robot->imu.setpitchAngle((atan2(robot->imu.getYAccel(), robot->imu.getZAccel()) + PI)*(RAD_TO_DEG));
 
   /* Get the Kalman estimation of the robot angle. */
-  rdp->imu.pitch_k = kalmanGetAngle(rdp->imu.pitch, (rdp->imu.x_gyro / 131.0), dt);
-  measuredAngle = rdp->imu.pitch_k;
+  robot->imu.setFiltredpitchAngle(robot->kalmanFilter.getAngle(robot->imu.getPitchAngle(), (robot->imu.getXGyro() / 131.0), dt));
 
-  if ((layingDown && (rdp->imu.pitch_k < 170 || rdp->imu.pitch_k > 190)) ||
-    (!layingDown && (rdp->imu.pitch_k < 135 || rdp->imu.pitch_k > 225))) {
+  measuredAngle = robot->imu.getFiltredPitchAngle();
+
+  if ((layingDown && (robot->imu.getFiltredPitchAngle() < 170 || robot->imu.getFiltredPitchAngle() > 190)) ||
+    (!layingDown && (robot->imu.getFiltredPitchAngle() < 135 || robot->imu.getFiltredPitchAngle() > 225))) {
     /*
      * The robot is in a unsolvable position, so turn off both motors and
      * wait until it's vertical again.
@@ -131,12 +146,14 @@ void asserv(ROBOTDriver *rdp) {
 #endif
 
     layingDown = true;
-    motorStop(&rdp->motorL);
-    motorStop(&rdp->motorR);
-    pidResetParameters(&rdp->pidPosition);
-    pidResetParameters(&rdp->pidAngle);
-    pidResetParameters(&rdp->pidMotorL);
-    pidResetParameters(&rdp->pidMotorR);
+    
+    robot->motorL.stop();
+    robot->motorR.stop();
+    
+    robot->pidPosition.reset();
+    robot->pidAngle.reset();
+    robot->pidMotorL.reset();
+    robot->pidMotorR.reset();
   }
   else {
 
@@ -156,47 +173,52 @@ void asserv(ROBOTDriver *rdp) {
      */
 
     /* TODO: motor speed must be measure. */
-    positionLMeasured = ((2*PI*R)/PPR)*rdp->encoderL.counter;
-    positionRMeasured = ((2*PI*R)/PPR)*rdp->encoderR.counter;
+    positionLMeasured = ((2*PI*R)/PPR)*((float)robot->encoderL.getCounter());
+    positionRMeasured = ((2*PI*R)/PPR)*((float)robot->encoderR.getCounter());
 
     /* Update the Position PID. */
-    rdp->pidPosition.consigne = targetPosition;     /* Distance setpoint.   */
-    rdp->pidPosition.measure  = ((positionRMeasured + positionLMeasured)/2);  /* Distance measured.   */
-    pidCompute(&rdp->pidPosition);                  /* Set the PID output.  */
+    robot->pidPosition.setSetPoint(targetPosition);
+    robot->pidPosition.setMeasure((positionRMeasured + positionLMeasured)/2);
+    robot->pidPosition.compute();
 
     /* Update the Angle PID. */
-    rdp->pidAngle.consigne = targetAngle - rdp->pidPosition.output;
-    rdp->pidAngle.measure  = measuredAngle;
-    pidCompute(&rdp->pidAngle);
+    robot->pidAngle.setSetPoint(targetAngle - robot->pidPosition.getOutput());
+    robot->pidAngle.setMeasure(measuredAngle);
+    robot->pidAngle.compute();
 
     /* Manage PID for the left Motor. */
-    rdp->pidMotorL.consigne = (rdp->pidAngle.output);
-    rdp->pidMotorL.measure  = positionLMeasured;
-    pidCompute(&rdp->pidMotorL);
+    robot->pidMotorL.setSetPoint(robot->pidAngle.getOutput());
+    robot->pidMotorL.setMeasure(positionLMeasured);
+    robot->pidMotorL.compute();
 
     /* Manage PID for the Right Motor. */
-    rdp->pidMotorR.consigne = (rdp->pidAngle.output);
-    rdp->pidMotorR.measure  = positionRMeasured;
-    pidCompute(&rdp->pidMotorR);
+    robot->pidMotorR.setSetPoint(robot->pidAngle.getOutput());
+    robot->pidMotorR.setMeasure(positionRMeasured);
+    robot->pidMotorR.compute();
 
     /* Get the motors power that need to be apply. */
-    rdp->motorL.speed = rdp->pidMotorL.output;
-    rdp->motorR.speed = rdp->pidMotorR.output;
+    robot->motorL.setSpeed(robot->pidMotorL.getOutput());
+    robot->motorR.setSpeed(robot->pidMotorR.getOutput());
 
     /* Set power to the left motor. */
-    motorMove(&rdp->motorL);
+    robot->motorL.move();
 
     /* Set power to the rigth motor. */
-    motorMove(&rdp->motorR);
+    robot->motorR.move();
 
 #if (DEBUG_ASSERV)
-    //encoderGetDistance(&rdp->encoderLeft);
-    //encoderGetDistance(&rdp->encoderRight);
-    //chprintf(chp, "%s: angle = %.3f, distanceL = %.3f, distanceR = %.3f\r\n", __func__, rdp->pidAngle.measure, positionL, positionR);
+    //encoderGetDistance(&robot->encoderLeft);
+    //encoderGetDistance(&robot->encoderRight);
+    //chprintf(chp, "%s: angle = %.3f, distanceL = %.3f, distanceR = %.3f\r\n", __func__, robot->pidAngle.measure, positionL, positionR);
 
-    chprintf(chp, "%s: Tposi = %.3f, Mposi = %.3f, Tangle %.3f, Mangle %.3f\r\n", __func__, rdp->pidPosition.consigne, rdp->pidPosition.measure, rdp->pidAngle.consigne, rdp->pidAngle.measure);
+    //chprintf(chp, "%s: Tposi = %.3f, Mposi = %.3f, Tangle %.3f, Mangle %.3f\r\n", __func__, robot->pidPosition.consigne, robot->pidPosition.measure, robot->pidAngle.consigne, robot->pidAngle.measure);
+    //pr_debug("\n\r asserv");
 #endif
   }
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /** @} */

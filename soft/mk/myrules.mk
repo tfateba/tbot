@@ -8,6 +8,6 @@ connect:
 # Command to clean:
 distclean:
 	@echo Delate all vim backup files.
-	rm *~
+	@rm -rf *~
 	@echo
 	@echo Done.

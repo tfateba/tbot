@@ -271,29 +271,86 @@ typedef struct {
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class Mpu6050 {
 
-msg_t mpu6050GetIdentity(I2CDriver *i2cp, uint8_t *idp);
-msg_t mpu6050Sleep(I2CDriver *i2cp);
-msg_t mpu6050Wakeup(I2CDriver *i2cp);
-msg_t mpu6050Reset(I2CDriver *i2cp);
-msg_t mpu6050GyroConfig(I2CDriver *i2cp, mpu6050_gyro_fs_e scale);
-msg_t mpu6050AccelConfig(I2CDriver *i2cp, mpu6050_accel_fs_e scale);
-msg_t mpu6050Read(I2CDriver *i2cp, uint8_t *pmp);
-msg_t mpu6050ReadAllSensors(I2CDriver *i2cp, uint8_t *rxbuf);
-msg_t mpu6050SetXGyroOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050SetYGyroOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050SetZGyroOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050SetZAccelOffset(I2CDriver *i2cp, int16_t offset);
-msg_t mpu6050GetData(I2CDriver *i2cp, MPU6050Driver *mpu);
-msg_t mpu6050Calibration(I2CDriver *i2cp, MPU6050Driver *mpu);
-msg_t mpu6050Init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
+  public:
+  msg_t getIdentity(I2CDriver *i2cp, uint8_t *idp);
+  msg_t sleep(I2CDriver *i2cp);
+  msg_t wakeup(I2CDriver *i2cp);
+  msg_t reset(I2CDriver *i2cp);
+  msg_t configGyro(I2CDriver *i2cp, mpu6050_gyro_fs_e scale);
+  msg_t configAccel(I2CDriver *i2cp, mpu6050_accel_fs_e scale);
+  msg_t read(I2CDriver *i2cp, uint8_t *pmp);
+  msg_t readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf);
+  msg_t getXGyroOffset(I2CDriver *i2cp, int16_t *gxop);
+  msg_t setXGyroOffset(I2CDriver *i2cp, int16_t offset);
+  msg_t setYGyroOffset(I2CDriver *i2cp, int16_t offset);
+  msg_t getYGyroOffset(I2CDriver *i2cp, int16_t *gyop);
+  msg_t getZGyroOffset(I2CDriver *i2cp, int16_t *gzop);
+  msg_t setZGyroOffset(I2CDriver *i2cp, int16_t offset);
+  msg_t setZAccelOffset(I2CDriver *i2cp, int16_t offset);
 
-#ifdef __cplusplus
-}
-#endif
+  //msg_t getData(I2CDriver *i2cp, MPU6050Driver *mpu);
+  msg_t getData(I2CDriver *i2cp) ;
+
+  //msg_t doCalibration(I2CDriver *i2cp, MPU6050Driver *mpu);
+  msg_t doCalibration(I2CDriver *i2cp);
+
+  msg_t init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
+
+  float getTemperature(void) {return temperature;}
+
+  float getXAccel(void) {return x_accel;}
+  float getYAccel(void) {return y_accel;}
+  float getZAccel(void) {return z_accel;}
+
+  float getXGyro(void) {return x_gyro;}
+  float getYGyro(void) {return y_gyro;}
+  float getZGyro(void) {return z_gyro;}
+
+  float getPitchAngle (void) {return pitch; }
+  float getRollAngle  (void) {return roll;  }
+  float getYawAngle   (void) {return yaw;   }
+
+  void  setpitchAngle (float angle) {pitch  = angle;}
+  void  setRollAngle  (float angle) {roll   = angle;}
+  void  setYawAngle   (float angle) {yaw    = angle;}
+
+
+  float getFiltredPitchAngle (void) {return pitch_k; }
+  float getFiltredRollAngle  (void) {return roll_k;  }
+  float getFiltredYawAngle   (void) {return yaw_k;   }
+
+  void  setFiltredpitchAngle (float angle) {pitch_k  = angle;}
+  void  setFiltredRollAngle  (float angle) {roll_k   = angle;}
+  void  setFiltredYawAngle   (float angle) {yaw_k    = angle;}
+
+
+  private:
+  mpu6050_sad_e sad;            /**< MPU6050 I2C slave address              */
+  float         x_accel;        /**< Accelerometer x data.                  */
+  float         y_accel;        /**< Accelerometer y data.                  */
+  float         z_accel;        /**< Accelerometer z data.                  */
+  float         x_accel_offset; /**< Accelerometer x data.                  */
+  float         y_accel_offset; /**< Accelerometer y data.                  */
+  float         z_accel_offset; /**< Accelerometer z data.                  */
+  float         x_gyro;         /**< Gyroscope x data.                      */
+  float         y_gyro;         /**< Gyroscope y data.                      */
+  float         z_gyro;         /**< Gyroscope z data.                      */
+  float         x_gyro_offset;  /**< Gyroscope x data.                      */
+  float         y_gyro_offset;  /**< Gyroscope y data.                      */
+  float         z_gyro_offset;  /**< Gyroscope z data.                      */
+  float         pitch;          /**< MPU Pitch angle.                       */
+  float         roll;           /**< MPU Roll angle.                        */
+  float         yaw;            /**< MPU Yaw angle.                         */
+  float         pitch_k;        /**< Filtered Pitch angle by Kalmman filter.*/
+  float         roll_k;         /**< Filtered roll angle by kalman filter.  */
+  float         yaw_k;          /**< Filtered yaw angle by kalman filter.   */
+  float         pitch_c;        /**< Pitch angle by complementary filter.   */
+  float         roll_c;         /**< Roll angle by complementary filter.    */
+  float         yaw_c;          /**< Yaw angle by complementary filter.     */
+  float         temperature;    /**< MPU Temperature.                       */
+};
 
 #endif /* MPU6050_H */
 

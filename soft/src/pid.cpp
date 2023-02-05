@@ -32,7 +32,11 @@
 #include <stdlib.h>
 
 /* Project files. */
-#include "pid.h"
+#include "pid.hpp"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*==========================================================================*/
 /* Global variables.                                                        */
@@ -49,18 +53,18 @@
  * @param[in] kival   Ki value to be set
  * @param[in] kdval   Kd value to be set
 */
-void pidInit(PIDDriver *pidp, float kpval, float kival, float kdval) {
+void Pid::init(float kpval, float kival, float kdval) {
 
-  pidp->kp = kpval;
-  pidp->ki = kival;
-  pidp->kd = kdval;
+  setKd(kpval);
+  setKi(kival);
+  setKd(kdval);
 
-  pidp->pTerm      = 0;
-  pidp->iTerm      = 0;
-  pidp->dTerm      = 0;
+  setPTerm(0);
+  setITerm(0);
+  setDTerm(0);
 
-  pidp->lastError  = 0;
-  pidp->actuError  = 0;
+  setLastError(0);
+  setActualError(0);
 }
 
 /**
@@ -68,25 +72,41 @@ void pidInit(PIDDriver *pidp, float kpval, float kival, float kdval) {
  *
  * @param[in] pidp pointer to the pid that need to compute data
  */
-void pidCompute(PIDDriver *pidp) {
+void Pid::compute(void) {
 
   /* Update PID values. */
-  pidp->actuError =  (pidp->consigne - pidp->measure);
-  pidp->pTerm     =  pidp->kp * pidp->actuError;
-  pidp->iTerm     += pidp->ki * pidp->actuError;
-  pidp->dTerm     =  pidp->kd * (pidp->actuError - pidp->lastError);
-  pidp->lastError =  pidp->actuError;
-  pidp->output    =  pidp->pTerm + pidp->iTerm + pidp->dTerm;
+  setActualError(getSetpoint() - getMeasure());
+  setPTerm(getKp() * getActualError());
+  
+  setITerm(getITerm() +  (getITerm() * getActualError()));
+
+  setDTerm(getDTerm() * (getActualError() - getLastError()));
+
+  setLastError(getActualError());
+
+  
+  setOutput(getPTerm() + getITerm() + getDTerm());
 }
 
 /**
  * @brief   Reset the PID parameters.
  */
-void pidResetParameters(PIDDriver *pidp) {
-  pidp->pTerm      = 0;
-  pidp->iTerm      = 0;
-  pidp->dTerm      = 0;
-  pidp->lastError  = 0;
+void Pid::reset(void) {
+
+  setKd(0);
+  setKi(0);
+  setKd(0);
+
+  setPTerm(0);
+  setITerm(0);
+  setDTerm(0);
+
+  setLastError(0);
+  setActualError(0);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /** @} */

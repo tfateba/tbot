@@ -27,7 +27,12 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT =mcuconf.h
+  USE_CPPOPT =
+endif
+
+# Linker extra options here.
+ifeq ($(USE_LDOPT),)
+  USE_LDOPT = --defsym=__main_thread_stack_base__=0,--defsym=__main_thread_stack_end__=0
 endif
 
 # Enable this if you want to see the full log while compiling.
@@ -80,19 +85,23 @@ endif
 #
 
 # Define project name here.
-PROJECT = tbot
+PROJECT = ch
 
-# tbot sources root paths.
-TBOT = ../../tbot/soft
-
-# Imported source files.
+# Imported source files and paths.
 CHIBIOS  := ../../trunk
+CONFDIR  := ./cfg
+BUILDDIR := ./build
+DEPDIR   := ./.dep
+TBOT     := .
+
+# Licensing files.
+include $(CHIBIOS)/os/license/license.mk
 
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/boards/ARDUINO_MEGA/board.mk
-include $(CHIBIOS)/os/hal/ports/AVR/MEGA/platform.mk
-include $(CHIBIOS)/os/hal/osal/rt/osal.mk
+include $(CHIBIOS)/os/hal/ports/AVR/MEGA/ATMEGAxx/platform.mk
+include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
@@ -101,26 +110,17 @@ include $(CHIBIOS)/os/common/ports/AVR/compilers/GCC/mk/port.mk
 # Other files.
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
-# Application files.
+# Project files.
 include $(TBOT)/mk/app.mk
 
 # List C source files here. (C dependencies are automatically generated.)
-CSRC =  $(KERNSRC)                      \
-        $(PORTSRC)                      \
-        $(OSALSRC)                      \
-        $(HALSRC)                       \
-        $(PLATFORMSRC)                  \
-        $(BOARDSRC)                     \
-        $(STREAMSSRC)                   \
-        $(CHIBIOS)/os/various/evtimer.c \
-        $(TBOTSRC)
+CSRC =  $(ALLCSRC)
 
 # List C++ sources file here.
-CPPSRC =
+CPPSRC =	$(ALLCPPSRC) $(TBOTSRC)
 
-INCDIR =  $(CHIBIOS)/os/license $(PORTINC) $(KERNINC) \
-          $(HALINC) $(OSALINC) $(PLATFORMINC) $(TBOTINC)         \
-          $(STREAMSINC) $(BOARDINC) $(CHIBIOS)/os/various $(CONFDIR)
+# Header files here.
+INCDIR = $(CONFDIR) $(ALLINC) $(TBOTINC)
 
 #
 # Project, sources and paths.
@@ -156,9 +156,6 @@ SZ    = $(TRGT)size
 HEX   = $(CP) -O ihex
 BIN   = $(CP) -O binary
 
-# AVR programming tool.
-AVRDUDE = avrdude
-
 # Size of the elf binary file.
 ELFSIZE = $(SZ) --mcu=$(MCU) --format=avr $(BUILDDIR)/$(PROJECT).elf
 
@@ -180,7 +177,7 @@ CPPWARN =
 #
 
 # List all user C define here, like -D_DEBUG=1.
-UDEFS =
+UDEFS = -DTEST_CFG_SIZE_REPORT=0
 
 # Define ASM defines here.
 UADEFS =
@@ -199,12 +196,11 @@ ULIBS =
 ##############################################################################
 
 ##############################################################################
-# Start of programming Options (avrdude).
+# Start of programming Options.
 #
 
 # List of available AVR programmer.
 AVRDUDE_PROGRAMMER    = avrdude
-#AVRDUDE_PROGRAMMER_ID = arduino
 AVRDUDE_PROGRAMMER_ID = wiring
 DFU_PROGRAMMER        = dfu-programmer
 MICRONUCLEUS          = micronucleus
@@ -279,7 +275,6 @@ endif
 
 RULESPATH = $(CHIBIOS)/os/common/ports/AVR/compilers/GCC
 include $(RULESPATH)/rules.mk
-include $(TBOT)/mk/myrules.mk
 
 #
 # End of include file.
@@ -323,14 +318,10 @@ program: $(BUILDDIR)/$(PROJECT).bin
 	@echo Done.
 endif
 
+include $(TBOT)/mk/myrules.mk
+
 #
 # End of programming rules.
 ##############################################################################
-
-# TBOT
-#connect:
-#	@echo
-#	@echo Connect to TBOT robot
-#	picocom -b 115200 /dev/ttyACM0
 
 # EOF

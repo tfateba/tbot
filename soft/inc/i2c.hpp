@@ -15,40 +15,49 @@
 */
 
 /**
- * @file    buzzer.h
- * @brief   Buzzer driver header file.
+ * @file    i2c.h
+ * @brief   I2C header file.
  *
- * @addtogroup BUZZER
+ * @addtogroup I2C
  * @{
  */
 
-#ifndef BUZZER_H
-#define BUZZER_H
+#ifndef I2C_H
+#define I2C_H
 
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
 
+/* ChibiOS files. */
+#include "hal.h"
+
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
+
+#define I2C_CLOCK_SPEED 400000
+
+/**
+ * @brief I2C Configuration.
+ */
+static const I2CConfig i2cConfig = {
+  I2C_CLOCK_SPEED,  /* I2C Clock speed. */
+};
 
 /*==========================================================================*/
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* @todo: this class can be rename interfaceI2c. */
+class I2c {
+  public:
+  msg_t read(I2CDriver *i2cp, uint8_t addr, uint8_t *reg,
+                          uint8_t *rxbuf, uint8_t lenght);
+  msg_t write(I2CDriver *i2cp, uint8_t addr, uint8_t *txbuf,
+                          uint8_t lenght);
+};
 
-void buzzerInit(void);
-void buzzerSound(void);
-void buzzerStopSound(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* BUZZER_H */
+#endif /* I2C_H */
 
 /** @} */

@@ -32,8 +32,13 @@
 
 /* Project files. */
 #include "conf.h"
-#include "motor.h"
 #include "hardware.h"
+#include "motor.hpp"
+#include "pwm.hpp"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*==========================================================================*/
 /* Global variables.                                                        */
@@ -55,13 +60,15 @@ extern BaseSequentialStream*  chp;
 /*==========================================================================*/
 
 /**
- * @brief   Initialize the PWM output for motor.
+ * @brief   Initialize and start the PWM output for motor.
+ *
+ * @param[in] mp  pointer to the motor that pwm need to be initialized.
  */
-void pwmInits(MOTORConfig *mdp) {
+void Pwm::init(PWMDriver *pdp, PWMConfig *pcp, ioportid_t fport, ioportid_t rport, uint8_t fpin, uint8_t rpin) {
 
-  palSetPadMode(mdp->forwardPort, mdp->forwardPin, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(mdp->reversePort, mdp->reversePin, PAL_MODE_OUTPUT_PUSHPULL);
-  pwmStart(mdp->pwmDriver, mdp->pwmConfig);
+  palSetPadMode(fport, fpin, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(rport, rpin, PAL_MODE_OUTPUT_PUSHPULL);
+  pwmStart(pdp, pcp);
 }
 
 /**
@@ -71,7 +78,7 @@ void pwmInits(MOTORConfig *mdp) {
  * @param[in] channel   channel to control
  * @param[in] width     pwm width to generate
  */
-static void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
+void Pwm::setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
 
   pwmEnableChannel(pwmp, channel, width);
 }
@@ -83,10 +90,10 @@ static void pwmSetPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width) {
  * @param[in] pwmcfg    configuration of the pwm driver
  * @param[in] channel   channel to enable
  */
-void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
+void Pwm::enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
 
   pwmStart(pwmp, pwmcfg);
-  pwmSetPulseWidth(pwmp, channel, 0);
+  setPulseWidth(pwmp, channel, 0);
 }
 
 /**
@@ -94,7 +101,7 @@ void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel) {
  *
  * @param[in] pwmp  pointer of the pwm driver to disable
  */
-void pwmDisable(PWMDriver *pwmp) {
+void Pwm::disable(PWMDriver *pwmp) {
 
   pwmStop(pwmp);
 }
@@ -106,32 +113,36 @@ void pwmDisable(PWMDriver *pwmp) {
  * @param[in] direction   the direction of the motor, backward or forward.
  * @param[in] dutyCycle   the duty cycle to set the pwm.
  */
-void pwmSetDutyCycle(MOTORDriver *mdp) {
+void Pwm::setDutyCycle(motor_id_t mid, motor_dir_t mdir, ioportid_t port, uint8_t pin, uint8_t chan1, uint8_t chan2, int volt)  {
 
-  palSetPad(mdp->config.enablePort, mdp->config.enablePin);
+  palSetPad(port, pin);
 
-  if (mdp->config.mid == MOTOR_L) {
+  if (MOTOR_L == mid) {
 
-    if (mdp->dir == MOTOR_DIR_F) {
-      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel1, maxPwmValue);
-      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel2, mdp->pwmValue);
+    if (MOTOR_DIR_F == mdir) {
+      setPulseWidth(&PWMD4, chan1, maxPwmValue);
+      setPulseWidth(&PWMD4, chan2, volt);
     }
-    else if (mdp->dir == MOTOR_DIR_B) {
-      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel1, mdp->pwmValue);
-      pwmSetPulseWidth(&PWMD4, mdp->config.pwmChannel2, maxPwmValue);
+    else if (MOTOR_DIR_B == mdir) {
+      setPulseWidth(&PWMD4, chan1, volt);
+      setPulseWidth(&PWMD4, chan2, maxPwmValue);
     }
   }
-  else if (mdp->config.mid == MOTOR_R) {
+  else if (MOTOR_R == mid) {
 
-    if (mdp->dir == MOTOR_DIR_F) {
-      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel1, maxPwmValue);
-      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel2, mdp->pwmValue);
+    if (MOTOR_DIR_F == mdir) {
+      setPulseWidth(&PWMD3, chan1, maxPwmValue);
+      setPulseWidth(&PWMD3, chan2, volt);
     }
-    else if (mdp->dir == MOTOR_DIR_B) {
-      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel1, mdp->pwmValue);
-      pwmSetPulseWidth(&PWMD3, mdp->config.pwmChannel2, maxPwmValue);
+    else if (MOTOR_DIR_B == mdir) {
+      setPulseWidth(&PWMD3, chan1, volt);
+      setPulseWidth(&PWMD3, chan2, maxPwmValue);
     }
   }
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /** @} */

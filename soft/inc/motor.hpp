@@ -37,32 +37,18 @@
 /* ChibiOS files. */
 #include "hal.h"
 #include "conf.h"
+#include "pwm.hpp"
+//#pragma once
 
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
 
 /**
- * @brief Motors identifier enumeration.
- */
-typedef enum {
-  MOTOR_L,  /**< Left motor. */
-  MOTOR_R,  /**< Right motor. */
-} motor_id_t;
-
-/**
- * @brief Motors enumerations
- */
-typedef enum {
-  MOTOR_DIR_F,  /**< Motor forward direction. */
-  MOTOR_DIR_B,  /**< Motor backward direction. */
-} motor_dir_t;
-
-/**
  * @brief Motor configuration structure.
  */
 typedef struct {
-  motor_id_t  mid;          /**< Motor identification name.       */
+  motor_id_t  id;          /**< Motor identification name.       */
   float       maxSpeed;     /**< Motor maximum speed.             */
   ioportid_t  forwardPort;  /**< Motor driver forward pwm Port.   */
   ioportid_t  reversePort;  /**< Motor driver backwad pwm Port.   */
@@ -90,17 +76,55 @@ typedef struct {
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class Motor {
+  public:
+  void        stop();
+  void        move();
+  void        init(MOTORConfig *cfg);
 
-void motorStop(MOTORDriver *mdp);
-void motorMove(MOTORDriver *mdp);
-void motorInit(MOTORDriver *mdp, MOTORConfig cfg);
 
-#ifdef __cplusplus
-}
-#endif
+  void        setConfig(MOTORConfig *cfg) {config = cfg;}
+  motor_id_t  getId(void) {return config->id;}
+  void        setId(motor_id_t mid) {config->id = mid;}
+  
+  float       getMaxSpeed(void) {return config->maxSpeed;}
+  void        setMaxSpeed(float ms) {config->maxSpeed = ms;}
+
+  ioportid_t  getForwardPort(void) {return config->forwardPort;}
+  ioportid_t  getReversePort(void) {return config->reversePort;}
+  ioportid_t  getEnablePort(void) {return config->enablePort;}
+  uint8_t     getForwardPin(void) {return config->forwardPin;}
+  uint8_t     getReversePin(void) {return config->reversePin;}
+  uint8_t     getEnablePin(void)  {return config->enablePin;}
+
+  void        setPwmDriver(PWMDriver *pwmdp) {config->pwmDriver = pwmdp;}
+  PWMDriver   *getPwmDriver(void) {return config->pwmDriver;}
+
+  void        setPwmConfig(PWMConfig *pwmcfgp){config->pwmConfig;}
+  PWMConfig   *getPwmConfig(void) {return config->pwmConfig;}
+
+  uint8_t     getPwmChannel1(void) {return config->pwmChannel1;}
+  uint8_t     getPwmChannel2(void) {return config->pwmChannel2;}
+
+  void        setDirection(motor_dir_t dir) {direction = dir;}
+  motor_dir_t getDirection(void) {return direction;}
+
+  void        setSpeed(float speed) {speed = speed;}
+  float       getSpeed(void) {return speed;}
+  void        setVoltage(int voltage) {pwmValue = voltage;}
+  int         getVoltage(void) { return pwmValue;}
+
+  private:
+  
+  void enable();
+
+  uint16_t      maxSpeedValue;  /**< Robot maximum speed value.   512!!! */
+  motor_dir_t   direction;      /**< Motor rotation directory.    */
+  float         speed;          /**< Motor speed.                 */
+  int           pwmValue;       /**< Motor pwm value for control. */
+  MOTORConfig   *config;        /**< Motor configuration.         */
+  Pwm           pwmModule;
+};
 
 #endif /* MOTOR_H */
 

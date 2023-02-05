@@ -1,5 +1,5 @@
 /*
-    TBOT - Copyright (C) 2015...2021 Theodore Ateba
+    ChibiOS - Copyright (C) 2006..2022 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,36 +14,29 @@
     limitations under the License.
 */
 
-/**
- * @file    main.c
- * @brief   main file of inverted pendulum Robot.
- *
- * @addtogroup MAIN
- * @{
- */
+#include "ch.h"
+#include "hal.h"
 
 /*==========================================================================*/
 /* Includes Files.                                                          */
 /*==========================================================================*/
 
-/* ChibiOS files. */
-#include "hal.h"
-#include "ch.h"
-#include "chprintf.h"
-
 /* Project files. */
-#include "asserv.h"
-#include "buzzer.h"
 #include "conf.h"
-#include "encoder.h"
-#include "i2c.h"
-#include "kalman.h"
 #include "main.h"
-#include "motor.h"
-#include "mpu6050.h"
-#include "pid.h"
-#include "pwm.h"
 #include "hardware.h"
+
+#include "asserv.hpp"
+#include "led.hpp"
+#include "buzzer.hpp"
+#include "encoder.hpp"
+#include "i2c.hpp"
+#include "kalman.hpp"
+#include "motor.hpp"
+#include "mpu6050.hpp"
+#include "pid.hpp"
+#include "pwm.hpp"
+#include "tbot.hpp"
 
 /*==========================================================================*/
 /* Global variables, I2C TX and RX buffers, I2C and Serial Configurations.  */
@@ -60,7 +53,7 @@ BaseSequentialStream* chp = (BaseSequentialStream*) &SD1;/**< Pointer for
 
 #define pr_debug(x) chprintf(chp, x)
 
-ROBOTDriver tbot;
+Tbot tbot;
 
 /*
  * @brief   PWM3 configuration structure.
@@ -91,7 +84,7 @@ static PWMConfig motorRPwmCfg = {
 };
 
 static MOTORConfig motorLConfig = {
-  .mid          = MOTOR_L,                /**< Motor ID.            */
+  .id           = MOTOR_L,                /**< Motor ID.            */
   .maxSpeed     = MOTOR_MAX_SPEED,        /**< Motor max speed.     */
   .forwardPort  = L_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
   .reversePort  = L_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
@@ -106,7 +99,7 @@ static MOTORConfig motorLConfig = {
 };
 
 static MOTORConfig motorRConfig = {
-  .mid          = MOTOR_R,                /**< Motor ID.            */
+  .id           = MOTOR_R,                /**< Motor ID.            */
   .maxSpeed     = MOTOR_MAX_SPEED,        /**< Motor max speed.     */
   .forwardPort  = R_MOTOR_PORT_FORWARD,   /**< Motor Forward  port. */
   .reversePort  = R_MOTOR_PORT_BACKWARD,  /**< Motor Backward port. */
@@ -140,38 +133,57 @@ static ENCODERConfig encoderRConfig = {
   .pinb   = R_ENCODER_PIN_B    /**< Pin B.                       */
 };
 
+// TODO this must be removed here!
+Asserv  asserv;
+
 /*==========================================================================*/
 /* Threads function and main function.                                      */
 /*==========================================================================*/
 
+static virtual_timer_t asservvt;
 /*
- * @brief   Onboard led Blink thread.
+ * LED blinker thread, times are in milliseconds.
  */
 static THD_WORKING_AREA(waBlink, 64);
 static THD_FUNCTION(blinkThd, arg) {
 
   (void)arg;
+  
   systime_t time = chVTGetSystemTimeX();
-  uint16_t  init_time = 0;
+  int32_t   init_time = 0;
   bool      spf = false; /* Song Played Flag. */
-
+  
   chRegSetThreadName("Blinker");
 
   while (true) {
-    time += MS2ST(100);
+
+    // //buzzer.playFailed();
+    // tbot.led1.on();
+    // chThdSleepMilliseconds(50);
+    // tbot.led1.off();
+    // chThdSleepMilliseconds(1000);
+
+    // TODO Find the equivalent of this function !!!
+    time += TIME_MS2I(100);
+    time++;
     if (init_time <= 200) {
       init_time++;
     }
     else {
       if (spf == false) {
-        buzzerSound();
-        buzzerStopSound();
+        tbot.buzzer.startSound();
+        chThdSleepMilliseconds(10);
+        tbot.buzzer.startSound();
+        tbot.buzzer.stopSound();
+
         spf = true;
       }
-      palTogglePad(IOPORT2, PORTB_LED1);
+      //palTogglePad(IOPORT2, PORTB_LED1);
+      tbot.led1.toggle();
     }
 
     chThdSleepUntil(time);
+    //chThdSleepUntil(10);
   }
 }
 
@@ -187,8 +199,8 @@ static THD_FUNCTION(asserThd, arg) {
   chRegSetThreadName("Asservissement");
 
   while (true) {
-    time += MS2ST(10);
-    asserv(&tbot);
+    time += TIME_MS2I(10);
+    asserv.startAsserv(&tbot);
     chThdSleepUntil(time);
   }
 }
@@ -197,8 +209,6 @@ static THD_FUNCTION(asserThd, arg) {
  * Application entry point.
  */
 int main(void) {
-
-  static msg_t msg;
 
   /*
    * System initializations.
@@ -210,17 +220,25 @@ int main(void) {
   halInit();
   chSysInit();
 
-  /* Start the serial. */
+  /*  Activates the serial driver 1 using the driver default configuration. */
   sdStart(&SD1, NULL);
 
+  /*  Initialize the led object. */
+  tbot.led1.init(IOPORT2, PORTB_LED1);
+
   /* Buzzer initialization. */
-  buzzerInit();
+  //tbot.buzzer.init();
 
-  /* Start beep. */
-  buzzerSound();
+  tbot.buzzer.startSound();
+  chThdSleepMilliseconds(10);
+  tbot.buzzer.startSound();
+  tbot.buzzer.stopSound();
 
-  /* Stop beep. */
-  buzzerStopSound();
+  // chThdSleepMilliseconds(100);
+  // tbot.buzzer.playFailed();
+  // chThdSleepMilliseconds(100);
+  // tbot.buzzer.playPassed();
+  // tbot.buzzer.baby();
 
 #if (DEBUG_MAIN)
   /* TODO: Make a function, so that the code will be more clear. */
@@ -235,105 +253,33 @@ int main(void) {
 
   pr_debug("\n\r");
   pr_debug("\n\rInverted Pendulum Robot");
-  pr_debug("\n\rMade by tfateba, tf.ateba@gmail.com");
+  pr_debug("\n\rSoftware made by tfateba, tf.ateba@gmail.com");
+  pr_debug("\n\rHardware made by Thibaud2399, thibaud.jenny@gmail.com");
   pr_debug("\n\rControlled with ChibiOS/RT (trunk)");
-  pr_debug("\n\rTarget board is an Arduino Mega");
+  pr_debug("\n\rRunning on Arduino Mega board");
+  pr_debug("\n\rC++ port");
   pr_debug("\n\rCopyrigth: 2015...2023");
 
   pr_debug("\n\r");
   pr_debug("\n\rInitialization started...");
 #endif
 
-  /* Turn off the debug LED. */
-  palClearPad(IOPORT2, PORTB_LED1);
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rOn-board LED initialization done");
-#endif
-
   /* Start I2C interface. */
   i2cStart(&I2CD1, &i2cConfig);
+
+  tbot.init();
 
 #if (DEBUG_MAIN)
   pr_debug("\n\rI2C bus interface initialization done");
 #endif
 
-  /* Init Kalman filter. */
-  kalmanInit();
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rKalman filter initialization done");
-#endif
-
-  /* Init MPU module. */
-   msg = mpu6050Init(&I2CD1, &tbot.imu, MPU6050_ADDR);
-
-  if (msg != MSG_OK) {
-#if (DEBUG_MAIN)
-    pr_debug("\n\r Error while initialising the IMU");
-#endif
-    return -1;
-  }
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rIMU sensor initialization started, please wait...");
-#endif
-
-  /* Start MPU calibration process. */
-  //mpu6050Calibration(&I2CD1, &tbot.imu);
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rIMU sensor calibration done");
-#endif
-
-  /* Init Position PID controller. */
-  pidInit(&tbot.pidPosition, 0, 0, 0); /* PI */
-
-  /* Init Angle PID controller.  */
-  pidInit(&tbot.pidAngle, 55.468, 0.554, 42.524); /* PID  */
-
-  /* Init motors PID controllers.  */
-  pidInit(&tbot.pidMotorL, 1, 0, 0);
-  pidInit(&tbot.pidMotorR, 1, 0, 0);
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rPID initialization done");
-#endif
-
-  /* Init Motors. */
-  motorInit(&tbot.motorL, motorLConfig);
-  motorInit(&tbot.motorR, motorRConfig);
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rMotors initialization done");
-#endif
-
-  /* Init Encoders. */
-  encoderInit(&tbot.encoderR, encoderRConfig);
-  encoderInit(&tbot.encoderL, encoderLConfig);
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rEncoder initialization done");
-#endif
-
-#if (DEBUG_MAIN)
-  pr_debug("\n\rInverted Pendulum Robot initialization done");
-  pr_debug("\n\rBlink and Asservissement thread will be created and started");
-#endif
-
-  /* Create and starts the LED blinker thread. */
-  chThdCreateStatic(waBlink, sizeof(waBlink), NORMALPRIO + 4, blinkThd, NULL);
+  /*  Starts the LED blinker thread.  */
+  chThdCreateStatic(waBlink, sizeof(waBlink), NORMALPRIO, blinkThd, NULL);
 
   /* Create and starts asservissement thread. */
   chThdCreateStatic(waAsser, sizeof(waAsser), NORMALPRIO + 8, asserThd, NULL);
 
-#if (DEBUG_MAIN)
-  pr_debug("\n\rApplication started");
-#endif
-
-  while (TRUE) {
-    chThdSleepMilliseconds(100);
+  while (true) {
+    chThdSleepMilliseconds(1000);
   }
 }
-
-/** @} */

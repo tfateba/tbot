@@ -25,6 +25,10 @@
 #ifndef PWM_H
 #define PWM_H
 
+#include "hal.h"
+//#include "motor.hpp"
+//#pragma once
+
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
@@ -32,6 +36,22 @@
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
+
+/**
+ * @brief Motors identifier enumeration.
+ */
+typedef enum {
+  MOTOR_L,  /**< Left motor. */
+  MOTOR_R,  /**< Right motor. */
+} motor_id_t;
+
+/**
+ * @brief Motors enumerations
+ */
+typedef enum {
+  MOTOR_DIR_F,  /**< Motor forward direction. */
+  MOTOR_DIR_B,  /**< Motor backward direction. */
+} motor_dir_t;
 
 /**
  * @brief  The motor driver can handle a pwm frequency up to 20kHz.
@@ -49,18 +69,17 @@
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* @todo Rename this class interfacePwm. */
+class Pwm {
+    public:
+    void init(PWMDriver *pdp, PWMConfig *pcp, ioportid_t fport, ioportid_t rport, uint8_t fpin, uint8_t rpin);
+    void enable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
+    void disable(PWMDriver *pwmp);
+    void setDutyCycle(motor_id_t mid, motor_dir_t mdir, ioportid_t port, uint8_t pin, uint8_t chan1, uint8_t chan2, int volt);
 
-void pwmInits(MOTORConfig *mdp);
-void pwmEnable(PWMDriver *pwmp, PWMConfig *pwmcfg, uint8_t channel);
-void pwmDisable(PWMDriver *pwmp);
-void pwmSetDutyCycle(MOTORDriver *mdp);
-
-#ifdef __cplusplus
-}
-#endif
+    private:
+    void setPulseWidth(PWMDriver *pwmp, uint8_t channel, uint16_t width);
+};
 
 #endif /* PWM_H */
 

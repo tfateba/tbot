@@ -1,5 +1,5 @@
 /*
-    TBOT - Copyright (C) 2015...2021 Theodore Ateba
+    TBOT - Copyright (C) 2015...2023 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,51 +12,68 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 */
 
 /**
- * @file    kalman.h
- * @brief   Kalman filter header file.
+ * @file    tbot.hpp
+ * @brief   tbot header file.
  *
- * @addtogroup KALMAN
+ * @addtogroup TBOT
  * @{
  */
 
-#ifndef KALMAN_H
-#define KALMAN_H
+#ifndef TBOT_H
+#define TBOT_H
 
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
 
+/* Project files. */
+#include "encoder.hpp"
+#include "motor.hpp"
+#include "mpu6050.hpp"
+#include "pid.hpp"
+#include "led.hpp"
+#include "buzzer.hpp"
+#include "kalman.hpp"
+
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
+
+/**
+ * @brief   Structure representing a Robot driver.
+ */
+//struct ROBOTDriver {
+class Tbot {
+
+public:
+  void init(void);
+
+  Mpu6050 imu;            /**< Robot IMU.                             */
+
+  Pid     pidPosition;    /**< must be pidSpeed.                      */
+  Pid     pidAngle;       /**< Must be pidAngle.                      */
+  Pid     pidMotorL;      /**< TODO: must be pidLeftMotor.            */
+  Pid     pidMotorR;      /**< Robot pid for rigth motor.             */
+
+  Motor   motorL;         /**< Robot left  motor.                     */
+  Motor   motorR;         /**< Robot rigth motor.                     */
+
+  Encoder encoderL;       /**< Robot left  encoder.                   */
+  Encoder encoderR;       /**< Robot rigth encoder.                   */
+  Led     led1;           /**< Robot led*/
+  Buzzer  buzzer;         /**< Rbot Buzzer.                           */
+
+  Kalman  kalmanFilter;
+};
+
 
 /*==========================================================================*/
 /* External declarations.                                                   */
 /*==========================================================================*/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void  kalmanInit(void);
-float kalmanGetAngle(float newAngle, float newRate, float dt);
-void  kalmanSetAngle(float newAngle);
-float kalmanGetRate(void);
-void  kalmanSetQangle(float newQ_angle);
-void  kalmanSetQbias(float newQ_bias);
-void  kalmanSetRmeasure(float newR_measure);
-float kalmanGetQangle(void);
-float kalmanGetQbias(void);
-float kalmanGetRmeasure(void);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#endif /* KALMAN_H */
+#endif /* TBOT_H */
 
 /** @} */

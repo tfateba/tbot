@@ -34,6 +34,9 @@
 /*==========================================================================*/
 /* Includes files.                                                          */
 /*==========================================================================*/
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Standard files. */
 #include <math.h>
@@ -46,18 +49,13 @@
 
 /* Project files. */
 #include "conf.h"
-#include "motor.h"
-#include "pwm.h"
+
+#include "motor.hpp"
+#include "pwm.hpp"
 
 /*==========================================================================*/
 /* Global variables.                                                        */
 /*==========================================================================*/
-
-const uint16_t  maxSpeedValue = 512;  /**< Robot maximum speed value.       */
-
-#if (DEBUG_MOTOR)
-extern BaseSequentialStream* chp;
-#endif
 
 /*==========================================================================*/
 /* Driver functions.                                                        */
@@ -66,64 +64,85 @@ extern BaseSequentialStream* chp;
 /**
  * @brief   Stop the corresponding motor.
  *
- * @param[in] mId   motor id of the motor to stop, rigth/left
+ * @param[in] mp   pointer of the motor that need to be stopped.
  */
-void motorStop(MOTORDriver *mdp) {
+void Motor::stop(void) {
 
-  mdp->pwmValue = 0;
-  pwmSetDutyCycle(mdp);
-  palClearPad(mdp->config.enablePort, mdp->config.enablePin);
+  setVoltage(0);
+
+  pwmModule.setDutyCycle( getId(),
+                          getDirection(),
+                          getEnablePort(),
+                          getEnablePin(),
+                          getPwmChannel1(),
+                          getPwmChannel2(),
+                          getVoltage());
+
+  palClearPad(getEnablePort(), getEnablePin());
 }
 
 /**
  * @brief   Driving the motor to the given speed.
  *
- * @param[in] mdp    pointer to the motor to move.
+ * @param[in] mp    pointer to the motor to move.
  */
-void motorMove(MOTORDriver *mdp) {
+void Motor::move(void) {
 
   float speedabs = 0;
 
   /* Get the motor direction:. */
-  if (mdp->speed >= 0) {
-    mdp->dir = MOTOR_DIR_F;
-    speedabs = mdp->speed;
+  if (getSpeed() >= 0) {
+    setDirection(MOTOR_DIR_F);
+    speedabs = getSpeed();
   }
   else {
-    mdp->dir = MOTOR_DIR_B;
-    speedabs = abs(mdp->speed);
+    setDirection(MOTOR_DIR_B);
+    speedabs = abs(getSpeed());
   }
 
-  if (speedabs > maxSpeedValue)
-    speedabs = maxSpeedValue;
+  if (speedabs > getMaxSpeed())
+    speedabs = getMaxSpeed();
 
-  mdp->pwmValue = speedabs*((float)PWMVALUE)/maxSpeedValue;
-  pwmSetDutyCycle(mdp);
+  setVoltage(speedabs*((float)PWMVALUE)/getMaxSpeed());
+  pwmModule.setDutyCycle( getId(),
+                          getDirection(),
+                          getEnablePort(),
+                          getEnablePin(),
+                          getPwmChannel1(),
+                          getPwmChannel2(),
+                          getVoltage());
+
 }
 
 /**
  * @brief   Enable left or right motor with GPIO signal.
  *
- * @param[in] mid  id of the motor to be enable, left/right
+ * @param[in] mp  pointer to the motor that need to be enable.
  */
-static void motorEnable(MOTORDriver *mdp) {
+void Motor::enable(void) {
 
-  palSetPad(mdp->config.enablePort, mdp->config.enablePin);
+  palSetPad(getEnablePort(), getEnablePin());
 }
 
 /**
  * @brief   Initialize all pins needs for motor control
+ *
+ * @param[in] mp  pointer to the motor that need to be initialize.
  */
-void motorInit(MOTORDriver *mdp, MOTORConfig cfg) {
+void Motor::init(MOTORConfig *cfg) {
 
-  mdp->config = cfg;
-  palSetPadMode(mdp->config.forwardPort,  mdp->config.forwardPin, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(mdp->config.reversePort,  mdp->config.reversePin, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(mdp->config.enablePort,   mdp->config.enablePin,  PAL_MODE_OUTPUT_PUSHPULL);
-  motorEnable(mdp);
+  setConfig(cfg);
+  palSetPadMode(getForwardPort(),  getForwardPin(), PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(getReversePort(),  getReversePin(), PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(getEnablePort(),   getEnablePin(),  PAL_MODE_OUTPUT_PUSHPULL);
+  enable();
 
   /* Init PWM modules. */
-  pwmInits(&mdp->config);
+  pwmModule.init(getPwmDriver(), getPwmConfig(), getForwardPort(), getReversePort(), getForwardPin(), getReversePin());
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /** @}  */

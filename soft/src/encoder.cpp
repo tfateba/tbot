@@ -26,6 +26,10 @@
 /* Includes files.                                                          */
 /*==========================================================================*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard files. */
 #include <stdbool.h>
 #include <stdint.h>
@@ -36,7 +40,7 @@
 #include "chprintf.h"
 
 /* Project files. */
-#include "encoder.h"
+#include "encoder.hpp"
 #include "main.h"
 #include "hardware.h"
 
@@ -45,12 +49,12 @@
 /*==========================================================================*/
 
 /* Project local variables. */
-long wheelPosition;     /**< Position of the robot wheels.                  */
-long wheelVelocity;     /**< Velocity fo the robot wheels.                  */
-long lastWheelPosition; /**< Backup of the robot wheel position.            */
-long targetPosition;    /**< The robot target angle  position.              */
+//long wheelPosition;     /**< Position of the robot wheels.                  */
+//long wheelVelocity;     /**< Velocity fo the robot wheels.                  */
+//long lastWheelPosition; /**< Backup of the robot wheel position.            */
+//long targetPosition;    /**< The robot target angle  position.              */
 
-extern ROBOTDriver tbot;
+extern Tbot tbot;
 
 /*==========================================================================*/
 /* Encoders callback.                                                       */
@@ -67,12 +71,12 @@ static void encoderLCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B))
-    tbot.encoderL.counter++;
+    tbot.encoderL.incrementCounter();
   else
-    tbot.encoderL.counter--;
+    tbot.encoderL.decrementCounter();
 
-  tbot.encoderL.statea = palReadPad(L_ENCODER_PORT_A, L_ENCODER_PIN_A);
-  tbot.encoderL.stateb = palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B);
+  tbot.encoderL.setStateA(palReadPad(L_ENCODER_PORT_A, L_ENCODER_PIN_A));
+  tbot.encoderL.setStateB(palReadPad(L_ENCODER_PORT_B, L_ENCODER_PIN_B));
 
   chSysUnlockFromISR();
 }
@@ -88,12 +92,12 @@ static void encoderRCallback(EXTDriver *extp, expchannel_t channel) {
   chSysLockFromISR();
 
   if (palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B))
-    tbot.encoderR.counter++;
+    tbot.encoderR.incrementCounter();
   else
-    tbot.encoderR.counter--;
+    tbot.encoderR.decrementCounter();
 
-  tbot.encoderR.statea = palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A);
-  tbot.encoderR.stateb = palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B);
+  tbot.encoderR.setStateA(palReadPad(R_ENCODER_PORT_A, R_ENCODER_PIN_A));
+  tbot.encoderR.setStateB(palReadPad(R_ENCODER_PORT_B, R_ENCODER_PIN_B));
 
   chSysUnlockFromISR();
 }
@@ -121,11 +125,11 @@ static const EXTConfig extcfg = {
  *
  * @return  ret   the value of the left encoder A
  */
-bool encoderReadLeftStateA(void) {
+bool Encoder::getStateA(void) {
 
   bool ret;
 
-  if (tbot.encoderL.statea)
+  if (stateA)
     ret = 1;
   else
     ret = 0;
@@ -138,7 +142,43 @@ bool encoderReadLeftStateA(void) {
  *
  * @return  ret   the value of the left encoder B
  */
-bool encoderReadLeftEncoderStateB(void) {
+bool Encoder::getStateB(void) {
+
+  bool ret;
+
+  if (stateB)
+    ret = 1;
+  else
+    ret = 0;
+
+  return ret;
+}
+
+
+/**
+ * @brief   Get the state of the left encoder A.
+ *
+ * @return  ret   the value of the left encoder A
+ *//*
+bool Encoder::readLeftStateA(void) {
+
+  bool ret;
+
+  if (tbot.encoderL.statea)
+    ret = 1;
+  else
+    ret = 0;
+
+  return ret;
+}
+*/
+
+/**
+ * @brief   Get the state of the left encoder B.
+ *
+ * @return  ret   the value of the left encoder B
+ *//*
+bool Encoder::readLeftStateB(void) {
 
   bool ret;
 
@@ -148,14 +188,14 @@ bool encoderReadLeftEncoderStateB(void) {
     ret = 0;
 
   return ret;
-}
+}*/
 
 /**
  * @brief   Get the state of the right encoder A.
  *
  * @return  ret  the value of the right encoder A
- */
-bool encoderReadRightStateA(void) {
+ *//*
+bool Encoder::readRightStateA(void) {
 
   bool ret;
 
@@ -165,14 +205,14 @@ bool encoderReadRightStateA(void) {
     ret = 0;
 
   return ret;
-}
+}*/
 
 /**
  * @brief   Get the state of the right encoder B.
  *
  * @return  ret  the value of the right encoder B
- */
-bool encoderReadRightStateB(void) {
+ *//*
+bool Encoder::readRightStateB(void) {
 
   bool ret;
 
@@ -182,12 +222,12 @@ bool encoderReadRightStateB(void) {
     ret = 0;
 
   return ret;
-}
+}*/
 
 /**
  * @brief   Initialize all pins needs for motor control.
  */
-void encoderInit(ENCODERDriver *edp, ENCODERConfig cfg) {
+void Encoder::init(ENCODERDriver *edp, ENCODERConfig cfg) {
 
   /* Initialise left encoder . */
   edp->config  = cfg;
@@ -242,4 +282,9 @@ void encoderGetWheelVelocity(void) {
   }
 }
 */
+
+#ifdef __cplusplus
+}
+#endif
+
 /** @} */
