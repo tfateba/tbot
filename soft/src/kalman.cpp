@@ -1,5 +1,5 @@
 /*
-    TBOT - 2015...2021 Theodore Ateba
+    TBOT - Copyright (C) 2015...2023 Theodore Ateba
     This Kalman filter was inspired from the following:
 
     Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
