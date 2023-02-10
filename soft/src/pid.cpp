@@ -32,15 +32,22 @@
 #include <stdlib.h>
 
 /* Project files. */
+#include "hal.h"
 #include "pid.hpp"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
 /*==========================================================================*/
 /* Global variables.                                                        */
 /*==========================================================================*/
+
+/* Extern variables. */
+#if (DEBUG_PID)
+extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
+#endif
 
 /*==========================================================================*/
 /* Functions.                                                               */
@@ -65,6 +72,10 @@ void Pid::init(float kpval, float kival, float kdval) {
 
   setLastError(0);
   setActualError(0);
+
+  #if (DEBUG_PID)
+  pr_debug("\n\rPID initialized");
+  #endif
 }
 
 /**
