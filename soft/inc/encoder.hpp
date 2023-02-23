@@ -26,6 +26,7 @@
 #define ENCODER_H
 
 #include "hal.h"
+#include "types.hpp"
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -34,36 +35,6 @@
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
-
-/**
- * @brief Encoders identifier enumerations
- */
-typedef enum {
-  ENCODER_L,  /**< Left encoder.                                            */
-  ENCODER_R,  /**< Right encoder.                                           */
-} encoder_id_t;
-
-/**
- * @brief   Encoder configuration structure.
- */
-typedef struct {
-  uint8_t     id;       /**< Encoder identification name.                   */
-  uint8_t     eichan;   /**< Encoder external interruption channel.         */
-  ioportid_t  porta;    /**< Encoder port A.                                */
-  ioportid_t  portb;    /**< Encoder port B.                                */
-  uint8_t     pina;     /**< Encoder pin A.                                 */
-  uint8_t     pinb;     /**< Encoder pin B.                                 */
-} ENCODERConfig;
-
-/**
- * @brief   Encoder driver structure.
- */
-typedef struct {
-  ENCODERConfig config;
-  volatile long counter;  /**< Rigth encoder counter.                       */
-  bool          statea;   /**< Left motor encoder A.                        */
-  bool          stateb;   /**< Left motor encoder B.                        */
-} ENCODERDriver;
 
 /*==========================================================================*/
 /* External declarations.                                                   */
@@ -88,13 +59,14 @@ class Encoder {
   bool getStateA(void);
   bool getStateB(void);
 
-  void init(ENCODERDriver *ep, ENCODERConfig cfg);
+  void init(ENCODERConfig cfg);
   //void getWheelVelocity(void);
 
   private:
-  bool stateA;
-  bool stateB;
+  bool          stateA;
+  bool          stateB;
   volatile long counter;
+  ENCODERConfig config;
 };
 
 #endif /* ENCODER_H */

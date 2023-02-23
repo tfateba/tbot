@@ -36,17 +36,23 @@ extern "C" {
 #include <stdlib.h>
 
 /* ChibiOS files. */
-#include "hal.h"
-#include "chprintf.h"
+//#include "hal.h"
+
 
 /* Project files. */
 #include "encoder.hpp"
 #include "main.h"
 #include "hardware.h"
+#include "chprintf.h"
 
 /*==========================================================================*/
 /* Global variables.                                                        */
 /*==========================================================================*/
+
+/* Extern variables. */
+#if (DEBUG_ENCODER)
+extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
+#endif
 
 /* Project local variables. */
 //long wheelPosition;     /**< Position of the robot wheels.                  */
@@ -227,35 +233,27 @@ bool Encoder::readRightStateB(void) {
 /**
  * @brief   Initialize all pins needs for motor control.
  */
-void Encoder::init(ENCODERDriver *edp, ENCODERConfig cfg) {
+void Encoder::init(ENCODERConfig cfg) {
 
-  /* Initialise left encoder . */
-  edp->config  = cfg;
-  edp->counter = 0;
-  edp->statea = false;
-  edp->stateb = false;
+  /* Initialise encoder . */
+  config  = cfg;
+  counter = 0;
+  stateA  = false;
+  stateB  = false;
 
-  /* Initialise rigth encoder . */
-  /* @tbot.rencoder.config = configEncoderRight;  */
-  /* @tbot.rencoder.counter  = 0;                 */
-  /* @tbot.rencoder.statea   = false;             */
-  /* @tbot.rencoder.stateb   = false;             */
-
-  /* Set left Motors Encoders. */
-  palSetPadMode(edp->config.porta, edp->config.pina, PAL_MODE_INPUT);
-  palSetPadMode(edp->config.portb, edp->config.pinb, PAL_MODE_INPUT);
-
-  /* Set Rigth motor encoders. */
-  /* @palSetPadMode(R_ENCODER_A_PORT, R_ENCODER_A, PAL_MODE_INPUT); */
-  /* @palSetPadMode(R_ENCODER_B_PORT, R_ENCODER_B, PAL_MODE_INPUT); */
+  /* Set Motors Encoders. */
+  palSetPadMode(config.porta, config.pina, PAL_MODE_INPUT);
+  palSetPadMode(config.portb, config.pinb, PAL_MODE_INPUT);
 
   /* Start the EXT Driver with our configuration. */
   extStart(&EXTD1, &extcfg);
 
   /* Enable External interruptions for encoders. */
-  /* @extChannelEnable(&EXTD1, INT2); */
-  /* @extChannelEnable(&EXTD1, INT3); */
-  extChannelEnable(&EXTD1, edp->config.eichan);
+  extChannelEnable(&EXTD1, config.eichan);
+
+  #if (DEBUG_ENCODER)
+  pr_debug("\n\rEncoder initialized");
+  #endif
 }
 
 /**
