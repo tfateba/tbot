@@ -23,6 +23,7 @@
 #define LED_H
 
 #include "hal.h"
+#include "types.hpp"
 
 /**
  * @brief Small LED C++ clas
@@ -36,8 +37,7 @@ public:
   void off(void);
 
 private:
-  ioportid_t  ledPort;
-  iopadid_t   ledPad; 
+  LED led;
 };
 
 #endif /* LED_H */

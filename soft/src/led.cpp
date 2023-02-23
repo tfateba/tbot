@@ -19,7 +19,6 @@
  * @brief   led class source file.
  */
 
-#include "hal.h"
 #include "led.hpp"
 
 #ifdef __cplusplus
@@ -34,8 +33,8 @@ extern "C" {
  */
 void Led::init(ioportid_t port, iopadid_t pad) {
 
-  ledPort = port;
-  ledPad  = pad;
+  led.port = port;
+  led.pin  = pad;
 }
 
 /**
@@ -43,7 +42,7 @@ void Led::init(ioportid_t port, iopadid_t pad) {
  */
 void Led::toggle(void) {
 
-  palTogglePad(ledPort, ledPad);
+  palTogglePad(led.port, led.pin);
 }
 
 /**
@@ -51,7 +50,7 @@ void Led::toggle(void) {
  */
 void Led::on(void) {
 
-  palSetPad(ledPort, ledPad);
+  palSetPad(led.port, led.pin);
 }
 
 /**
@@ -59,7 +58,7 @@ void Led::on(void) {
  */
 void Led::off(void) {
 
-  palClearPad(ledPort, ledPad);
+  palClearPad(led.port, led.pin);
 }
 
 #ifdef __cplusplus
