@@ -32,22 +32,15 @@
 #include <stdlib.h>
 
 /* Project files. */
-#include "hal.h"
 #include "pid.hpp"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
 /*==========================================================================*/
 /* Global variables.                                                        */
 /*==========================================================================*/
-
-/* Extern variables. */
-#if (DEBUG_PID)
-extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
-#endif
 
 /*==========================================================================*/
 /* Functions.                                                               */
@@ -62,20 +55,16 @@ extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
 */
 void Pid::init(float kpval, float kival, float kdval) {
 
-  setKd(kpval);
-  setKi(kival);
-  setKd(kdval);
+  kp = kpval;
+  ki = kival;
+  kd = kdval;
 
-  setPTerm(0);
-  setITerm(0);
-  setDTerm(0);
+  pTerm = 0;
+  iTerm = 0;
+  dTerm = 0;
 
-  setLastError(0);
-  setActualError(0);
-
-  #if (DEBUG_PID)
-  pr_debug("\n\rPID initialized");
-  #endif
+  actualError = 0;
+  lastError   = 0;
 }
 
 /**
@@ -86,17 +75,17 @@ void Pid::init(float kpval, float kival, float kdval) {
 void Pid::compute(void) {
 
   /* Update PID values. */
-  setActualError(getSetpoint() - getMeasure());
-  setPTerm(getKp() * getActualError());
+  actualError = (setpoint - measure);
+
+  pTerm = (kp * actualError);
   
-  setITerm(getITerm() +  (getITerm() * getActualError()));
+  iTerm = (iTerm +  (iTerm * actualError));
 
-  setDTerm(getDTerm() * (getActualError() - getLastError()));
+  dTerm = (dTerm * (actualError - lastError));
 
-  setLastError(getActualError());
+  lastError = actualError;
 
-  
-  setOutput(getPTerm() + getITerm() + getDTerm());
+  output = (pTerm + iTerm + dTerm);
 }
 
 /**
@@ -104,16 +93,16 @@ void Pid::compute(void) {
  */
 void Pid::reset(void) {
 
-  setKd(0);
-  setKi(0);
-  setKd(0);
+  kd = 0;
+  ki = 0;
+  kd = 0;
 
-  setPTerm(0);
-  setITerm(0);
-  setDTerm(0);
+  pTerm = 0;
+  iTerm = 0;
+  dTerm = 0;
 
-  setLastError(0);
-  setActualError(0);
+  actualError = 0;
+  lastError   = 0;
 }
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2023 Theodore Ateba
+    TBOT - Copyright (C) 2015...2023 Theodore Ateba
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  * @brief   led class source file.
  */
 
+#include "hal.h"
 #include "led.hpp"
 
 #ifdef __cplusplus
@@ -33,8 +34,8 @@ extern "C" {
  */
 void Led::init(ioportid_t port, iopadid_t pad) {
 
-  led.port = port;
-  led.pin  = pad;
+  ledPort = port;
+  ledPad  = pad;
 }
 
 /**
@@ -42,7 +43,7 @@ void Led::init(ioportid_t port, iopadid_t pad) {
  */
 void Led::toggle(void) {
 
-  palTogglePad(led.port, led.pin);
+  palTogglePad(ledPort, ledPad);
 }
 
 /**
@@ -50,7 +51,7 @@ void Led::toggle(void) {
  */
 void Led::on(void) {
 
-  palSetPad(led.port, led.pin);
+  palSetPad(ledPort, ledPad);
 }
 
 /**
@@ -58,7 +59,7 @@ void Led::on(void) {
  */
 void Led::off(void) {
 
-  palClearPad(led.port, led.pin);
+  palClearPad(ledPort, ledPad);
 }
 
 #ifdef __cplusplus

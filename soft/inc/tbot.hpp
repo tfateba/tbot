@@ -45,7 +45,6 @@
 /**
  * @brief   Structure representing a Robot driver.
  */
-//struct ROBOTDriver {
 class Tbot {
 
 public:
@@ -61,14 +60,13 @@ public:
   Motor   motorL;         /**< Robot left  motor.                     */
   Motor   motorR;         /**< Robot rigth motor.                     */
 
-  Encoder encoderL;       /**< Robot left  encoder.                   */
-  Encoder encoderR;       /**< Robot rigth encoder.                   */
+  //Encoder encoderL;       /**< Robot left  encoder.                   */
+  //Encoder encoderR;       /**< Robot rigth encoder.                   */
   Led     led1;           /**< Robot led*/
   Buzzer  buzzer;         /**< Rbot Buzzer.                           */
 
   Kalman  kalmanFilter;
 };
-
 
 /*==========================================================================*/
 /* External declarations.                                                   */

@@ -29,6 +29,7 @@
 /* Includes files.                                                          */
 /*==========================================================================*/
 #include "hal.h"
+#include "conf.h"
 
 /*************************************************
 
@@ -172,6 +173,7 @@ class Buzzer {
 
   public:
   void init(void);
+  void bip(void);
   void startSound(void);
   void stopSound(void);
   void playPassed(void);
@@ -180,8 +182,6 @@ class Buzzer {
 
   private:
   void tone(int note, int duration);
-//    ioportid_t  port; /* Port used to control the buzzer. */
-//    uint8_t     pad;  /* Pad used to control the buzzer.  */ 
 };
 
 #endif /* BUZZER_H */

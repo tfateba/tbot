@@ -82,7 +82,6 @@ class Motor {
   void        move();
   void        init(MOTORConfig *cfg);
 
-
   void        setConfig(MOTORConfig *cfg) {config = cfg;}
   motor_id_t  getId(void) {return config->id;}
   void        setId(motor_id_t mid) {config->id = mid;}
@@ -109,10 +108,10 @@ class Motor {
   void        setDirection(motor_dir_t dir) {direction = dir;}
   motor_dir_t getDirection(void) {return direction;}
 
-  void        setSpeed(float speed) {speed = speed;}
+  void        setSpeed(float speedVal) {speed = speedVal;}
   float       getSpeed(void) {return speed;}
   void        setVoltage(int voltage) {pwmValue = voltage;}
-  int         getVoltage(void) { return pwmValue;}
+  int         getVoltage(void) {return pwmValue;}
 
   private:
   

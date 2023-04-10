@@ -44,7 +44,7 @@
 class Asserv {
 
     public:
-    void startAsserv(Tbot *robot);
+    void run(Tbot *robot);
 };
 
 #endif /* ASSERV_H */

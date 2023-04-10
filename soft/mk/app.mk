@@ -1,7 +1,7 @@
 # Application Source files.
+				    #$(TBOT)/src/encoder.cpp
 TBOTSRC =   $(TBOT)/src/asserv.cpp	\
 				    $(TBOT)/src/buzzer.cpp	\
-				    $(TBOT)/src/encoder.cpp \
 				    $(TBOT)/src/i2c.cpp     \
 				    $(TBOT)/src/kalman.cpp  \
 						$(TBOT)/src/led.cpp  		\

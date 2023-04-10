@@ -71,7 +71,7 @@ const float   dt = 0.01;          /**< Asservissement period. */
 /* Extern variables. */
 #if (DEBUG_ASSERV)
 extern BaseSequentialStream* chp; /* Pointer used for chpirntf. */
-//#define pr_debug(x) chprintf(chp, x)
+#define pr_debug(x) chprintf(chp, x)
 #endif
 
 /* Inputs for Speed PID. */
@@ -92,9 +92,6 @@ const float   PPR = 480;  // This was measured whit the wheels on the robot.
 #define PI          3.14159265359
 #define RAD_TO_DEG  180/PI
 
-//Mpu6050 inertial; // @rename it imu if possible
-//Kalman  kalmanFilter;
-
 /*==========================================================================*/
 /* Driver functions.                                                        */
 /*==========================================================================*/
@@ -104,21 +101,20 @@ const float   PPR = 480;  // This was measured whit the wheels on the robot.
  *
  * @param[in] robot   the pointer to the robot driver
  */
-void Asserv::startAsserv(Tbot *robot) {
+void Asserv::run(Tbot *robot) {
 
   msg_t msg;
 
-  // TODO: This Config must be in the main.cpp file
-  robot->motorL.setMaxSpeed(512);
-  robot->motorR.setMaxSpeed(512);
-
   /* Read the IMU data (x,y,z accel and gyroscope). */
-  robot->imu.getData(&I2CD1);
+  msg = robot->imu.getData(&I2CD1);
 
   if (msg != MSG_OK) {
 #if (DEBUG_ASSERV)
-    chprintf(chp, "\n\r %s: Error while reading the MPU6050 sensor data.",
+    if (printEnable == true) {
+      chprintf(chp, "\n\rasserv.%s: Error while reading the MPU6050 sensor data.",
               __func__);
+      printEnable = false;
+    }
 #endif
     return;
   }
@@ -140,23 +136,22 @@ void Asserv::startAsserv(Tbot *robot) {
 
 #if (DEBUG_ASSERV)
     if (printEnable == true) {
-      chprintf(chp, "%s: The Robot is laying down.\n\r", __func__);
+      chprintf(chp, "\n\rasserv.%s: The Robot is laying down.", __func__);
       printEnable = false;
     }
 #endif
 
     layingDown = true;
-    
+
     robot->motorL.stop();
     robot->motorR.stop();
-    
+
     robot->pidPosition.reset();
     robot->pidAngle.reset();
     robot->pidMotorL.reset();
     robot->pidMotorR.reset();
   }
   else {
-
     /*
      * It's no longer laying down,
      * so we can try to stabilized the robot now.
@@ -173,8 +168,12 @@ void Asserv::startAsserv(Tbot *robot) {
      */
 
     /* TODO: motor speed must be measure. */
-    positionLMeasured = ((2*PI*R)/PPR)*((float)robot->encoderL.getCounter());
-    positionRMeasured = ((2*PI*R)/PPR)*((float)robot->encoderR.getCounter());
+    //positionLMeasured = ((2*PI*R)/PPR)*((float)robot->encoderL.getCounter());
+    //positionRMeasured = ((2*PI*R)/PPR)*((float)robot->encoderR.getCounter());
+
+    // @TODO : use the Encoder to measure this !!!
+    positionLMeasured = 0;
+    positionRMeasured = 0;
 
     /* Update the Position PID. */
     robot->pidPosition.setSetPoint(targetPosition);
@@ -185,6 +184,7 @@ void Asserv::startAsserv(Tbot *robot) {
     robot->pidAngle.setSetPoint(targetAngle - robot->pidPosition.getOutput());
     robot->pidAngle.setMeasure(measuredAngle);
     robot->pidAngle.compute();
+    chprintf(chp, "%s: targetAngle = %.3f, measuredAngle = %.3f\r\n", __func__, targetAngle, measuredAngle);
 
     /* Manage PID for the left Motor. */
     robot->pidMotorL.setSetPoint(robot->pidAngle.getOutput());
@@ -211,8 +211,8 @@ void Asserv::startAsserv(Tbot *robot) {
     //encoderGetDistance(&robot->encoderRight);
     //chprintf(chp, "%s: angle = %.3f, distanceL = %.3f, distanceR = %.3f\r\n", __func__, robot->pidAngle.measure, positionL, positionR);
 
-    //chprintf(chp, "%s: Tposi = %.3f, Mposi = %.3f, Tangle %.3f, Mangle %.3f\r\n", __func__, robot->pidPosition.consigne, robot->pidPosition.measure, robot->pidAngle.consigne, robot->pidAngle.measure);
-    //pr_debug("\n\r asserv");
+    //chprintf(chp, "\n\rasserv.%s: Tposi = %.3f, Mposi = %.3f, Tangle %.3f, Mangle %.3f", __func__, robot->pidPosition.getSetPoint(), robot->pidPosition.getMeasure(), robot->pidAngle.getSetPoint(), robot->pidAngle.getMeasure());
+    //chprintf(chp, "\n\rasserv.%s: pidMotorL.output = %.3f, pidMotorR.output = %.3f", __func__, robot->pidMotorL.getOutput(), robot->pidMotorR.getOutput());
 #endif
   }
 }

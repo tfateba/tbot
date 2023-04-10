@@ -48,7 +48,7 @@
 /**
  * @brief   Available debug level.
  */
-#define DEBUG           FALSE   /**< Debug activation in all source files.  */
+#define DEBUG           TRUE   /**< Debug activation in all source files.  */
 #define DEBUG_MAIN      TRUE   /**< Debug activation in main file.         */
 #define DEBUG_ASSERV    TRUE   /**< Debug activation in asserv file        */
 #define DEBUG_ENCODER   TRUE   /**< Debug activation in asserv file        */
@@ -57,7 +57,7 @@
 #define DEBUG_KALMAN    TRUE   /**< Debug activation in Kalman filter file.*/
 #define DEBUG_PWM       TRUE   /**< Debug activation in PWM file.          */
 #define DEBUG_I2C       TRUE   /**< Debug activation in I2C file.          */
-#define DABUG_MPU       TRUE   /**< Debug activation in MPU6050 file.      */
+#define DEBUG_MPU       TRUE   /**< Debug activation in MPU6050 file.      */
 #define DEBUG_TBOT      TRUE   /**< Debug activation in main file.         */
 #define DEBUG_BUZZER    TRUE   /**< Debug activation in main file.         */
 

@@ -70,7 +70,7 @@
 #elif (BOARD_USED == NUCLEO_401RE)
 #endif
 
-#define MOTOR_MAX_SPEED         255
+#define MOTOR_MAX_SPEED         512
 
 /* Arduino Interruption */
 #define INT2 2      /**< ISR, D19 [PD2], BLACK wire motor Right.            */

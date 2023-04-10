@@ -296,7 +296,7 @@ class Mpu6050 {
   //msg_t doCalibration(I2CDriver *i2cp, MPU6050Driver *mpu);
   msg_t doCalibration(I2CDriver *i2cp);
 
-  msg_t init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad);
+  msg_t init(I2CDriver *i2cp, mpu6050_sad_e sadVal);
 
   float getTemperature(void) {return temperature;}
 

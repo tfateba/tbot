@@ -422,20 +422,20 @@ msg_t Mpu6050::readAllSensors(I2CDriver *i2cp, uint8_t *rxbuf) {
  */
 msg_t Mpu6050::getData(I2CDriver *i2cp) {
 
-  int16_t temp    = 0;
-  int16_t x_a = 0;
-  int16_t y_a = 0;
-  int16_t z_a = 0;
-  int16_t x_g = 0;
-  int16_t y_g = 0;
-  int16_t z_g = 0;
+  int16_t temp  = 0;
+  int16_t x_a   = 0;
+  int16_t y_a   = 0;
+  int16_t z_a   = 0;
+  int16_t x_g   = 0;
+  int16_t y_g   = 0;
+  int16_t z_g   = 0;
   uint8_t data[14];
   msg_t   msg;
 
   msg = readAllSensors(i2cp, data);
 
   if (msg != MSG_OK)
-    return MSG_RESET;
+    msg = MSG_RESET;
   else {
     x_a |= (((int16_t)data[0]) << 8) | data[1];
     y_a |= (((int16_t)data[2]) << 8) | data[3];
@@ -456,9 +456,9 @@ msg_t Mpu6050::getData(I2CDriver *i2cp) {
     x_gyro = (float)x_g;
     y_gyro = (float)y_g;
     z_gyro = (float)z_g;
-
-    return msg;
   }
+
+  return msg;
 }
 
 /**
@@ -514,11 +514,11 @@ msg_t Mpu6050::doCalibration(I2CDriver *i2cp) {
  *
  * @return    msg   result of the initialization operation
  */
-msg_t Mpu6050::init(I2CDriver *i2cp, MPU6050Driver *mpu, mpu6050_sad_e sad) {
+msg_t Mpu6050::init(I2CDriver *i2cp, mpu6050_sad_e sadVal) {
 
   msg_t msg;
 
-  mpu->sad = sad;
+  sad = sadVal;
   msg = reset(i2cp);
   msg = wakeup(i2cp);
   msg = configAccel(i2cp, MPU6050_ACCEL_FS_2);

@@ -26,7 +26,6 @@
 #define PWM_H
 
 #include "hal.h"
-#include "types.hpp"
 
 /*==========================================================================*/
 /* Includes files.                                                          */
@@ -35,6 +34,22 @@
 /*==========================================================================*/
 /* Enumerations, Structures and macros.                                     */
 /*==========================================================================*/
+
+/**
+ * @brief Motors identifier enumeration.
+ */
+typedef enum {
+  MOTOR_L,  /**< Left motor. */
+  MOTOR_R,  /**< Right motor. */
+} motor_id_t;
+
+/**
+ * @brief Motors enumerations
+ */
+typedef enum {
+  MOTOR_DIR_F,  /**< Motor forward direction. */
+  MOTOR_DIR_B,  /**< Motor backward direction. */
+} motor_dir_t;
 
 /**
  * @brief  The motor driver can handle a pwm frequency up to 20kHz.
